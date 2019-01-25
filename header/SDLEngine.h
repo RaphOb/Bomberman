@@ -24,5 +24,6 @@ void destroySDL(sdl_t *pSDL);
 void displayBlock(sdl_t *pSDL,int x, int y);
 void displayMap(game_t *game, sdl_t *pSDL);
 int getBit(const char c[], int indexArray, int indexBit);
+void displayTrump(sdl_t *pSDL);
 
 #endif //BOMBERMAN_SDLENGINE_H

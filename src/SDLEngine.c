@@ -11,17 +11,17 @@ sdl_t *initSDL(game_t *game)
     sdl_t *pSDL = malloc(sizeof(sdl_t));
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
-        printf("SDL_Init Error: %s\n", SDL_GetError());
+        fprintf(stderr,"SDL_Init Error: %s\n", SDL_GetError());
         return NULL;
     }
     pSDL->pWindow = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W, MAP_SIZE_H, SDL_WINDOW_RESIZABLE);
     if (pSDL->pWindow == NULL) {
-        printf("SDL_CreateWindow Error: %s\n", SDL_GetError());
+        fprintf(stderr,"SDL_CreateWindow Error: %s\n", SDL_GetError());
         return NULL;
     }
     pSDL->pRenderer = SDL_CreateRenderer(pSDL->pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (pSDL->pRenderer == NULL) {
-        printf("SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        fprintf(stderr,"SDL_CreateRenderer Error: %s\n", SDL_GetError());
         return NULL;
     }
 

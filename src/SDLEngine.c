@@ -12,16 +12,19 @@ sdl_t *initSDL(game_t *game)
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr,"SDL_Init Error: %s\n", SDL_GetError());
+        destroySDL(pSDL);
         return NULL;
     }
     pSDL->pWindow = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W, MAP_SIZE_H, SDL_WINDOW_RESIZABLE);
     if (pSDL->pWindow == NULL) {
         fprintf(stderr,"SDL_CreateWindow Error: %s\n", SDL_GetError());
+        destroySDL(pSDL);
         return NULL;
     }
     pSDL->pRenderer = SDL_CreateRenderer(pSDL->pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (pSDL->pRenderer == NULL) {
         fprintf(stderr,"SDL_CreateRenderer Error: %s\n", SDL_GetError());
+        destroySDL(pSDL);
         return NULL;
     }
 
@@ -34,7 +37,7 @@ sdl_t *initSDL(game_t *game)
     SDL_RenderPresent(pSDL->pRenderer);
 
     displayMap(game, pSDL);
-    displayTrump(pSDL);
+    displayTrump(pSDL, game);
 
     return pSDL;
 }
@@ -85,7 +88,7 @@ int getBit(const char c[], int indexArray, int indexBit)
     return (1 & (c[indexArray] >> indexBit));
 }
 
-void displayTrump(sdl_t *pSDL)
+void displayTrump(sdl_t *pSDL, game_t *game)
 {
     SDL_Surface* surfaceTrump = IMG_Load("../resources/trump.png");
     if (!surfaceTrump) {
@@ -100,9 +103,11 @@ void displayTrump(sdl_t *pSDL)
                 return;
             }
             SDL_Rect src_trump = {0,0, surfaceTrump->w, surfaceTrump->h};
-            SDL_Rect dst_trump = {START_X_MAP + (16 * SIZE_M), START_Y_MAP + (8* SIZE_M), surfaceTrump->w/7, surfaceTrump->h/7};
+            SDL_Rect dst_trump = {game->dst_trump.x, game->dst_trump.y, surfaceTrump->w/7, surfaceTrump->h/7};
             SDL_RenderCopy(pSDL->pRenderer, trumpTexture, &src_trump, &dst_trump);
             SDL_RenderPresent(pSDL->pRenderer);
+            SDL_FillRect(surfaceTrump, NULL, 00000000);
+
         SDL_FreeSurface(surfaceTrump);
         }
 }

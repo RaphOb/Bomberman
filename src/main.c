@@ -8,8 +8,13 @@ int main(int argc, char *argv[])
     // Initialisation du jeu
     game_t *game = initGame();
     sdl_t *pSDL = initSDL(game);
+    int quit = 0;
+    while (quit != -1) {
+        displayTrump(pSDL, game);
+        quit = game_event(game);
 
-    //le jeu
+}
+  /*  //le jeu
     bool terminer = false;
     SDL_Event evenements;
     while(!terminer)
@@ -18,7 +23,7 @@ int main(int argc, char *argv[])
 
         if(evenements.type == SDL_QUIT)
             terminer = true;
-    }
+    }*/
 
 
     // On libère la mémoire

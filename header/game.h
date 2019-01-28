@@ -6,6 +6,8 @@
 #define BOMBERMAN_GAME_H
 
 #include <stdlib.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #define NB_MAPS 8
 #define MAP_X 9
@@ -24,9 +26,13 @@ typedef char map_t[MAP_X][MAP_Y];
 typedef struct game_s{
     map_t map;
     int current_map;
+    SDL_Rect dst_trump;
+
 } game_t;
 
 game_t *initGame();
+int game_event( game_t *game);
+void game_moveT(game_t *game, SDL_Keycode direction);
 
 
 #endif //BOMBERMAN_GAME_H

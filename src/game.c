@@ -12,9 +12,9 @@ game_t *initGame()
 {
     game_t *game = malloc(sizeof(game_t));
     game->dst_trump.x = START_X_MAP + (16 * SIZE_M);
-    game->dst_trump.y =  START_Y_MAP + (8* SIZE_M);
-    game->dst_trump.h = 10;
-    game->dst_trump.w = 5;
+    game->dst_trump.y =  START_Y_MAP + ( 8 * SIZE_M);
+    game->dst_trump.h = 10; //need to change that
+    game->dst_trump.w = 5; //need to change that shit
     if (!game) {
         return (NULL);
     }
@@ -55,7 +55,7 @@ int game_event( game_t *game)
                     break;
 
                 default :
-                    fprintf(stderr,"touche inconue %d\n", evenement.key.keysym.sym);
+                    fprintf(stderr,"touche inconnue %d\n", evenement.key.keysym.sym);
             }
         }
         return res;

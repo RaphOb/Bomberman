@@ -8,21 +8,22 @@ int main(int argc, char *argv[])
     // Initialisation du jeu
     game_t *game = initGame();
     sdl_t *pSDL = initSDL(game);
-
-    //le jeu
-    bool terminer = false;
-    SDL_Event evenements;
-    while(!terminer)
-    {
-        SDL_PollEvent(&evenements);
-
-        clear(pSDL->pRenderer);
-        displayGame(game, pSDL);
-        SDL_Log("aaa");
-        if(evenements.type == SDL_QUIT)
-            terminer = true;
+    int quit = 0;
+    while (quit != -1) {
+        draw_game(pSDL, game);
+        quit = game_event(game);
 
     }
+    /*  //le jeu
+      bool terminer = false;
+      SDL_Event evenements;
+      while(!terminer)
+      {
+          SDL_WaitEvent(&evenements);
+
+          if(evenements.type == SDL_QUIT)
+              terminer = true;
+      }*/
 
 
     // On libère la mémoire

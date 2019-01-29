@@ -14,6 +14,13 @@
 typedef struct {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;
+    SDL_Rect src_rect;
+    SDL_Rect dst_rect;
+    SDL_Texture *textureMap;
+    SDL_Texture *textureBlock;
+    //SDL_Rect dst_trump;
+    //SDL_Texture *textureTrump;
+
 } sdl_t;
 
 sdl_t *initSDL(game_t *game);
@@ -22,6 +29,8 @@ void destroyGame(game_t *game);
 void displayBlock(sdl_t *pSDL,int x, int y, SDL_Surface *block);
 void displayMap(game_t *game, sdl_t *pSDL, SDL_Surface *block);
 int getBit(const char c[], int indexArray, int indexBit);
+void initTrump(sdl_t *pSDL, game_t *game);
+void draw_game(sdl_t *pSDL, game_t *game);
+
 void clear(SDL_Renderer *sdl_renderer);
-void displayGame(game_t *game, sdl_t *sdl);
 #endif //BOMBERMAN_SDLENGINE_H

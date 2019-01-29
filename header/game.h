@@ -6,6 +6,8 @@
 #define BOMBERMAN_GAME_H
 
 #include <stdlib.h>
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #define NB_MAPS 8
 #define MAP_X 9
@@ -18,15 +20,21 @@
 #define MAP_SIZE_H (BASE_MAP_H * SIZE_M)
 #define START_X_MAP 0
 #define START_Y_MAP 0
+#define BLOCK_SIZE 16
 
 typedef char map_t[MAP_X][MAP_Y];
 
 typedef struct game_s{
     map_t map;
     int current_map;
+    SDL_Rect dst_trump;
+    SDL_Texture* textureTrump;
+
 } game_t;
 
 game_t *initGame();
+int game_event(game_t *game);
+void game_moveT(game_t *game, SDL_Keycode direction);
 
 
 #endif //BOMBERMAN_GAME_H

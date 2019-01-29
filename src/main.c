@@ -10,20 +10,20 @@ int main(int argc, char *argv[])
     sdl_t *pSDL = initSDL(game);
     int quit = 0;
     while (quit != -1) {
-        displayTrump(pSDL, game);
+        draw_game(pSDL, game);
         quit = game_event(game);
 
-}
-  /*  //le jeu
-    bool terminer = false;
-    SDL_Event evenements;
-    while(!terminer)
-    {
-        SDL_WaitEvent(&evenements);
+    }
+    /*  //le jeu
+      bool terminer = false;
+      SDL_Event evenements;
+      while(!terminer)
+      {
+          SDL_WaitEvent(&evenements);
 
-        if(evenements.type == SDL_QUIT)
-            terminer = true;
-    }*/
+          if(evenements.type == SDL_QUIT)
+              terminer = true;
+      }*/
 
 
     // On libère la mémoire

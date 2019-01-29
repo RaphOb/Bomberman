@@ -14,10 +14,14 @@ int main(int argc, char *argv[])
     SDL_Event evenements;
     while(!terminer)
     {
-        SDL_WaitEvent(&evenements);
+        SDL_PollEvent(&evenements);
 
+        clear(pSDL->pRenderer);
+        displayGame(game, pSDL);
+        SDL_Log("aaa");
         if(evenements.type == SDL_QUIT)
             terminer = true;
+
     }
 
 

@@ -10,7 +10,7 @@
 #define NB_MAPS 8
 #define MAP_X 9
 #define MAP_Y 13
-#define MAP_SIZE MAP_X * MAP_Y
+#define MAP_SIZE (MAP_X * MAP_Y)
 #define BASE_MAP_W 240
 #define BASE_MAP_H 160
 #define SIZE_M 5

@@ -25,27 +25,35 @@ sdl_t *initSDL(game_t *game)
         return NULL;
     }
 
-    SDL_Surface *map = IMG_Load("../resources/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
-    SDL_Rect src_rect = {0, 0, 722 / 3, 482 / 3};
-    SDL_Log("map->w: %d, map->h: %d", map->w, map->h);
-    SDL_Rect dst_rect = {START_X_MAP, START_Y_MAP, MAP_SIZE_W, MAP_SIZE_H};
-    SDL_Texture *texture = SDL_CreateTextureFromSurface(pSDL->pRenderer, map);
-    SDL_RenderCopy(pSDL->pRenderer, texture, &src_rect, &dst_rect);
-    SDL_RenderPresent(pSDL->pRenderer);
-
-    displayMap(game, pSDL);
 
     return pSDL;
 }
 
-void displayBlock(sdl_t *pSDL,int x, int y)
+void displayGame(game_t *game, sdl_t *pSDL)
 {
+    SDL_Surface *map = IMG_Load("../resources/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
+    SDL_Rect src_rect = {0, 0, 722 / 3, 482 / 3};
+    SDL_Rect dst_rect = {START_X_MAP, START_Y_MAP, MAP_SIZE_W, MAP_SIZE_H};
+    SDL_Texture *texture = SDL_CreateTextureFromSurface(pSDL->pRenderer, map);
+    SDL_RenderCopy(pSDL->pRenderer, texture, &src_rect, &dst_rect);
+    SDL_RenderPresent(pSDL->pRenderer);
     SDL_Surface *block = IMG_Load("../resources/block_map1.png");
+    displayMap(game, pSDL, block);
+}
+
+void displaySprite(sdl_t *pSDL, SDL_Texture *texture, SDL_Rect src, SDL_Rect dst)
+{
+    SDL_RenderCopy(pSDL->pRenderer, texture, &src, &dst);
+}
+
+void displayBlock(sdl_t *pSDL,int x, int y, SDL_Surface *block)
+{
     SDL_Rect src_block = {0, 0, block->w, block->h};
     SDL_Rect dst_block = {START_X_MAP + (block->w * SIZE_M) + (16 * x * SIZE_M), START_Y_MAP + ((block->h / 2) * SIZE_M) + (16 * y * SIZE_M), block->w * SIZE_M, block->h * SIZE_M};
     SDL_Texture *texture_block = SDL_CreateTextureFromSurface(pSDL->pRenderer, block);
     SDL_RenderCopy(pSDL->pRenderer, texture_block, &src_block, &dst_block);
     SDL_RenderPresent(pSDL->pRenderer);
+    SDL_FreeSurface(block);
 }
 
 void destroySDL(sdl_t *pSDL)
@@ -58,27 +66,38 @@ void destroySDL(sdl_t *pSDL)
     free(pSDL);
 }
 
+void destroyGame(game_t *game)
+{
+    free(game);
+}
 
 
 void clear(SDL_Renderer *sdl_renderer)
 {
     SDL_RenderClear(sdl_renderer);
+    SDL_RenderPresent(sdl_renderer);
 }
 
-void displayMap(game_t *game, sdl_t *pSdl)
+void displayMap(game_t *game, sdl_t *pSdl, SDL_Surface *block)
 {
     for (int i = 0; i < MAP_X; i++) {
         for (int j = 0; j < MAP_Y; j++) {
             if (getBit(game->map[i], j, 1) == 1) {
                 if (getBit(game->map[i], j, 2) == 1) {
-                    SDL_Log("aaaa");
-                    displayBlock(pSdl, j, i);
+                    displayBlock(pSdl, j, i, block);
                 }
             }
         }
     }
 }
 
+/**
+ *
+ * @param c
+ * @param indexArray
+ * @param indexBit
+ * @return
+ */
 int getBit(const char c[], int indexArray, int indexBit)
 {
     return (1 & (c[indexArray] >> indexBit));

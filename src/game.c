@@ -17,6 +17,8 @@ game_t *initGame()
         return (NULL);
     }
 
+
+
     return game;
 }
 

@@ -74,22 +74,22 @@ int game_event( game_t *game)
 void game_moveT(game_t *game, SDL_Keycode direction)
 {
     if (direction == SDLK_UP) {
-        if ( game->dst_trump.y > 0){
+        if ( game->dst_trump.y > 30){
             game->dst_trump.y -= 10;
             SDL_Log("haut");
         }
     } else if (direction == SDLK_DOWN) {
-        if (game->dst_trump.y < (MAP_SIZE_H - game->dst_trump.h)) {
+        if (game->dst_trump.y < (MAP_SIZE_H - (game->dst_trump.h + 30))) {
             game->dst_trump.y += 10;
             SDL_Log("bas");
         }
     } else if (direction == SDLK_LEFT) {
-        if (game->dst_trump.x > 0 ) {
+        if (game->dst_trump.x > 70 ) {
             game->dst_trump.x -= 10;
             SDL_Log("gauche");
         }
     } else if (direction == SDLK_RIGHT) {
-        if (game->dst_trump.x < (MAP_SIZE_W- game->dst_trump.w)) {
+        if (game->dst_trump.x < (MAP_SIZE_W- (game->dst_trump.w + 70))) {
             game->dst_trump.x += 10;
             SDL_Log("Droite");
         }

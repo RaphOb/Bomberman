@@ -11,17 +11,10 @@
 game_t *initGame()
 {
     game_t *game = malloc(sizeof(game_t));
-    game->dst_trump.x = START_X_MAP + (16 * SIZE_M);
-    game->dst_trump.y =  START_Y_MAP + ( 8 * SIZE_M);
-    game->dst_trump.h = 70; //need to change that
-    game->dst_trump.w = 30; //need to change that shit
-    game->src_trump.x = 0;
-    game->src_trump.y =  0;
-    game->src_trump.h = 100; //need to change that
-    game->src_trump.w = 50; //need to change that shit
     if (!game) {
         return (NULL);
     }
+
     game->current_map = 0;
     if (extractArrayFromFile(game->map) == 0) {
         return (NULL);
@@ -74,7 +67,7 @@ int game_event( game_t *game)
 void game_moveT(game_t *game, SDL_Keycode direction)
 {
     if (direction == SDLK_UP) {
-        if ( game->dst_trump.y > 30){
+        if ( game->dst_trump.y > 30) {
             game->dst_trump.y -= 10;
             SDL_Log("haut");
         }
@@ -89,7 +82,7 @@ void game_moveT(game_t *game, SDL_Keycode direction)
             SDL_Log("gauche");
         }
     } else if (direction == SDLK_RIGHT) {
-        if (game->dst_trump.x < (MAP_SIZE_W- (game->dst_trump.w + 70))) {
+        if (game->dst_trump.x < (MAP_SIZE_W - (game->dst_trump.w + 70))) {
             game->dst_trump.x += 10;
             SDL_Log("Droite");
         }

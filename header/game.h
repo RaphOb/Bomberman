@@ -20,6 +20,7 @@
 #define MAP_SIZE_H (BASE_MAP_H * SIZE_M)
 #define START_X_MAP 0
 #define START_Y_MAP 0
+#define BLOCK_SIZE 16
 
 typedef char map_t[MAP_X][MAP_Y];
 
@@ -27,14 +28,12 @@ typedef struct game_s{
     map_t map;
     int current_map;
     SDL_Rect dst_trump;
-    SDL_Rect src_trump;
-    SDL_Surface* surfaceTrump;
-    SDL_Texture* trumpTexture;
+    SDL_Texture* textureTrump;
 
 } game_t;
 
 game_t *initGame();
-int game_event( game_t *game);
+int game_event(game_t *game);
 void game_moveT(game_t *game, SDL_Keycode direction);
 
 

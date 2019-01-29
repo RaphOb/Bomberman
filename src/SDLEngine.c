@@ -117,7 +117,11 @@ void displayTrump(sdl_t *pSDL, game_t *game)
         SDL_FreeSurface(game->surfaceTrump);
         }
 }
-
+/**
+ * function : affiche les textures
+ * @param pSDL
+ * @param game
+ */
 void draw_game(sdl_t *pSDL, game_t *game)
 {
     SDL_SetRenderDrawColor(pSDL->pRenderer, 0,0,0, 255);

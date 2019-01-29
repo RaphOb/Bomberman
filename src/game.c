@@ -13,8 +13,12 @@ game_t *initGame()
     game_t *game = malloc(sizeof(game_t));
     game->dst_trump.x = START_X_MAP + (16 * SIZE_M);
     game->dst_trump.y =  START_Y_MAP + ( 8 * SIZE_M);
-    game->dst_trump.h = 10; //need to change that
-    game->dst_trump.w = 5; //need to change that shit
+    game->dst_trump.h = 70; //need to change that
+    game->dst_trump.w = 30; //need to change that shit
+    game->src_trump.x = 0;
+    game->src_trump.y =  0;
+    game->src_trump.h = 100; //need to change that
+    game->src_trump.w = 50; //need to change that shit
     if (!game) {
         return (NULL);
     }

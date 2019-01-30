@@ -36,11 +36,34 @@ sdl_t *initSDL(game_t *game)
     pSDL->src_rect = r;
     SDL_Rect d = {START_X_MAP, START_Y_MAP, MAP_SIZE_W, MAP_SIZE_H};
     pSDL->dst_rect = d;
-    // TODO verif comme dans initTrump
     SDL_Surface *map = IMG_Load("../resources/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
+    if (!map) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return NULL;
+    }
+
     pSDL->textureMap = SDL_CreateTextureFromSurface(pSDL->pRenderer, map);
+    if (!pSDL->textureMap) {
+        fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return NULL;
+    }
+
     SDL_Surface *block = IMG_Load("../resources/block_map1.png");
+    if (!block) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return NULL;
+    }
+
     pSDL->textureBlock = SDL_CreateTextureFromSurface(pSDL->pRenderer, block);
+    if (!pSDL->textureBlock) {
+        fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return NULL;
+    }
+    
     initTrump(pSDL, game);
 
     SDL_FreeSurface(map);

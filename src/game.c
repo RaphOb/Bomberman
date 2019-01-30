@@ -89,6 +89,4 @@ void game_moveT(game_t *game, SDL_Keycode direction)
     } else {
         fprintf(stderr, "direction inconnue ");
     }
-
 }
-

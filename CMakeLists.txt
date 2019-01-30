@@ -13,7 +13,7 @@ set(SDL2_IMAGE_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-
 find_package(SDL2 REQUIRED)
 find_package(SDL2_Image REQUIRED)
 
-set(SOURCES src/main.c src/SDLEngine.c header/SDLEngine.h src/game.c header/game.h src/file.c header/file.h)
+set(SOURCES src/main.c src/SDLEngine.c header/SDLEngine.h src/game.c header/game.h src/map.c header/map.h src/player.c header/player.h src/bit.c header/bit.h)
 
 add_executable(Bomberman ${SOURCES})
 

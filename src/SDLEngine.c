@@ -75,7 +75,7 @@ void clear(SDL_Renderer *sdl_renderer) {
     SDL_RenderPresent(sdl_renderer);
 }
 
-void displayMap(game_t *game, sdl_t *pSdl, SDL_Surface *block)
+void displayMap(game_t *game, sdl_t *pSdl)
 {
     for (int i = 0; i < MAP_X; i++) {
         for (int j = 0; j < MAP_Y; j++) {

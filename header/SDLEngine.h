@@ -9,29 +9,28 @@
 #include <SDL2/SDL_image.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include "../header/game.h"
-#define SCREEN_WIDTH 1600
-#define SCREEN_HEIGHT 900
+#include "../header/map.h"
 
 typedef struct {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;
-    SDL_Rect src_rect;
-    SDL_Rect dst_rect;
     SDL_Texture *textureMap;
     SDL_Texture *textureBlock;
-    //SDL_Rect dst_trump;
-    //SDL_Texture *textureTrump;
+    SDL_Rect dst_trump;
+    SDL_Texture *textureTrump;
+    SDL_Rect dst_bomb;
+    SDL_Texture* textureBomb;
 
 } sdl_t;
 
-sdl_t *initSDL(game_t *game);
-void destroySDL(sdl_t *pSDL, game_t *game);
-void displayBlock(sdl_t *pSDL,int x, int y);
-void displayMap(game_t *game, sdl_t *pSDL);
+sdl_t *initSDL();
+void destroySDL(sdl_t *pSDL);
+void renderBlock(sdl_t *pSDL, int x, int y);
+void renderMap(map_t map, sdl_t *pSdl);
 int getBit(const char c[], int indexArray, int indexBit);
-void initTrump(sdl_t *pSDL, game_t *game);
-void draw_game(sdl_t *pSDL, game_t *game);
-void draw_bomb (sdl_t *pSDL, game_t *game);
+void initPlayerSDL(sdl_t *pSDL);
+void initMap(sdl_t *pSDL);
+void initBlock(sdl_t *pSDL);
+void initBomb(sdl_t *pSDL);
 
 #endif //BOMBERMAN_SDLENGINE_H

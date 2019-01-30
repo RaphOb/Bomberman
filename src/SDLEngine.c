@@ -4,14 +4,16 @@
 
 #include <math.h>
 #include "../header/SDLEngine.h"
-#include "../header/game.h"
+#include "../header/map.h"
+#include "../header/player.h"
+#include "../header/bit.h"
 
 /**
  * function : init SDL map and texture
  * @param game
  * @return
  */
-sdl_t *initSDL(game_t *game)
+sdl_t *initSDL()
 {
     sdl_t *pSDL = malloc(sizeof(sdl_t));
     if (!pSDL) {
@@ -20,59 +22,27 @@ sdl_t *initSDL(game_t *game)
 
     if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
         fprintf(stderr, "SDL_Init Error: %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
+        destroySDL(pSDL);
         return NULL;
     }
     pSDL->pWindow = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W,
                                      MAP_SIZE_H, SDL_WINDOW_RESIZABLE);
     if (pSDL->pWindow == NULL) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
+        destroySDL(pSDL);
         return NULL;
     }
     pSDL->pRenderer = SDL_CreateRenderer(pSDL->pWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (pSDL->pRenderer == NULL) {
         fprintf(stderr, "SDL_CreateRenderer Error: %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
-        return NULL;
-    }
-
-    SDL_Rect r = {0, 0, 722 / 3, 482 / 3};
-    pSDL->src_rect = r;
-    SDL_Rect d = {START_X_MAP, START_Y_MAP, MAP_SIZE_W, MAP_SIZE_H};
-    pSDL->dst_rect = d;
-    SDL_Surface *map = IMG_Load("../resources/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
-    if (!map) {
-        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
-        return NULL;
-    }
-
-    pSDL->textureMap = SDL_CreateTextureFromSurface(pSDL->pRenderer, map);
-    if (!pSDL->textureMap) {
-        fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
-        return NULL;
-    }
-
-    SDL_Surface *block = IMG_Load("../resources/block_map1.png");
-    if (!block) {
-        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
-        return NULL;
-    }
-
-    pSDL->textureBlock = SDL_CreateTextureFromSurface(pSDL->pRenderer, block);
-    if (!pSDL->textureBlock) {
-        fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
+        destroySDL(pSDL);
         return NULL;
     }
     
-    initTrump(pSDL, game);
-
-    SDL_FreeSurface(map);
-    SDL_FreeSurface(block);
+    initPlayerSDL(pSDL);
+    initMap(pSDL);
+    initBlock(pSDL);
+    initBomb(pSDL);
     return pSDL;
 }
 
@@ -82,7 +52,7 @@ sdl_t *initSDL(game_t *game)
  * @param x
  * @param y
  */
-void displayBlock(sdl_t *pSDL, int x, int y)
+void renderBlock(sdl_t *pSDL, int x, int y)
 {
     SDL_Rect src_block = {0, 0, BLOCK_SIZE, BLOCK_SIZE};
     SDL_Rect dst_block = {START_X_MAP + (BLOCK_SIZE * SIZE_M) + (16 * x * SIZE_M),
@@ -95,10 +65,10 @@ void displayBlock(sdl_t *pSDL, int x, int y)
  * @param pSDL
  * @param game
  */
-void destroySDL(sdl_t *pSDL, game_t *game)
+void destroySDL(sdl_t *pSDL)
 {
-    if (game->textureBomb) {
-        SDL_DestroyTexture(game->textureBomb);
+    if (pSDL->textureBomb) {
+        SDL_DestroyTexture(pSDL->textureBomb);
     }
     if (pSDL->textureBlock) {
         SDL_DestroyTexture(pSDL->textureBlock);
@@ -106,8 +76,8 @@ void destroySDL(sdl_t *pSDL, game_t *game)
     if (pSDL->textureMap) {
         SDL_DestroyTexture(pSDL->textureMap);
     }
-    if (game->textureTrump) {
-        SDL_DestroyTexture(game->textureTrump);
+    if (pSDL->textureTrump) {
+        SDL_DestroyTexture(pSDL->textureTrump);
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
@@ -117,7 +87,7 @@ void destroySDL(sdl_t *pSDL, game_t *game)
     }
     SDL_Quit();
     free(pSDL);
-    free(game);
+    SDL_Log("Destroy SDL");
 }
 
 /** TODO
@@ -133,28 +103,17 @@ void clear(SDL_Renderer *sdl_renderer) {
  * @param game
  * @param pSdl
  */
-void displayMap(game_t *game, sdl_t *pSdl)
+void renderMap(map_t map, sdl_t *pSdl)
 {
     for (int i = 0; i < MAP_X; i++) {
         for (int j = 0; j < MAP_Y; j++) {
-            if (getBit(game->map[i], j, 1) == 1) {
-                if (getBit(game->map[i], j, 2) == 1) {
-                    displayBlock(pSdl, j, i);
+            if (getBit(map[i], j, 1) == 1) {
+                if (getBit(map[i], j, 2) == 1) {
+                    renderBlock(pSdl, j, i);
                 }
             }
         }
     }
-}
-/** TODO
- * function: whos knows ?!
- * @param c
- * @param indexArray
- * @param indexBit
- * @return
- */
-int getBit(const char c[], int indexArray, int indexBit)
-{
-    return (1 & (c[indexArray] >> indexBit));
 }
 
 /**
@@ -162,23 +121,23 @@ int getBit(const char c[], int indexArray, int indexBit)
  * @param pSDL
  * @param game
  */
-void initTrump(sdl_t *pSDL, game_t *game)
+void initPlayerSDL(sdl_t *pSDL)
 {
     SDL_Surface *surfaceTrump = IMG_Load("../resources/trump.png");
     if (!surfaceTrump) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
+        destroySDL(pSDL);
         return;
     } else {
-        game->textureTrump = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceTrump);
-        if (!game->textureTrump) {
+        pSDL->textureTrump = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceTrump);
+        if (!pSDL->textureTrump) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
-            destroySDL(pSDL, game);
+            destroySDL(pSDL);
             return;
         }
+        SDL_Rect d = {START_X_MAP + (16 * SIZE_M), START_Y_MAP + (8 * SIZE_M), 30, 70};
+        pSDL->dst_trump = d;
         SDL_FreeSurface(surfaceTrump);
-        SDL_Rect d = {START_X_MAP + (16 * SIZE_M), START_Y_MAP + ( 8 * SIZE_M), 30, 70};
-        game->dst_trump = d;
     }
 }
 
@@ -187,41 +146,56 @@ void initTrump(sdl_t *pSDL, game_t *game)
  * @param pSDL
  * @param game
  */
-void initBomb(sdl_t *pSDL, game_t *game)
+void initBomb(sdl_t *pSDL)
 {
     SDL_Surface* surfaceBomb = IMG_Load("../resources/bomb.png");
     if (!surfaceBomb) {
-        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
-        destroySDL(pSDL, game);
+        SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
         return;
     } else {
-        game->textureBomb = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBomb);
-        if (!game->textureBomb) {
-            fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
-            destroySDL(pSDL, game);
+        pSDL->textureBomb = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBomb);
+        if (!pSDL->textureBomb) {
+            SDL_Log("impossible d'initialiser la texture : %s", IMG_GetError());
+            destroySDL(pSDL);
             return;
         }
+        SDL_Log("Bomb initialised");
     }
     SDL_FreeSurface(surfaceBomb);
 }
 
-/**
- * function : affiche les textures
- * @param pSDL
- * @param game
- */
-void draw_game(sdl_t *pSDL, game_t *game)
+void initBlock(sdl_t *pSDL)
 {
-    SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
-    //SDL_RenderClear(pSDL->pRenderer);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMap, &pSDL->src_rect, &pSDL->dst_rect);
-    displayMap(game, pSDL);
-    SDL_RenderCopy(pSDL->pRenderer, game->textureTrump, NULL, &game->dst_trump);
-    SDL_RenderPresent(pSDL->pRenderer);
+    SDL_Surface *block = IMG_Load("../resources/block_map1.png");
+    if (!block) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return;
+    } else {
+        pSDL->textureBlock = SDL_CreateTextureFromSurface(pSDL->pRenderer, block);
+        if (!pSDL->textureBlock) {
+            fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
+            destroySDL(pSDL);
+            return;
+        }
+    }
+    SDL_FreeSurface(block);
 }
-void draw_bomb (sdl_t *pSDL, game_t *game)
+
+void initMap(sdl_t *pSDL)
 {
-    SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
-    SDL_RenderCopy(pSDL->pRenderer, game->textureBomb, NULL, &game->dst_bomb);
-    SDL_RenderPresent(pSDL->pRenderer);
+    SDL_Surface *map = IMG_Load("../resources/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
+    if (!map) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return;
+    } else {
+        pSDL->textureMap = SDL_CreateTextureFromSurface(pSDL->pRenderer, map);
+        if (!pSDL->textureMap) {
+            fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
+            destroySDL(pSDL);
+            return;
+        }
+    }
 }

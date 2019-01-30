@@ -26,7 +26,7 @@ typedef struct {
 } sdl_t;
 
 sdl_t *initSDL(game_t *game);
-void destroySDL(sdl_t *pSDL);
+void destroySDL(sdl_t *pSDL, game_t *game);
 void displayBlock(sdl_t *pSDL,int x, int y);
 void displayMap(game_t *game, sdl_t *pSDL);
 int getBit(const char c[], int indexArray, int indexBit);

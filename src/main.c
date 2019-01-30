@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
 
 
     // On libère la mémoire
-    destroySDL(pSDL);
+    destroySDL(pSDL, game);
 
     return EXIT_SUCCESS;
 }

@@ -8,6 +8,10 @@
 #include "../header/file.h"
 #include "../header/SDLEngine.h"
 
+/**
+ * function : init game
+ * @return
+ */
 game_t *initGame()
 {
     game_t *game = malloc(sizeof(game_t));

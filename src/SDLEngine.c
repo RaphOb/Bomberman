@@ -6,6 +6,11 @@
 #include "../header/SDLEngine.h"
 #include "../header/game.h"
 
+/**
+ * function : init SDL map and texture
+ * @param game
+ * @return
+ */
 sdl_t *initSDL(game_t *game)
 {
     sdl_t *pSDL = malloc(sizeof(sdl_t));
@@ -71,6 +76,12 @@ sdl_t *initSDL(game_t *game)
     return pSDL;
 }
 
+/** TODO
+ * function : comment plz
+ * @param pSDL
+ * @param x
+ * @param y
+ */
 void displayBlock(sdl_t *pSDL, int x, int y)
 {
     SDL_Rect src_block = {0, 0, BLOCK_SIZE, BLOCK_SIZE};
@@ -79,9 +90,13 @@ void displayBlock(sdl_t *pSDL, int x, int y)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBlock, &src_block, &dst_block);
 }
 
+/**
+ * function: destroy SDL
+ * @param pSDL
+ * @param game
+ */
 void destroySDL(sdl_t *pSDL, game_t *game)
 {
-    // On détruit tout ce qui a été créé avec la SDL
     if (pSDL->textureBlock) {
         SDL_DestroyTexture(pSDL->textureBlock);
     }
@@ -102,11 +117,19 @@ void destroySDL(sdl_t *pSDL, game_t *game)
     free(game);
 }
 
-
+/** TODO
+ * function : comment plz
+ * @param sdl_renderer
+ */
 void clear(SDL_Renderer *sdl_renderer) {
     SDL_RenderClear(sdl_renderer);
 }
 
+/** TODO
+ * function: comment plz
+ * @param game
+ * @param pSdl
+ */
 void displayMap(game_t *game, sdl_t *pSdl)
 {
     for (int i = 0; i < MAP_X; i++) {
@@ -119,13 +142,23 @@ void displayMap(game_t *game, sdl_t *pSdl)
         }
     }
 }
-
+/** TODO
+ * function: whos knows ?!
+ * @param c
+ * @param indexArray
+ * @param indexBit
+ * @return
+ */
 int getBit(const char c[], int indexArray, int indexBit)
 {
     return (1 & (c[indexArray] >> indexBit));
 }
 
-
+/**
+ * function : init texture Perso
+ * @param pSDL
+ * @param game
+ */
 void initTrump(sdl_t *pSDL, game_t *game)
 {
     SDL_Surface *surfaceTrump = IMG_Load("../resources/trump.png");

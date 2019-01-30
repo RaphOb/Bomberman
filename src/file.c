@@ -7,6 +7,11 @@
 #include <SDL2/SDL_log.h>
 #include "../header/file.h"
 
+/** TODO
+ * function : comment plz!
+ * @param map
+ * @return
+ */
 int extractArrayFromFile(map_t map)
 {
     const int BUFSIZE = 27;
@@ -28,7 +33,10 @@ int extractArrayFromFile(map_t map)
     fclose(ptr);
     return (1);
 }
-
+/** TODO
+ * function : comment plz!
+ * @param map
+ */
 void fillArray(map_t map)
 {
     for (int i = 0; i < 9; i++) {
@@ -38,6 +46,12 @@ void fillArray(map_t map)
     }
 }
 
+/** TODO
+ * function : comment pl
+ * @param map
+ * @param index
+ * @param line
+ */
 void insertLineIntoArray(map_t map, int index, char *line)
 {
     int i = 0;
@@ -59,6 +73,12 @@ void insertLineIntoArray(map_t map, int index, char *line)
     }
 }
 
+/** TODO
+ * function : comment plz
+ * @param c
+ * @param indexArray
+ * @param indexBit
+ */
 void setBit(char c[], int indexArray, int indexBit)
 {
     int pos = indexBit % 8;
@@ -67,6 +87,10 @@ void setBit(char c[], int indexArray, int indexBit)
     c[indexArray] |= 1 << pos;
 }
 
+/** TODO
+ * function : comment plz
+ * @param map
+ */
 void displayArray(map_t map)
 {
     for (int i = 0; i < 9; i++) {
@@ -78,6 +102,10 @@ void displayArray(map_t map)
     }
 }
 
+/** TODO
+ * function : comment plz
+ * @param c
+ */
 void printBits(const char c)
 {
     // parcourt bit par bit le char

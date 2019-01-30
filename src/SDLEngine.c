@@ -97,6 +97,9 @@ void displayBlock(sdl_t *pSDL, int x, int y)
  */
 void destroySDL(sdl_t *pSDL, game_t *game)
 {
+    if (game->textureBomb) {
+        SDL_DestroyTexture(game->textureBomb);
+    }
     if (pSDL->textureBlock) {
         SDL_DestroyTexture(pSDL->textureBlock);
     }
@@ -180,6 +183,29 @@ void initTrump(sdl_t *pSDL, game_t *game)
 }
 
 /**
+ * function : init texture bomb
+ * @param pSDL
+ * @param game
+ */
+void initBomb(sdl_t *pSDL, game_t *game)
+{
+    SDL_Surface* surfaceBomb = IMG_Load("../resources/bomb.png");
+    if (!surfaceBomb) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL, game);
+        return;
+    } else {
+        game->textureBomb = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBomb);
+        if (!game->textureBomb) {
+            fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
+            destroySDL(pSDL, game);
+            return;
+        }
+    }
+    SDL_FreeSurface(surfaceBomb);
+}
+
+/**
  * function : affiche les textures
  * @param pSDL
  * @param game
@@ -193,6 +219,9 @@ void draw_game(sdl_t *pSDL, game_t *game)
     SDL_RenderCopy(pSDL->pRenderer, game->textureTrump, NULL, &game->dst_trump);
     SDL_RenderPresent(pSDL->pRenderer);
 }
-
-
-
+void draw_bomb (sdl_t *pSDL, game_t *game)
+{
+    SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
+    SDL_RenderCopy(pSDL->pRenderer, game->textureBomb, NULL, &game->dst_bomb);
+    SDL_RenderPresent(pSDL->pRenderer);
+}

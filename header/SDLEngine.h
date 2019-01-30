@@ -32,5 +32,6 @@ void displayMap(game_t *game, sdl_t *pSDL);
 int getBit(const char c[], int indexArray, int indexBit);
 void initTrump(sdl_t *pSDL, game_t *game);
 void draw_game(sdl_t *pSDL, game_t *game);
+void draw_bomb (sdl_t *pSDL, game_t *game);
 
 #endif //BOMBERMAN_SDLENGINE_H

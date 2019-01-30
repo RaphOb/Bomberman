@@ -29,6 +29,8 @@ typedef struct game_s{
     int current_map;
     SDL_Rect dst_trump;
     SDL_Texture* textureTrump;
+    SDL_Rect dst_bomb;
+    SDL_Texture* textureBomb;
 
 } game_t;
 

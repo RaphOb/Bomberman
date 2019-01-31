@@ -1,16 +1,17 @@
 #include <stdbool.h>
-#include "../header/SDLEngine.h"
-#include "../header/file.h"
+#include "../header/game.h"
 
 
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
-    game_t *game = initGame();
-    sdl_t *pSDL = initSDL(game);
+    sdl_t *pSDL = initSDL();
+    player_t *player = initPlayer();
+    game_t *game = initGame(pSDL);
+    game->players[0] = player;
     int quit = 0;
     while (quit != -1) {
-        draw_game(pSDL, game);
+        draw_game(game);
         quit = game_event(game);
 
     }
@@ -28,6 +29,8 @@ int main(int argc, char *argv[])
 
     // On libère la mémoire
     destroySDL(pSDL);
+    free(game->players[0]);
+    free(game);
 
     return EXIT_SUCCESS;
 }

@@ -2,7 +2,7 @@
 // Created by geoff on 16/01/2019.
 //
 
-#include <SDL_events.h>
+#include <SDL2/SDL_events.h>
 #include <stdio.h>
 #include "../header/game.h"
 #include "../header/map.h"
@@ -100,7 +100,6 @@ void placeBomb(game_t *game)
 {
    game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
    game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
-   SDL_Log("bomb");
 }
 
 /**
@@ -114,8 +113,8 @@ void draw_game(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    renderPlayer(game->pSDL, game->players[0]);
     renderBomb(game->pSDL);
+    renderPlayer(game->pSDL, game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
@@ -123,9 +122,8 @@ void renderBomb(sdl_t *pSDL)
 {
     //SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
     //SDL_Log("x : %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    SDL_Rect src = {0, 0, 320, 640};
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, &src, &pSDL->dst_bomb);
-    //SDL_RenderPresent(pSDL->pRenderer);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
+   // SDL_RenderPresent(pSDL->pRenderer);
 }
 
 void renderBackground(sdl_t *pSDL)

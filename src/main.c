@@ -15,17 +15,21 @@ int main(int argc, char *argv[])
         quit = game_event(game);
 
     }
-    /*  //le jeu
-      bool terminer = false;
-      SDL_Event evenements;
-      while(!terminer)
+      //le jeu
+   /* bool terminer = false;
+    SDL_Event evenements;
+    SDL_Rect src = {0, 0, 30, 32};
+    SDL_Rect dst = {100, 100, 30, 32};
+    while(!terminer)
       {
-          SDL_WaitEvent(&evenements);
-
-          if(evenements.type == SDL_QUIT)
-              terminer = true;
-      }*/
-
+          SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, &src, &dst);
+          SDL_RenderPresent(pSDL->pRenderer);
+          if (SDL_PollEvent(&evenements)) {
+              if (evenements.type == SDL_QUIT)
+                  terminer = true;
+          }
+      }
+*/
 
     // On libère la mémoire
     destroySDL(pSDL);

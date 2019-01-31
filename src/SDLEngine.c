@@ -25,8 +25,8 @@ sdl_t *initSDL()
         destroySDL(pSDL);
         return NULL;
     }
-    pSDL->pWindow = SDL_CreateWindow("Hello World!", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W,
-                                     MAP_SIZE_H, SDL_WINDOW_RESIZABLE);
+    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W,
+                                     MAP_SIZE_H, 0);
     if (pSDL->pWindow == NULL) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -138,8 +138,9 @@ void initPlayerSDL(sdl_t *pSDL)
         }
         SDL_Rect d = {START_X_MAP + (16 * SIZE_M), START_Y_MAP + (8 * SIZE_M), 30, 70};
         pSDL->dst_trump = d;
-        SDL_FreeSurface(surfaceTrump);
     }
+    SDL_FreeSurface(surfaceTrump);
+    surfaceTrump = NULL;
 }
 
 /**
@@ -149,12 +150,13 @@ void initPlayerSDL(sdl_t *pSDL)
  */
 void initBomb(sdl_t *pSDL)
 {
-    SDL_Surface* surfaceBomb = IMG_Load("../resources/bomb.png");
+    SDL_Surface* surfaceBomb = IMG_Load("../resources/bomb-sprite-png-5.png");
     if (!surfaceBomb) {
         SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
     } else {
+//        SDL_Log("w: %d, h: %d", surfaceBomb->w, surfaceBomb->h );
         pSDL->textureBomb = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBomb);
         if (!pSDL->textureBomb) {
             SDL_Log("impossible d'initialiser la texture : %s", IMG_GetError());
@@ -162,8 +164,11 @@ void initBomb(sdl_t *pSDL)
             return;
         }
         SDL_Log("Bomb initialised");
+        SDL_Rect d = {-30, -32, 30, 32};
+        pSDL->dst_bomb = d;
     }
     SDL_FreeSurface(surfaceBomb);
+    surfaceBomb = NULL;
 }
 
 void initBlock(sdl_t *pSDL)
@@ -182,6 +187,7 @@ void initBlock(sdl_t *pSDL)
         }
     }
     SDL_FreeSurface(block);
+    block = NULL;
 }
 
 void initMap(sdl_t *pSDL)
@@ -199,4 +205,6 @@ void initMap(sdl_t *pSDL)
             return;
         }
     }
+    SDL_FreeSurface(map);
+    map = NULL;
 }

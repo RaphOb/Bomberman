@@ -69,21 +69,27 @@ void destroySDL(sdl_t *pSDL)
 {
     if (pSDL->textureBomb) {
         SDL_DestroyTexture(pSDL->textureBomb);
+        pSDL->textureBomb = NULL;
     }
     if (pSDL->textureBlock) {
         SDL_DestroyTexture(pSDL->textureBlock);
+        pSDL->textureBlock = NULL;
     }
     if (pSDL->textureMap) {
         SDL_DestroyTexture(pSDL->textureMap);
+        pSDL->textureMap = NULL;
     }
     if (pSDL->textureTrump) {
         SDL_DestroyTexture(pSDL->textureTrump);
+        pSDL->textureTrump = NULL;
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
+        pSDL->pRenderer = NULL;
     }
     if (pSDL->pWindow) {
         SDL_DestroyWindow(pSDL->pWindow);
+        pSDL-> pWindow = NULL;
     }
     SDL_Quit();
     free(pSDL);
@@ -164,7 +170,7 @@ void initBomb(sdl_t *pSDL)
             return;
         }
         SDL_Log("Bomb initialised");
-        SDL_Rect d = {-30, -32, 30, 32};
+        SDL_Rect d = {0, 0, 30, 32};
         pSDL->dst_bomb = d;
     }
     SDL_FreeSurface(surfaceBomb);

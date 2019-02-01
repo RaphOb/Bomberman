@@ -100,6 +100,7 @@ void placeBomb(game_t *game)
 {
    game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
    game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
+   game->players[0]->bomb = 1;
 }
 
 /**
@@ -113,7 +114,9 @@ void draw_game(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    renderBomb(game->pSDL);
+    if (game->players[0]->bomb == 1) {
+        renderBomb(game->pSDL);
+    }
     renderPlayer(game->pSDL, game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }

@@ -15,6 +15,7 @@ player_t *initPlayer()
       return NULL;
     }
     p->alive = 'Y';
+    p->bomb = 0;
     p->bombs_left = 20;
     p->frags = 0;
     p->x_pos = START_X_MAP + (BLOCK_SIZE * SIZE_M);

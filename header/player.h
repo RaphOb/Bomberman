@@ -10,6 +10,7 @@ typedef struct {
     unsigned int number;
     int x_pos;
     int y_pos;
+    int bomb;
     int bombs_left;
     int frags;
 } player_t;

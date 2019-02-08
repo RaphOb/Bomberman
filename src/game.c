@@ -36,8 +36,10 @@ game_t *initGame(sdl_t *pSDL)
 int game_event(game_t *game)
 {
     int res = 0;
-
+    const Uint8 *keystates = SDL_GetKeyboardState(NULL);
+    int keys[302];
     SDL_Event event;
+
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             res = -1;
@@ -50,19 +52,41 @@ int game_event(game_t *game)
                 case SDLK_b:
                     placeBomb(game);
                     break;
-                case SDLK_UP:
-                case SDLK_DOWN:
-                case SDLK_RIGHT:
-                case SDLK_LEFT:
-                    game_moveT(game, event.key.keysym.sym);
-                    break;
                 default :
                     fprintf(stderr,"touche inconnue %d\n", event.key.keysym.sym);
             }
         }
-        return res;
     }
-
+    game->players[0]->still = 1;
+    if (keystates[SDL_SCANCODE_UP]) {
+        if ( game->players[0]->y_pos > 30) {
+            game->players[0]->y_pos -= 3;
+            game->players[0]->direction = 0;
+            game->players[0]->still = 0;
+        }
+    }
+    if (keystates[SDL_SCANCODE_RIGHT]) {
+        if (game->players[0]->x_pos < (MAP_SIZE_W - (game->pSDL->dst_player.w + 70))) {
+            game->players[0]->x_pos += 3;
+            game->players[0]->direction = 1;
+            game->players[0]->still = 0;
+        }
+    }
+    if (keystates[SDL_SCANCODE_DOWN]) {
+        if (game->players[0]->y_pos < (MAP_SIZE_H - (game->pSDL->dst_player.h + 30))) {
+            game->players[0]->y_pos += 3;
+            game->players[0]->direction = 2;
+            game->players[0]->still = 0;
+        }
+    }
+    if (keystates[SDL_SCANCODE_LEFT]) {
+        if (game->players[0]->x_pos > 70 ) {
+            game->players[0]->x_pos -= 3;
+            game->players[0]->direction = 3;
+            game->players[0]->still = 0;
+        }
+    }
+    return res;
 }
 /**
  * function : move perso up, down, right, left
@@ -77,7 +101,7 @@ void game_moveT(game_t *game, SDL_Keycode direction)
             SDL_Log("haut");
         }
     } else if (direction == SDLK_DOWN) {
-        if (game->players[0]->y_pos < (MAP_SIZE_H - (game->pSDL->dst_trump.h + 30))) {
+        if (game->players[0]->y_pos < (MAP_SIZE_H - (game->pSDL->dst_player.h + 30))) {
             game->players[0]->y_pos += 10;
             SDL_Log("bas");
         }
@@ -87,7 +111,7 @@ void game_moveT(game_t *game, SDL_Keycode direction)
             SDL_Log("gauche");
         }
     } else if (direction == SDLK_RIGHT) {
-        if (game->players[0]->x_pos < (MAP_SIZE_W - (game->pSDL->dst_trump.w + 70))) {
+        if (game->players[0]->x_pos < (MAP_SIZE_W - (game->pSDL->dst_player.w + 70))) {
             game->players[0]->x_pos += 10;
             SDL_Log("Droite");
         }
@@ -123,10 +147,8 @@ void draw_game(game_t *game)
 
 void renderBomb(sdl_t *pSDL)
 {
-    //SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
     //SDL_Log("x : %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
-   // SDL_RenderPresent(pSDL->pRenderer);
 }
 
 void renderBackground(sdl_t *pSDL)
@@ -138,8 +160,22 @@ void renderBackground(sdl_t *pSDL)
 
 void renderPlayer(sdl_t *pSDL, player_t *player)
 {
-    SDL_Rect r = {player->x_pos, player->y_pos, 30, 70};
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureTrump, NULL, &r);
+    if (player->current_frame > 2) {
+        player->current_frame = 0;
+    }
+
+    SDL_Rect src = {FRAME_WIDTH * player->current_frame, (FRAME_HEIGHT) * player->direction, FRAME_WIDTH, FRAME_HEIGHT};
+    SDL_Rect r = {player->x_pos, player->y_pos, FRAME_WIDTH * 3 , FRAME_HEIGHT * 3};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayer, &src, &r);
+
+    if (player->still == 0) {
+        player->frame_time++;
+        if (FPS / player->frame_time == 4) {
+            player->current_frame++;
+            player->frame_time = 0;
+        }
+    }
+
 }
 
 

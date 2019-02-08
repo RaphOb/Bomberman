@@ -5,34 +5,44 @@
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
+    const unsigned int FPSMeter = 60;
+    Uint32 start;
     sdl_t *pSDL = initSDL();
     player_t *player = initPlayer();
     game_t *game = initGame(pSDL);
+    if (!pSDL || !player || !game) {
+        return (-1);
+    }
     game->players[0] = player;
+
     int quit = 0;
     while (quit != -1) {
+        start = SDL_GetTicks();
         draw_game(game);
         quit = game_event(game);
 
+        if(1000 / FPSMeter > SDL_GetTicks() - start) {
+            SDL_Delay(1000 / FPSMeter - (SDL_GetTicks() - start));
+        }
     }
-      //le jeu
-   /* bool terminer = false;
-    SDL_Event evenements;
-    SDL_Rect src = {0, 0, 30, 32};
-    SDL_Rect dst = {100, 100, 30, 32};
-    while(!terminer)
-      {
-          SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, &src, &dst);
-          SDL_RenderPresent(pSDL->pRenderer);
-          if (SDL_PollEvent(&evenements)) {
-              if (evenements.type == SDL_QUIT)
-                  terminer = true;
-          }
-      }
-*/
 
+      //le jeu
+//    bool terminer = false;
+//    SDL_Event evenements;
+//    while(!terminer) {
+//
+//          if (SDL_PollEvent(&evenements)) {
+//              if (evenements.type == SDL_QUIT)
+//                  terminer = true;
+//          }
+//          SDL_RenderCopy(pSDL->pRenderer, texture, NULL, &test.pos);
+//          SDL_RenderPresent(pSDL->pRenderer);
+//    }
+//
+//
+//   TTF_CloseFont(police);
     // On libère la mémoire
-    destroySDL(pSDL);
+    destroySDL(game->pSDL);
     free(game->players[0]);
     free(game);
 

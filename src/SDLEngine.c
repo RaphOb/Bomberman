@@ -25,6 +25,13 @@ sdl_t *initSDL()
         destroySDL(pSDL);
         return NULL;
     }
+
+    if(TTF_Init() == -1) {
+        fprintf(stderr, "Erreur d'initialisation de TTF_Init : %s\n", TTF_GetError());
+        destroySDL(pSDL);
+        return NULL;
+    }
+
     pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W,
                                      MAP_SIZE_H, 0);
     if (pSDL->pWindow == NULL) {
@@ -79,9 +86,9 @@ void destroySDL(sdl_t *pSDL)
         SDL_DestroyTexture(pSDL->textureMap);
         pSDL->textureMap = NULL;
     }
-    if (pSDL->textureTrump) {
-        SDL_DestroyTexture(pSDL->textureTrump);
-        pSDL->textureTrump = NULL;
+    if (pSDL->texturePlayer) {
+        SDL_DestroyTexture(pSDL->texturePlayer);
+        pSDL->texturePlayer = NULL;
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
@@ -91,6 +98,7 @@ void destroySDL(sdl_t *pSDL)
         SDL_DestroyWindow(pSDL->pWindow);
         pSDL-> pWindow = NULL;
     }
+    TTF_Quit();
     SDL_Quit();
     free(pSDL);
     SDL_Log("Destroy SDL");
@@ -130,20 +138,21 @@ void renderMap(map_t map, sdl_t *pSdl)
  */
 void initPlayerSDL(sdl_t *pSDL)
 {
-    SDL_Surface *surfaceTrump = IMG_Load("../resources/trump.png");
+    SDL_Surface *surfaceTrump = IMG_Load("../resources/player4.png");
     if (!surfaceTrump) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
     } else {
-        pSDL->textureTrump = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceTrump);
-        if (!pSDL->textureTrump) {
+        pSDL->texturePlayer = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceTrump);
+        if (!pSDL->texturePlayer) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
             destroySDL(pSDL);
             return;
         }
+
         SDL_Rect d = {START_X_MAP + (16 * SIZE_M), START_Y_MAP + (8 * SIZE_M), 30, 70};
-        pSDL->dst_trump = d;
+        pSDL->dst_player = d;
     }
     SDL_FreeSurface(surfaceTrump);
     surfaceTrump = NULL;
@@ -214,3 +223,4 @@ void initMap(sdl_t *pSDL)
     SDL_FreeSurface(map);
     map = NULL;
 }
+

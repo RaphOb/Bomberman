@@ -14,6 +14,7 @@
 
 #define NB_MAPS 8
 #define MAX_PLAYER 4
+#define FPS 60
 
 typedef struct game_s{
     map_t map;

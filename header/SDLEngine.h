@@ -7,21 +7,31 @@
 
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_image.h>
+#include <SDL2/SDL_ttf.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "../header/map.h"
 
-typedef struct {
+struct sdl_s {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;
     SDL_Texture *textureMap;
     SDL_Texture *textureBlock;
-    SDL_Rect dst_trump;
-    SDL_Texture *textureTrump;
+    SDL_Rect dst_player;
+    SDL_Texture *texturePlayer;
     SDL_Rect dst_bomb;
     SDL_Texture* textureBomb;
 
-} sdl_t;
+};
+typedef struct sdl_s sdl_t;
+
+struct text_s {
+    SDL_Rect pos;
+    int length;
+    char *text;
+    SDL_Color color;
+};
+typedef struct text_s text_t;
 
 sdl_t *initSDL();
 void destroySDL(sdl_t *pSDL);

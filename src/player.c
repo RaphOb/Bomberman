@@ -21,6 +21,10 @@ player_t *initPlayer()
     p->x_pos = START_X_MAP + (BLOCK_SIZE * SIZE_M);
     p->y_pos = START_Y_MAP + (BLOCK_SIZE / 2 * SIZE_M);
     p->number = 1;
+    p->current_frame = 1;
+    p->frame_time = 0;
+    p->direction = 2;
+    p->still = 1;
 
     return p;
 }

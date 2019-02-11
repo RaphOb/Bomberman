@@ -119,12 +119,24 @@ void game_moveT(game_t *game, SDL_Keycode direction)
         fprintf(stderr, "direction inconnue ");
     }
 }
+void make_explosion(game_t *game)
+{
+    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
+    game->pSDL->dst_explosion.x = game->pSDL->dst_bomb.x;
+    game->pSDL->dst_explosion.y = game->pSDL->dst_bomb.y;
+    renderexplosion(game->pSDL);
+    SDL_RenderPresent(game->pSDL->pRenderer);
+    
+
+
+}
 
 void placeBomb(game_t *game)
 {
    game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
    game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
    game->players[0]->bomb = 1;
+
 }
 
 /**
@@ -140,6 +152,7 @@ void draw_game(game_t *game)
     renderMap(game->map, game->pSDL);
     if (game->players[0]->bomb == 1) {
         renderBomb(game->pSDL);
+
     }
     renderPlayer(game->pSDL, game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
@@ -149,6 +162,10 @@ void renderBomb(sdl_t *pSDL)
 {
     //SDL_Log("x : %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
+}
+void renderexplosion(sdl_t *pSDL)
+{
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
 }
 
 void renderBackground(sdl_t *pSDL)

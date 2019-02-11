@@ -50,6 +50,7 @@ sdl_t *initSDL()
     initMap(pSDL);
     initBlock(pSDL);
     initBomb(pSDL);
+    initExplosion(pSDL);
     return pSDL;
 }
 
@@ -179,11 +180,32 @@ void initBomb(sdl_t *pSDL)
             return;
         }
         SDL_Log("Bomb initialised");
-        SDL_Rect d = {0, 0, 30, 32};
+        SDL_Rect d = {-30, -30, 30, 32};
         pSDL->dst_bomb = d;
     }
     SDL_FreeSurface(surfaceBomb);
     surfaceBomb = NULL;
+}
+
+void initExplosion(sdl_t *pSDL)
+{
+    SDL_Surface *explosion = IMG_Load("../resources/explosion.png");
+    if (!explosion) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return;
+    } else {
+        pSDL->textureExplosion = SDL_CreateTextureFromSurface(pSDL->pRenderer, explosion);
+        if (!pSDL->textureExplosion) {
+            fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
+            destroySDL(pSDL);
+            return;
+        }
+        SDL_Rect e = {20, 20, 30, 32};
+        pSDL->dst_explosion = e;
+        SDL_Log("Explosion initialised");
+    }
+    SDL_FreeSurface(explosion);
 }
 
 void initBlock(sdl_t *pSDL)

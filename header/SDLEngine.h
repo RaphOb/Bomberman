@@ -21,6 +21,8 @@ struct sdl_s {
     SDL_Texture *texturePlayer;
     SDL_Rect dst_bomb;
     SDL_Texture* textureBomb;
+    SDL_Texture* textureExplosion;
+    SDL_Rect dst_explosion;
 
 };
 typedef struct sdl_s sdl_t;
@@ -42,6 +44,7 @@ void initPlayerSDL(sdl_t *pSDL);
 void initMap(sdl_t *pSDL);
 void initBlock(sdl_t *pSDL);
 void initBomb(sdl_t *pSDL);
+void initExplosion(sdl_t *pSDL);
 
 void clear(SDL_Renderer *sdl_renderer);
 #endif //BOMBERMAN_SDLENGINE_H

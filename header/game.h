@@ -31,6 +31,8 @@ void draw_game(game_t *game);
 void renderBomb(sdl_t *pSDL);
 void renderBackground(sdl_t *pSDL);
 void renderPlayer(sdl_t *pSDL, player_t *player);
+void make_explosion(game_t *game);
+void renderexplosion(sdl_t *pSDL);
 
 
 #endif //BOMBERMAN_GAME_H

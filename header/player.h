@@ -22,6 +22,7 @@ typedef struct {
     int frame_time;
     int direction;
     int still;
+    int explosion;
 } player_t;
 
 player_t *initPlayer();

@@ -23,12 +23,15 @@ int main(int argc, char *argv[])
         start = SDL_GetTicks();
         draw_game(game);
         tempsActuel = SDL_GetTicks();
-        if (tempsActuel - tempsPrecedent > 3000) {
+        if (tempsActuel - tempsPrecedent > 3000 && game->players[0]->bomb == 1) {
             SDL_DestroyTexture(pSDL->textureBomb);
             pSDL->textureBomb = NULL;
             make_explosion(game);
+            game->players[0]->bomb = 0;
+            game->players[0]->explosion = 0;
             tempsPrecedent = tempsActuel;
             initBomb(pSDL);
+            initExplosion(pSDL);
         }
 
         quit = game_event(game);

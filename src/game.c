@@ -124,11 +124,26 @@ void make_explosion(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     game->pSDL->dst_explosion.x = game->pSDL->dst_bomb.x;
     game->pSDL->dst_explosion.y = game->pSDL->dst_bomb.y;
+    game->pSDL->dst_explosion2.x = game->pSDL->dst_explosion.x;
+    game->pSDL->dst_explosion2.y = game->pSDL->dst_explosion.y;
+
+    game->players[0]->explosion = 1;
+    int debut = 0;
+    int fin = 0;
+    fin = SDL_GetTicks();
+    SDL_Log("avant la boucle");
+    while((fin - debut) < 3000) {
+        game->pSDL->dst_explosion.h = fin * 300;
+        game->pSDL->dst_explosion.w = fin * 300;
+        game->pSDL->dst_explosion2.h = fin * 3000;
+        game->pSDL->dst_explosion2.w = fin * 3000;
     renderexplosion(game->pSDL);
     SDL_RenderPresent(game->pSDL->pRenderer);
-    
-
-
+        SDL_Log("c rentré dans la boucle");
+        debut = fin;
+    }
+    SDL_DestroyTexture(game->pSDL->textureExplosion);
+    SDL_DestroyTexture(game->pSDL->textureExplosion2);
 }
 
 void placeBomb(game_t *game)
@@ -154,6 +169,10 @@ void draw_game(game_t *game)
         renderBomb(game->pSDL);
 
     }
+    if (game->players[0]->explosion == 1) {
+        renderexplosion(game->pSDL);
+
+    }
     renderPlayer(game->pSDL, game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
@@ -166,6 +185,7 @@ void renderBomb(sdl_t *pSDL)
 void renderexplosion(sdl_t *pSDL)
 {
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2, NULL, &pSDL->dst_explosion2);
 }
 
 void renderBackground(sdl_t *pSDL)

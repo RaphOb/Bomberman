@@ -22,7 +22,9 @@ struct sdl_s {
     SDL_Rect dst_bomb;
     SDL_Texture* textureBomb;
     SDL_Texture* textureExplosion;
+    SDL_Texture* textureExplosion2;
     SDL_Rect dst_explosion;
+    SDL_Rect dst_explosion2;
 
 };
 typedef struct sdl_s sdl_t;

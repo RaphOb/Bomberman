@@ -50,6 +50,7 @@ sdl_t *initSDL()
     initMap(pSDL);
     initBlock(pSDL);
     initBomb(pSDL);
+    initExplosion(pSDL);
     return pSDL;
 }
 
@@ -76,6 +77,15 @@ void renderBlock(sdl_t *pSDL, int x, int y)
  */
 void destroySDL(sdl_t *pSDL)
 {
+    if (pSDL->textureExplosion) {
+        SDL_DestroyTexture(pSDL->textureExplosion);
+        pSDL->textureExplosion = NULL;
+    }
+    if (pSDL->textureExplosion2) {
+        SDL_DestroyTexture(pSDL->textureExplosion2);
+        pSDL->textureExplosion2 = NULL;
+    }
+
     if (pSDL->textureBomb) {
         SDL_DestroyTexture(pSDL->textureBomb);
         pSDL->textureBomb = NULL;
@@ -181,11 +191,37 @@ void initBomb(sdl_t *pSDL)
             return;
         }
         SDL_Log("Bomb initialised");
-        SDL_Rect d = {0, 0, 30, 32};
+        SDL_Rect d = {-30, -30, 30, 32};
         pSDL->dst_bomb = d;
     }
     SDL_FreeSurface(surfaceBomb);
     surfaceBomb = NULL;
+}
+
+void initExplosion(sdl_t *pSDL)
+{
+    SDL_Surface *explosion = IMG_Load("../resources/explosion.png");
+    SDL_Surface *explosion2 = IMG_Load("../resources/Explosion2.png");
+    if (!(explosion && explosion2) ) {
+        fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return;
+    } else {
+        pSDL->textureExplosion = SDL_CreateTextureFromSurface(pSDL->pRenderer, explosion);
+        pSDL->textureExplosion2 = SDL_CreateTextureFromSurface(pSDL->pRenderer, explosion2);
+        if (!(pSDL->textureExplosion && pSDL->textureExplosion2)) {
+            fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
+            destroySDL(pSDL);
+            return;
+        }
+        SDL_Rect e2 = {-40,-40,100,100};
+        SDL_Rect e = {-40, -40, 30, 32};
+        pSDL->dst_explosion = e;
+        pSDL->dst_explosion2 = e2;
+        SDL_Log("Explosion initialised");
+    }
+    SDL_FreeSurface(explosion);
+    SDL_FreeSurface(explosion2);
 }
 
 void initBlock(sdl_t *pSDL)

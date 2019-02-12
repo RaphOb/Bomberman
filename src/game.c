@@ -86,71 +86,31 @@ int game_event(game_t *game)
     }
     return res;
 }
-/**
- * function : move perso up, down, right, left
- * @param game
- * @param direction
- */
-void game_moveT(game_t *game, SDL_Keycode direction)
+
+void makeExplosion(game_t *game)
 {
-    if (direction == SDLK_UP) {
-        if ( game->players[0]->y_pos > 30) {
-            game->players[0]->y_pos -= 10;
-            SDL_Log("haut");
-        }
-    } else if (direction == SDLK_DOWN) {
-        if (game->players[0]->y_pos < (MAP_SIZE_H - (game->pSDL->dst_player.h + 30))) {
-            game->players[0]->y_pos += 10;
-            SDL_Log("bas");
-        }
-    } else if (direction == SDLK_LEFT) {
-        if (game->players[0]->x_pos > 70 ) {
-            game->players[0]->x_pos -= 10;
-            SDL_Log("gauche");
-        }
-    } else if (direction == SDLK_RIGHT) {
-        if (game->players[0]->x_pos < (MAP_SIZE_W - (game->pSDL->dst_player.w + 70))) {
-            game->players[0]->x_pos += 10;
-            SDL_Log("Droite");
-        }
-    } else {
-        fprintf(stderr, "direction inconnue ");
-    }
-}
-void make_explosion(game_t *game)
-{
-    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
-    game->pSDL->dst_explosion.x = game->pSDL->dst_bomb.x;
-    game->pSDL->dst_explosion.y = game->pSDL->dst_bomb.y;
-    game->pSDL->dst_explosion2.x = game->pSDL->dst_explosion.x;
-    game->pSDL->dst_explosion2.y = game->pSDL->dst_explosion.y;
+    game->pSDL->dst_explosion2.x = game->pSDL->dst_bomb.x - (BLOCK_SIZE * SIZE_M) - 20;
+    game->pSDL->dst_explosion2.y = game->pSDL->dst_bomb.y - (BLOCK_SIZE * SIZE_M) - 15;
+    game->pSDL->dst_explosion2.h = BLOCK_SIZE * SIZE_M * 3;
+    game->pSDL->dst_explosion2.w = BLOCK_SIZE * SIZE_M * 3;
+    game->pSDL->dst_explosion.x = game->pSDL->dst_explosion2.x + 40;
+    game->pSDL->dst_explosion.y = game->pSDL->dst_explosion2.y + 30;
+    game->pSDL->dst_explosion.h = BLOCK_SIZE * SIZE_M * 2;
+    game->pSDL->dst_explosion.w = BLOCK_SIZE * SIZE_M * 2;
 
     game->players[0]->explosion = 1;
-    int debut = 0;
-    int fin = 0;
-    fin = SDL_GetTicks();
-    SDL_Log("avant la boucle");
-    while((fin - debut) < 3000) {
-        game->pSDL->dst_explosion.h = fin * 300;
-        game->pSDL->dst_explosion.w = fin * 300;
-        game->pSDL->dst_explosion2.h = fin * 3000;
-        game->pSDL->dst_explosion2.w = fin * 3000;
-    renderexplosion(game->pSDL);
-    SDL_RenderPresent(game->pSDL->pRenderer);
-        SDL_Log("c rentré dans la boucle");
-        debut = fin;
-    }
-    SDL_DestroyTexture(game->pSDL->textureExplosion);
-    SDL_DestroyTexture(game->pSDL->textureExplosion2);
+    game->players[0]->tickExplosion = SDL_GetTicks();
 }
 
 void placeBomb(game_t *game)
 {
+    SDL_Log("placeBomb");
    game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
 //   game->pSDL->dst_bomb.x = START_X_MAP * 2 + 25; // TODO remplacer le 2 par l'index de la case ou est le joueur + 1;
    game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
 //   game->pSDL->dst_bomb.y = START_Y_MAP + 25;
    game->players[0]->bomb = 1;
+   game->players[0]->tickBombDropped = SDL_GetTicks();
 
 }
 
@@ -159,33 +119,42 @@ void placeBomb(game_t *game)
  * @param pSDL
  * @param game
  */
-void draw_game(game_t *game)
+void drawGame(game_t *game)
 {
+    int currentTick = SDL_GetTicks();
     SDL_RenderClear(game->pSDL->pRenderer);
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     if (game->players[0]->bomb == 1) {
-        renderBomb(game->pSDL);
+        renderBomb(game->pSDL, game);
 
     }
     if (game->players[0]->explosion == 1) {
-        renderexplosion(game->pSDL);
-
+        if (currentTick - game->players[0]->tickExplosion > 1000) {
+            game->players[0]->explosion = 0;
+        }
+        renderExplosion(game->pSDL);
     }
+
     renderPlayer(game->pSDL, game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
-void renderBomb(sdl_t *pSDL)
+void renderBomb(sdl_t *pSDL, game_t *game)
 {
-    //SDL_Log("x : %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
+    int currentTick = SDL_GetTicks();
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
+    if (currentTick - game->players[0]->tickBombDropped > 2000) {
+        game->players[0]->bomb = 0;
+        game->players[0]->tickBombDropped = 0;
+        makeExplosion(game);
+    }
 }
-void renderexplosion(sdl_t *pSDL)
+void renderExplosion(sdl_t *pSDL)
 {
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2, NULL, &pSDL->dst_explosion2);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
 }
 
 void renderBackground(sdl_t *pSDL)

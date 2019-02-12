@@ -62,8 +62,10 @@ sdl_t *initSDL()
 void renderBlock(sdl_t *pSDL, int x, int y)
 {
     SDL_Rect src_block = {0, 0, BLOCK_SIZE, BLOCK_SIZE};
-    SDL_Rect dst_block = {START_X_MAP + (BLOCK_SIZE * SIZE_M) + (16 * x * SIZE_M),
-                          START_Y_MAP + ((BLOCK_SIZE / 2) * SIZE_M) + (BLOCK_SIZE * y * SIZE_M), BLOCK_SIZE * SIZE_M, BLOCK_SIZE * SIZE_M};
+    SDL_Rect dst_block = {START_X_MAP + (16 * x * SIZE_M),
+                          START_Y_MAP + (BLOCK_SIZE * y * SIZE_M),
+                          BLOCK_SIZE * SIZE_M,
+                          BLOCK_SIZE * SIZE_M};
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBlock, &src_block, &dst_block);
 }
 
@@ -138,7 +140,7 @@ void renderMap(map_t map, sdl_t *pSdl)
  */
 void initPlayerSDL(sdl_t *pSDL)
 {
-    SDL_Surface *surfaceTrump = IMG_Load("../resources/player4.png");
+    SDL_Surface *surfaceTrump = IMG_Load("../resources/player3.png");
     if (!surfaceTrump) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -151,7 +153,7 @@ void initPlayerSDL(sdl_t *pSDL)
             return;
         }
 
-        SDL_Rect d = {START_X_MAP + (16 * SIZE_M), START_Y_MAP + (8 * SIZE_M), 30, 70};
+        SDL_Rect d = {START_X_MAP, START_Y_MAP, FRAME_WIDTH, FRAME_HEIGHT};
         pSDL->dst_player = d;
     }
     SDL_FreeSurface(surfaceTrump);

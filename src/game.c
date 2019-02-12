@@ -57,34 +57,32 @@ int game_event(game_t *game)
             }
         }
     }
-    game->players[0]->still = 1;
+    game->players[0]->still = 0;
     if (keystates[SDL_SCANCODE_UP]) {
         if ( game->players[0]->y_pos > 30) {
             game->players[0]->y_pos -= 3;
             game->players[0]->direction = 0;
-            game->players[0]->still = 0;
         }
     }
-    if (keystates[SDL_SCANCODE_RIGHT]) {
+    else if (keystates[SDL_SCANCODE_RIGHT]) {
         if (game->players[0]->x_pos < (MAP_SIZE_W - (game->pSDL->dst_player.w + 70))) {
             game->players[0]->x_pos += 3;
             game->players[0]->direction = 1;
-            game->players[0]->still = 0;
         }
     }
-    if (keystates[SDL_SCANCODE_DOWN]) {
+    else if (keystates[SDL_SCANCODE_DOWN]) {
         if (game->players[0]->y_pos < (MAP_SIZE_H - (game->pSDL->dst_player.h + 30))) {
             game->players[0]->y_pos += 3;
             game->players[0]->direction = 2;
-            game->players[0]->still = 0;
         }
     }
-    if (keystates[SDL_SCANCODE_LEFT]) {
+    else if (keystates[SDL_SCANCODE_LEFT]) {
         if (game->players[0]->x_pos > 70 ) {
             game->players[0]->x_pos -= 3;
             game->players[0]->direction = 3;
-            game->players[0]->still = 0;
         }
+    } else {
+        game->players[0]->still = 1;
     }
     return res;
 }
@@ -123,7 +121,9 @@ void game_moveT(game_t *game, SDL_Keycode direction)
 void placeBomb(game_t *game)
 {
    game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
+//   game->pSDL->dst_bomb.x = START_X_MAP * 2 + 25; // TODO remplacer le 2 par l'index de la case ou est le joueur + 1;
    game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
+//   game->pSDL->dst_bomb.y = START_Y_MAP + 25;
    game->players[0]->bomb = 1;
 }
 
@@ -154,7 +154,7 @@ void renderBomb(sdl_t *pSDL)
 void renderBackground(sdl_t *pSDL)
 {
     SDL_Rect src_map = {0, 0, 722 / 3, 482 / 3};
-    SDL_Rect dst_map = {START_X_MAP, START_Y_MAP, MAP_SIZE_W, MAP_SIZE_H};
+    SDL_Rect dst_map = {START_X_BACKGROUND, START_Y_BACKGROUND, MAP_SIZE_W, MAP_SIZE_H};
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMap, &src_map, &dst_map);
 }
 
@@ -175,7 +175,6 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
             player->frame_time = 0;
         }
     }
-
 }
 
 

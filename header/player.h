@@ -23,6 +23,8 @@ typedef struct {
     int direction;
     int still;
     int explosion;
+    int tickBombDropped;
+    int tickExplosion;
 } player_t;
 
 player_t *initPlayer();

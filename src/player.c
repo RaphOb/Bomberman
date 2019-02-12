@@ -18,8 +18,8 @@ player_t *initPlayer()
     p->bomb = 0;
     p->bombs_left = 20;
     p->frags = 0;
-    p->x_pos = START_X_MAP + (BLOCK_SIZE * SIZE_M);
-    p->y_pos = START_Y_MAP + (BLOCK_SIZE / 2 * SIZE_M);
+    p->x_pos = START_X_MAP;
+    p->y_pos = START_Y_MAP;
     p->number = 1;
     p->current_frame = 1;
     p->frame_time = 0;

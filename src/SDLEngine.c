@@ -191,8 +191,8 @@ void initBomb(sdl_t *pSDL)
             return;
         }
         SDL_Log("Bomb initialised");
-        SDL_Rect d = {-30, -30, 30, 32};
-        pSDL->dst_bomb = d;
+//        SDL_Rect d = {-30, -30, BOMB_PNG_W, BOMB_PNG_H};
+//        pSDL->dst_bomb = d;
     }
     SDL_FreeSurface(surfaceBomb);
     surfaceBomb = NULL;
@@ -214,7 +214,7 @@ void initExplosion(sdl_t *pSDL)
             destroySDL(pSDL);
             return;
         }
-        SDL_Rect e2 = {-40,-40,100,100};
+        SDL_Rect e2 = {-40,-40,10,10};
         SDL_Rect e = {-40, -40, 30, 32};
         pSDL->dst_explosion = e;
         pSDL->dst_explosion2 = e2;

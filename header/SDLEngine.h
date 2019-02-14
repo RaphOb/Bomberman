@@ -12,6 +12,9 @@
 #include <stdlib.h>
 #include "../header/map.h"
 
+#define BOMB_PNG_W 30
+#define BOMB_PNG_H 32
+
 struct sdl_s {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;

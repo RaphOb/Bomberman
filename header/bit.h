@@ -5,8 +5,8 @@
 #ifndef BOMBERMAN_BIT_H
 #define BOMBERMAN_BIT_H
 
-void setBit(char c[], int indexArray, int indexBit);
+void setBit(char line[], int indexCol, int indexBit);
 void printBits(const char c);
-int getBit(const char c[], int indexArray, int indexBit);
+int getBit(const char line[], int indexCol, int indexBit);
 
 #endif //BOMBERMAN_BIT_H

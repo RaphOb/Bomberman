@@ -90,17 +90,17 @@ int game_event(game_t *game)
 void makeExplosion(game_t *game)
 {
     SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
-    game->pSDL->dst_explosion2.h = 10;
-    game->pSDL->dst_explosion2.w = 10;
+    game->pSDL->dst_explosion2.h = 1;
+    game->pSDL->dst_explosion2.w = 1;
 //    game->pSDL->dst_explosion2.x = game->pSDL->dst_bomb.x + ((game->pSDL->dst_bomb.w - game->pSDL->dst_explosion2.w) / 2);
 //    game->pSDL->dst_explosion2.y = game->pSDL->dst_bomb.y + ((game->pSDL->dst_bomb.h - game->pSDL->dst_explosion2.h) / 2);
 //    SDL_Log("explo : x: %d, y: %d", game->pSDL->dst_explosion2.x, game->pSDL->dst_explosion2.y);
 
 //    game->pSDL->dst_explosion.x = game->pSDL->dst_explosion2.x + 40;
 //    game->pSDL->dst_explosion.y = game->pSDL->dst_explosion2.y + 30;
-    game->pSDL->dst_explosion.h = 5;
+    game->pSDL->dst_explosion.h = 10;
 //    game->pSDL->dst_explosion.h = BLOCK_SIZE * SIZE_M * 2;
-    game->pSDL->dst_explosion.w = 5;
+    game->pSDL->dst_explosion.w = 10;
 //    game->pSDL->dst_explosion.w = BLOCK_SIZE * SIZE_M * 2;
 
     game->players[0]->explosion = 1;
@@ -140,7 +140,7 @@ void drawGame(game_t *game)
 
     }
     if (game->players[0]->explosion == 1) {
-        if (currentTick - game->players[0]->tickExplosion > 1000) {
+        if (currentTick - game->players[0]->tickExplosion > 500) {
             game->players[0]->explosion = 0;
         }
         renderExplosion(game->pSDL);
@@ -174,8 +174,8 @@ void renderExplosion(sdl_t *pSDL)
 {
 
     if (pSDL->dst_explosion2.h < BLOCK_SIZE * SIZE_M * 3) {
-        pSDL->dst_explosion2.h += 5;
-        pSDL->dst_explosion2.w += 5;
+        pSDL->dst_explosion2.h += 20;
+        pSDL->dst_explosion2.w +=  20;
     }
 
 //    pSDL->dst_explosion.h += 3;

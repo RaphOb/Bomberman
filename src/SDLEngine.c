@@ -214,8 +214,8 @@ void initExplosion(sdl_t *pSDL)
             destroySDL(pSDL);
             return;
         }
-        SDL_Rect e2 = {-40,-40,10,10};
-        SDL_Rect e = {-40, -40, 30, 32};
+        SDL_Rect e2 = {-40,-40,1,1};
+        SDL_Rect e = {-40, -40, 3, 3};
         pSDL->dst_explosion = e;
         pSDL->dst_explosion2 = e2;
         SDL_Log("Explosion initialised");

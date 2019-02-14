@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include "../header/game.h"
+#include "../header/renderer.h"
 
 
 int main(int argc, char *argv[])
@@ -18,7 +19,7 @@ int main(int argc, char *argv[])
     while (quit != -1) {
         start = SDL_GetTicks();
         drawGame(game);
-        quit = game_event(game);
+        quit = gameEvent(game);
 
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));

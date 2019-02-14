@@ -7,28 +7,28 @@
 
 /** TODO
  * function : comment plz
- * @param c
- * @param indexArray
+ * @param line
+ * @param indexCol
  * @param indexBit
  */
-void setBit(char c[], int indexArray, int indexBit)
+void setBit(char line[], int indexCol, int indexBit)
 {
     int pos = indexBit % 8;
 //    unsigned char flag = 1;   // flag = 00000001
 //   flag = flag << pos;      // flag = 0000...010...000   (shifted k positions)
-    c[indexArray] |= 1 << pos;
+    line[indexCol] |= 1 << pos;
 }
 
 /** TODO
  * function: whos knows ?!
- * @param c
- * @param indexArray
+ * @param line
+ * @param indexCol
  * @param indexBit
  * @return
  */
-int getBit(const char c[], int indexArray, int indexBit)
+int getBit(const char line[], int indexCol, int indexBit)
 {
-    return (1 & (c[indexArray] >> indexBit));
+    return (1 & (line[indexCol] >> indexBit));
 }
 
 

@@ -89,14 +89,19 @@ int game_event(game_t *game)
 
 void makeExplosion(game_t *game)
 {
-    game->pSDL->dst_explosion2.x = game->pSDL->dst_bomb.x - (BLOCK_SIZE * SIZE_M) - 20;
-    game->pSDL->dst_explosion2.y = game->pSDL->dst_bomb.y - (BLOCK_SIZE * SIZE_M) - 15;
-    game->pSDL->dst_explosion2.h = BLOCK_SIZE * SIZE_M * 3;
-    game->pSDL->dst_explosion2.w = BLOCK_SIZE * SIZE_M * 3;
-    game->pSDL->dst_explosion.x = game->pSDL->dst_explosion2.x + 40;
-    game->pSDL->dst_explosion.y = game->pSDL->dst_explosion2.y + 30;
-    game->pSDL->dst_explosion.h = BLOCK_SIZE * SIZE_M * 2;
-    game->pSDL->dst_explosion.w = BLOCK_SIZE * SIZE_M * 2;
+    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
+    game->pSDL->dst_explosion2.h = 10;
+    game->pSDL->dst_explosion2.w = 10;
+//    game->pSDL->dst_explosion2.x = game->pSDL->dst_bomb.x + ((game->pSDL->dst_bomb.w - game->pSDL->dst_explosion2.w) / 2);
+//    game->pSDL->dst_explosion2.y = game->pSDL->dst_bomb.y + ((game->pSDL->dst_bomb.h - game->pSDL->dst_explosion2.h) / 2);
+//    SDL_Log("explo : x: %d, y: %d", game->pSDL->dst_explosion2.x, game->pSDL->dst_explosion2.y);
+
+//    game->pSDL->dst_explosion.x = game->pSDL->dst_explosion2.x + 40;
+//    game->pSDL->dst_explosion.y = game->pSDL->dst_explosion2.y + 30;
+    game->pSDL->dst_explosion.h = 5;
+//    game->pSDL->dst_explosion.h = BLOCK_SIZE * SIZE_M * 2;
+    game->pSDL->dst_explosion.w = 5;
+//    game->pSDL->dst_explosion.w = BLOCK_SIZE * SIZE_M * 2;
 
     game->players[0]->explosion = 1;
     game->players[0]->tickExplosion = SDL_GetTicks();
@@ -105,12 +110,16 @@ void makeExplosion(game_t *game)
 void placeBomb(game_t *game)
 {
     SDL_Log("placeBomb");
-   game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
+    game->pSDL->dst_bomb.h = BOMB_PNG_H;
+    game->pSDL->dst_bomb.w = BOMB_PNG_W;
+    game->pSDL->dst_bomb.x = game->players[0]->x_pos + 10;
 //   game->pSDL->dst_bomb.x = START_X_MAP * 2 + 25; // TODO remplacer le 2 par l'index de la case ou est le joueur + 1;
-   game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
+    game->pSDL->dst_bomb.y = game->players[0]->y_pos + 10;
+    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
+
 //   game->pSDL->dst_bomb.y = START_Y_MAP + 25;
-   game->players[0]->bomb = 1;
-   game->players[0]->tickBombDropped = SDL_GetTicks();
+    game->players[0]->bomb = 1;
+    game->players[0]->tickBombDropped = SDL_GetTicks();
 
 }
 
@@ -143,18 +152,42 @@ void drawGame(game_t *game)
 
 void renderBomb(sdl_t *pSDL, game_t *game)
 {
+    static int n = 0;
+    const int size_m = 2;
     int currentTick = SDL_GetTicks();
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
+    if (currentTick - game->players[0]->tickBombDropped > 1000 && n == 0) {
+        pSDL->dst_bomb.x -= BOMB_PNG_W / size_m;
+        pSDL->dst_bomb.y -= BOMB_PNG_W / size_m;
+        pSDL->dst_bomb.h *= size_m;
+        pSDL->dst_bomb.w *= size_m;
+        n = 1;
+    }
     if (currentTick - game->players[0]->tickBombDropped > 2000) {
         game->players[0]->bomb = 0;
         game->players[0]->tickBombDropped = 0;
         makeExplosion(game);
+        n = 0;
     }
 }
 void renderExplosion(sdl_t *pSDL)
 {
+
+    if (pSDL->dst_explosion2.h < BLOCK_SIZE * SIZE_M * 3) {
+        pSDL->dst_explosion2.h += 5;
+        pSDL->dst_explosion2.w += 5;
+    }
+
+//    pSDL->dst_explosion.h += 3;
+//    pSDL->dst_explosion.w += 3;
+    pSDL->dst_explosion2.x = pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - pSDL->dst_explosion2.w) / 2);
+    pSDL->dst_explosion2.y = pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - pSDL->dst_explosion2.h) / 2);
+
+//    pSDL->dst_explosion.x = (int) (pSDL->dst_explosion2.x + pSDL->dst_explosion.w / 3);
+//    pSDL->dst_explosion.y = (int) (pSDL->dst_explosion2.y + pSDL->dst_explosion.h / 3);
+
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2, NULL, &pSDL->dst_explosion2);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
+//    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
 }
 
 void renderBackground(sdl_t *pSDL)

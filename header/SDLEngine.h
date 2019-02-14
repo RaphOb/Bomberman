@@ -42,9 +42,6 @@ typedef struct text_s text_t;
 
 sdl_t *initSDL();
 void destroySDL(sdl_t *pSDL);
-void renderBlock(sdl_t *pSDL, int x, int y);
-void renderMap(map_t map, sdl_t *pSdl);
-int getBit(const char c[], int indexArray, int indexBit);
 void initPlayerSDL(sdl_t *pSDL);
 void initMap(sdl_t *pSDL);
 void initBlock(sdl_t *pSDL);

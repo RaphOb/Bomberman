@@ -24,14 +24,8 @@ typedef struct game_s{
 } game_t;
 
 game_t *initGame(sdl_t *sdl);
-int game_event(game_t *game);
+int gameEvent(game_t *game);
 void placeBomb(game_t *game);
-void drawGame(game_t *game);
-void renderBomb(sdl_t *pSDL, game_t *game);
-void renderBackground(sdl_t *pSDL);
-void renderPlayer(sdl_t *pSDL, player_t *player);
 void makeExplosion(game_t *game);
-void renderExplosion(sdl_t *pSDL);
-
 
 #endif //BOMBERMAN_GAME_H

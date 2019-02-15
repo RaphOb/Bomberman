@@ -12,14 +12,16 @@ const move_t move[] = {
         {NULL, 0}
 };
 
-int doMove(const Uint8 *keystates, player_t *player)
+int doMove(const Uint8 *keystates, player_t *player, map_t map)
 {
     int i = 0;
     player->still = 0;
 
     while (move[i].key != 0) {
         if (keystates[move[i].key]) {
-            move[i].func_move(player);
+            SDL_Log("key pressed");
+            move[i].func_move(player, map);
+            updatePlayerCell(player);
             return (1);
         }
         i++;
@@ -28,34 +30,36 @@ int doMove(const Uint8 *keystates, player_t *player)
     return (0);
 }
 
-void moveUp(player_t *player)
+void moveUp(player_t *player, map_t map)
 {
     player->direction = 0;
-    if (player->y_pos > START_Y_MAP) {
+    if (player->y_pos > START_Y_MAP && collideWith(map, player, player->x_pos, player->y_pos - 3) == 0) {
         player->y_pos -= 3;
     }
 }
 
-void moveRight(player_t *player)
+void moveRight(player_t *player, map_t map)
 {
     player->direction = 1;
-    if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (BLOCK_SIZE * SIZE_M)))) {//player->pSDL->dst_player.w + 70))) {
+    if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (BLOCK_SIZE * SIZE_M)))
+        && collideWith(map, player, player->x_pos + 3, player->y_pos) == 0) {
         player->x_pos += 3;
     }
 }
 
-void moveDown(player_t *player)
+void moveDown(player_t *player, map_t map)
 {
     player->direction = 2;
-    if (player->y_pos < ((START_Y_BACKGROUND + MAP_SIZE_H) - (PLAYER_HEIGHT + (BLOCK_SIZE * SIZE_M / 2)))) {//player->pSDL->dst_player.h + 30))) {
+    if (player->y_pos < ((START_Y_BACKGROUND + MAP_SIZE_H) - (PLAYER_HEIGHT + (BLOCK_SIZE * SIZE_M / 2)))
+        && collideWith(map, player, player->x_pos, player->y_pos + 3) == 0) {
         player->y_pos += 3;
     }
 }
 
-void moveLeft(player_t *player)
+void moveLeft(player_t *player, map_t map)
 {
     player->direction = 3;
-    if (player->x_pos > START_X_MAP) {
+    if (player->x_pos > START_X_MAP && collideWith(map, player, player->x_pos - 3, player->y_pos) == 0) {
         player->x_pos -= 3;
     }
 }

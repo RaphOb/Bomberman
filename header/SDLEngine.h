@@ -49,4 +49,5 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 
 void clear(SDL_Renderer *sdl_renderer);
+
 #endif //BOMBERMAN_SDLENGINE_H

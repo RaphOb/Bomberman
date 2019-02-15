@@ -58,7 +58,7 @@ int gameEvent(game_t *game)
             }
         }
     }
-    doMove(keystates, game->players[0]);
+    doMove(keystates, game->players[0], game->map);
 
     return res;
 }

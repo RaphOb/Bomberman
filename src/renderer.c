@@ -13,7 +13,6 @@
  */
 void drawGame(game_t *game)
 {
-    int currentTick = SDL_GetTicks();
     SDL_RenderClear(game->pSDL->pRenderer);
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
@@ -22,6 +21,7 @@ void drawGame(game_t *game)
         renderBomb(game->pSDL, game);
     }
     if (game->players[0]->explosion == 1) {
+        int currentTick = SDL_GetTicks();
         if (currentTick - game->players[0]->tickExplosion > 400) {
             game->players[0]->explosion = 0;
         }
@@ -85,6 +85,7 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
     }
 
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, (FRAME_HEIGHT) * player->direction, FRAME_WIDTH, FRAME_HEIGHT};
+//    SDL_Log("player_x : %d, player_y : %d", player->x_pos, player->y_pos);
     SDL_Rect r = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
     SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayer, &src, &r);
 
@@ -97,8 +98,8 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
     }
 }
 
-/** TODO
- * function : comment plz
+/**
+ * function : Render the block at the coordinates x,y
  * @param pSDL
  * @param x
  * @param y
@@ -114,7 +115,7 @@ void renderBlock(sdl_t *pSDL, int x, int y)
 }
 
 /** TODO
- * function: comment plz
+ * function: Render the map with the blocks
  * @param game
  * @param pSdl
  */

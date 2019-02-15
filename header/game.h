@@ -16,7 +16,7 @@
 #define MAX_PLAYER 4
 #define FPS 60
 
-typedef struct game_s{
+typedef struct game_s {
     map_t map;
     int current_map;
     player_t *players[MAX_PLAYER];

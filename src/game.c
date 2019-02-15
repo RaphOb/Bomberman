@@ -58,7 +58,7 @@ int gameEvent(game_t *game)
             }
         }
     }
-    doMove(keystates, game->players[0]);
+    doMove(keystates, game->players[0], game->map);
 
     return res;
 }
@@ -74,9 +74,9 @@ void makeExplosion(game_t *game)
 
 //    game->pSDL->dst_explosion.x = game->pSDL->dst_explosion2.x + 40;
 //    game->pSDL->dst_explosion.y = game->pSDL->dst_explosion2.y + 30;
-    game->pSDL->dst_explosion.h = 5;
+    game->pSDL->dst_explosion.h = 10;
 //    game->pSDL->dst_explosion.h = BLOCK_SIZE * SIZE_M * 2;
-    game->pSDL->dst_explosion.w = 5;
+    game->pSDL->dst_explosion.w = 10;
 //    game->pSDL->dst_explosion.w = BLOCK_SIZE * SIZE_M * 2;
 
     game->players[0]->explosion = 1;

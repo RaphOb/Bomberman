@@ -15,8 +15,13 @@ player_t *initPlayer()
       SDL_Log("Erreur malloc player");
       return NULL;
     }
+    bomb_t *b = malloc(sizeof(bomb_t));
+    if (!b) {
+        SDL_Log("Erreur malloc bombPosed");
+        return NULL;
+    }
     p->alive = 'Y';
-    p->bomb = 0;
+    p->bombPosed = 0;
     p->bombs_left = 20;
     p->frags = 0;
     p->map_x[0] = 0;
@@ -30,6 +35,7 @@ player_t *initPlayer()
     p->frame_time = 0;
     p->direction = 2;
     p->still = 1;
+    p->bomb = b;
 
     return p;
 }
@@ -56,32 +62,36 @@ int collideWith(map_t map, player_t *player, int x, int y)
     const int pSizeBlock = BLOCK_SIZE * SIZE_M;
     const int pos_x = x - 80;
     const int pos_y = y - 40;
-    int cell_x = (pos_x) / pSizeBlock;
-    int cell_y = (pos_y + 10) / pSizeBlock;
-    int cell_x2 = (pos_x + PLAYER_WIDTH - 5) / pSizeBlock;
-    int cell_y2 = (pos_y + PLAYER_HEIGHT - 5) / pSizeBlock;
+    int cell_x = (pos_x + 1) / pSizeBlock;
+    int cell_y = (pos_y + 1) / pSizeBlock;
+    int cell_x2 = (pos_x + PLAYER_WIDTH - 1) / pSizeBlock;
+    int cell_y2 = (pos_y + PLAYER_HEIGHT - 1) / pSizeBlock;
 //    if  (player->direction == 3) {
 //        cell_x = x / pSizeBlock;
 //        SDL_Log("x / pSizeBlock: %d", x / pSizeBlock);
+    // Down
     if (player->direction == 2) {
-        cell_y = (pos_y + PLAYER_HEIGHT) / pSizeBlock;
-        SDL_Log(" (x + PLAYER_WIDTH) / pSizeBlock : %d", (pos_x + PLAYER_WIDTH) / pSizeBlock);
-//    } else if (player->direction == 0) {
-//        cell_y = y / pSizeBlock;
-//        SDL_Log("y / pSizeBlock: %d", y / pSizeBlock);
-    } else if (player->direction == 1) {
+        cell_y = (pos_y + PLAYER_HEIGHT - 1) / pSizeBlock;
         cell_x = (pos_x + PLAYER_WIDTH - 5) / pSizeBlock;
+        cell_x2 = (pos_x + PLAYER_WIDTH - 5) / pSizeBlock;
+        SDL_Log(" (x + PLAYER_WIDTH) / pSizeBlock : %d", (pos_x + PLAYER_WIDTH) / pSizeBlock);
+    // Right
+    } else if (player->direction == 1) {
+
         SDL_Log("(y + PLAYER_HEIGHT) / pSizeBlock: %d", (pos_y + PLAYER_HEIGHT) / pSizeBlock);
+    // Left
     } else if (player->direction == 3) {
-        cell_x2 = (pos_x) / pSizeBlock;
+        cell_x2 = (pos_x + 1) / pSizeBlock;
+    // Up
     } else {
-        cell_y2 = (pos_y + 10) / pSizeBlock;
+        cell_y2 = (pos_y + 1) / pSizeBlock;
     }
 //    const int cell_x = (player->direction == 3) ? x / pSizeBlock : (x + PLAYER_WIDTH) / pSizeBlock;
 //    const int cell_y = (player->direction == 0) ? y / pSizeBlock : (y + PLAYER_HEIGHT) / pSizeBlock;
 
 //    displayArray(map);
-    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_x], cell_y, 1));
+    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
+    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));
     if (getBit(map[cell_y], cell_x, 1) == 1 || getBit(map[cell_y2], cell_x2, 1) == 1) {
         SDL_Log("blocked");
         return (1);
@@ -89,4 +99,8 @@ int collideWith(map_t map, player_t *player, int x, int y)
         return (0);
     }
 //    return (0);
+}
+
+int isPlayerOnOneCell(player_t *player) {
+    return (player->map_x[0] == player->map_x[1] && player->map_y[0] == player->map_y[1]);
 }

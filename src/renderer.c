@@ -17,13 +17,13 @@ void drawGame(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    if (game->players[0]->bomb == 1) {
+    if (game->players[0]->bombPosed == 1) {
         renderBomb(game->pSDL, game);
     }
-    if (game->players[0]->explosion == 1) {
+    if (game->players[0]->bomb->explosion == 1) {
         int currentTick = SDL_GetTicks();
-        if (currentTick - game->players[0]->tickExplosion > 400) {
-            game->players[0]->explosion = 0;
+        if (currentTick - game->players[0]->bomb->tickExplosion > 400) {
+            game->players[0]->bomb->explosion = 0;
         }
         renderExplosion(game->pSDL);
     }
@@ -37,16 +37,16 @@ void renderBomb(sdl_t *pSDL, game_t *game)
     const int size_m = 2;
     int currentTick = SDL_GetTicks();
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
-    if (currentTick - game->players[0]->tickBombDropped > 1000 && n == 0) {
+    if (currentTick - game->players[0]->bomb->tickBombDropped > 1000 && n == 0) {
         pSDL->dst_bomb.x -= BOMB_PNG_W / size_m;
         pSDL->dst_bomb.y -= BOMB_PNG_W / size_m;
         pSDL->dst_bomb.h *= size_m;
         pSDL->dst_bomb.w *= size_m;
         n = 1;
     }
-    if (currentTick - game->players[0]->tickBombDropped > 2000) {
-        game->players[0]->bomb = 0;
-        game->players[0]->tickBombDropped = 0;
+    if (currentTick - game->players[0]->bomb->tickBombDropped > 2000) {
+        game->players[0]->bombPosed = 0;
+        game->players[0]->bomb->tickBombDropped = 0;
         makeExplosion(game);
         n = 0;
     }

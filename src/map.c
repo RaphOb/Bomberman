@@ -63,11 +63,11 @@ void insertLineIntoArray(map_t map, int index, char *line)
                 // On ne fait rien puisque tous les bits sont deja à 0
                 break;
             case '1' :
-                setBit(map[index], i, 1);
-                setBit(map[index], i, 2);
+                toggleBit(map[index], i, 1);
+                toggleBit(map[index], i, 2);
                 break;
             case 'X' :
-                setBit(map[index], i, 1);
+                toggleBit(map[index], i, 1);
                 break;
             default:
                 break;

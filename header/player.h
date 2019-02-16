@@ -8,11 +8,19 @@
 #include "../header/map.h"
 
 #define TEXTURE_WIDTH 72
-#define TEXTURE_HEIGHT 88
+#define TEXTURE_HEIGHT 84
 #define FRAME_WIDTH TEXTURE_WIDTH / 3
 #define FRAME_HEIGHT TEXTURE_HEIGHT / 4
-#define PLAYER_WIDTH FRAME_WIDTH * 3
-#define PLAYER_HEIGHT FRAME_HEIGHT * 3
+#define PLAYER_WIDTH FRAME_WIDTH * 2
+#define PLAYER_HEIGHT FRAME_HEIGHT * 2
+
+typedef struct bombs_s {
+    int x_pos;
+    int y_pos;
+    int explosion;
+    int tickBombDropped;
+    int tickExplosion;
+} bomb_t;
 
 typedef struct player_s {
     char alive;
@@ -21,20 +29,19 @@ typedef struct player_s {
     int map_y[2];
     int x_pos;
     int y_pos;
-    int bomb;
+    int bombPosed;
     int bombs_left;
     int frags;
     int current_frame;
     int frame_time;
     int direction;
     int still;
-    int explosion;
-    int tickBombDropped;
-    int tickExplosion;
+    bomb_t *bomb;
 } player_t;
 
 player_t *initPlayer();
 void updatePlayerCell(player_t *player);
 int collideWith(map_t map, player_t *player, int x, int y);
+int isPlayerOnOneCell(player_t *player);
 
 #endif //BOMBERMAN_PLAYER_H

@@ -8,14 +8,14 @@
 #include "../header/game.h"
 
 typedef struct move_s {
-    void (*func_move)(player_t *player);
+    void (*func_move)(player_t *player, map_t map);
     SDL_Scancode key;
 } move_t;
 
-int doMove(const Uint8 *keystates, player_t *player);
-void moveUp(player_t *player);
-void moveDown(player_t *player);
-void moveLeft(player_t *player);
-void moveRight(player_t *player);
+int doMove(const Uint8 *keystates, player_t *player, map_t map);
+void moveUp(player_t *player, map_t map);
+void moveDown(player_t *player, map_t map);
+void moveLeft(player_t *player, map_t map);
+void moveRight(player_t *player, map_t map);
 
 #endif //BOMBERMAN_MOVE_H

@@ -40,6 +40,7 @@ int loopInput(sdl_t *pSDL)
     }
 
     destroyInput(ip);
+    destroyInput(port);
     TTF_CloseFont(font);
     return (quit == -1) ? 0 : 1;
 }

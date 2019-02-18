@@ -49,7 +49,7 @@ void drawMenu(game_t *game)
  */
 void renderMenu(sdl_t *pSDL)
 {
-    SDL_Rect dst_menuLogo = { 722/3, 482/8, 600, 300};
+    SDL_Rect dst_menuLogo = { 722/3, 482/8, 750, 250};
     SDL_Rect dst_menuJouerOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50 } ;
     SDL_Rect dst_menuJouerOff = {722/2 , 350, 300, 200} ;
     SDL_Rect dst_menuQuitOff = {722/2 , 550, 300, 200};

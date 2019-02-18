@@ -3,6 +3,7 @@
 #include "../header/renderer.h"
 
 
+
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
@@ -16,13 +17,20 @@ int main(int argc, char *argv[])
     game->players[0] = player;
 
     int quit = 0;
+    game->intmenu = 0;
+    while(game->intmenu == 0) {
+        drawMenu(game);
+        gameEvent(game);
+    }
     while (quit != -1) {
-        start = SDL_GetTicks();
         drawGame(game);
+
+        start = SDL_GetTicks();
         quit = gameEvent(game);
 
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
+
         }
     }
 

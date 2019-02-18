@@ -8,7 +8,6 @@
 
 /**
  * function : affiche les textures
- * @param pSDL
  * @param game
  */
 void drawGame(game_t *game)
@@ -31,6 +30,40 @@ void drawGame(game_t *game)
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
+/**
+ * Function : speakthemSelf... // TODO : TT
+ * @param game
+ */
+void drawMenu(game_t *game)
+{
+    SDL_RenderClear(game->pSDL->pRenderer);
+    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
+    renderMenu(game->pSDL);
+    SDL_RenderPresent(game->pSDL->pRenderer);
+
+}
+
+/**
+ * Function : set les positions des sprites
+ * @param pSDL
+ */
+void renderMenu(sdl_t *pSDL)
+{
+    SDL_Rect dst_menuLogo = { 722/3, 482/8, 750, 250};
+    SDL_Rect dst_menuJouerOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50 } ;
+    SDL_Rect dst_menuJouerOff = {722/2 , 350, 300, 200} ;
+    SDL_Rect dst_menuQuitOff = {722/2 , 550, 300, 200};
+    SDL_Rect dst_menuQuitOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50} ;
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuJouerOff, NULL, &dst_menuJouerOff);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitOff);
+}
+
+/**
+ * function : render de la bomb/ avec effet d'agrandissement/ timing de la bomb
+ * @param pSDL
+ * @param game
+ */
 void renderBomb(sdl_t *pSDL, game_t *game)
 {
     static int n = 0;

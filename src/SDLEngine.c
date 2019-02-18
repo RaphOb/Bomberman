@@ -50,6 +50,7 @@ sdl_t *initSDL()
     initBlock(pSDL);
     initBomb(pSDL);
     initExplosion(pSDL);
+    initMenu(pSDL);
     return pSDL;
 }
 
@@ -106,6 +107,38 @@ void destroySDL(sdl_t *pSDL)
 void clear(SDL_Renderer *sdl_renderer) {
     SDL_RenderClear(sdl_renderer);
     SDL_RenderPresent(sdl_renderer);
+}
+
+/**
+ * function : Init textures menu
+ * @param pSDL
+ */
+void initMenu(sdl_t *pSDL)
+{
+    SDL_Surface *menuSelectionJouerOff =IMG_Load("../resources/Menu_Selection_jouerOff.png");
+    SDL_Surface *menuSelectionJouerOn =IMG_Load("../resources/Menu_Selection_jouerOn.png");
+    SDL_Surface *menuSelectionQuitOff =IMG_Load("../resources/Menu_Selection_quitOff.png");
+    SDL_Surface *menuSelectionQuitOn =IMG_Load("../resources/Menu_Selection_quitOn.png");
+    SDL_Surface *menuLogo =IMG_Load("../resources/B_Logo.png");
+
+    if (!(menuSelectionJouerOff || menuSelectionJouerOn
+    || menuSelectionQuitOff || menuSelectionQuitOn || menuLogo)) {
+        fprintf(stderr, "impossible d'initialiser l'image :%s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return;
+    } else {
+        pSDL-> textureMenuJouerOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOff);
+        pSDL-> textureMenuJouerOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
+        pSDL-> textureMenuQuitOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOff);
+        pSDL-> textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
+        pSDL-> textureMenuLogo = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuLogo);
+        if (!(pSDL-> textureMenuJouerOff || pSDL-> textureMenuJouerOn ||
+        pSDL-> textureMenuQuitOff || pSDL-> textureMenuQuitOn ||pSDL->textureMenuLogo)) {
+            fprintf(stderr, "impossible d'initialiser la texture :%s\n", IMG_GetError());
+            return;
+        }
+    }
+
 }
 
 /**

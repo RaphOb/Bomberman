@@ -28,7 +28,11 @@ struct sdl_s {
     SDL_Texture* textureExplosion2;
     SDL_Rect dst_explosion;
     SDL_Rect dst_explosion2;
-
+    SDL_Texture* textureMenuJouerOff;
+    SDL_Texture* textureMenuJouerOn;
+    SDL_Texture* textureMenuQuitOff;
+    SDL_Texture* textureMenuQuitOn;
+    SDL_Texture* textureMenuLogo;
 };
 typedef struct sdl_s sdl_t;
 
@@ -47,6 +51,7 @@ void initMap(sdl_t *pSDL);
 void initBlock(sdl_t *pSDL);
 void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
+void initMenu(sdl_t *pSDL);
 
 void clear(SDL_Renderer *sdl_renderer);
 

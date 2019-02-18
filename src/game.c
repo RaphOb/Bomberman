@@ -47,9 +47,6 @@ int gameEvent(game_t *game)
         } else if (event.type == SDL_KEYDOWN) {
             //
             switch (event.key.keysym.sym) {
-                case SDLK_p:
-                    game->intmenu = 1;
-                    break;
                 case SDLK_ESCAPE :
                     res = -1;
                     break;

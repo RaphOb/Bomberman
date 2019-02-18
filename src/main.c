@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include "../header/game.h"
 #include "../header/renderer.h"
+#include "../header/menu.h"
+#include "../header/input.h"
 
 
 
@@ -17,40 +19,32 @@ int main(int argc, char *argv[])
     game->players[0] = player;
 
     int quit = 0;
-    game->intmenu = 0;
-    while(game->intmenu == 0) {
+    int menu = 0;
+    int play = 0;
+    // First menu
+    while(menu == 0) {
         drawMenu(game);
-        gameEvent(game);
+        menu = menuEvent();
     }
-    while (quit != -1) {
+    // Input
+    if (menu == 1) {
+        SDL_StartTextInput();
+        play = loopInput(pSDL);
+        SDL_StopTextInput();
+    }
+    // Game
+    while (menu != -1 && quit != -1 && play == 1) {
         drawGame(game);
-
         start = SDL_GetTicks();
         quit = gameEvent(game);
 
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
-
         }
     }
 
-      //le jeu
-//    bool terminer = false;
-//    SDL_Event evenements;
-//    while(!terminer) {
-//
-//          if (SDL_PollEvent(&evenements)) {
-//              if (evenements.type == SDL_QUIT)
-//                  terminer = true;
-//          }
-//          SDL_RenderCopy(pSDL->pRenderer, texture, NULL, &test.pos);
-//          SDL_RenderPresent(pSDL->pRenderer);
-//    }
-//
-//
-//   TTF_CloseFont(police);
     // On libère la mémoire
-    destroySDL(game->pSDL);
+    destroySDL(pSDL);
     free(game->players[0]);
     free(game);
 

@@ -49,11 +49,13 @@ void drawMenu(game_t *game)
  */
 void renderMenu(sdl_t *pSDL)
 {
-    SDL_Rect dst_menuLogo = { 722/3, 482/8, 750, 250};
+    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (750 / 2), 20, 750, 250};
+    SDL_Rect dst_menuJouerOff = {(MAP_SIZE_W / 2) - (696 / 4), 280, 696/2, 564/2} ;
+    SDL_Rect dst_menuQuitOff =  {(MAP_SIZE_W / 2) - (696 / 4), 520, 696/2, 564/2};
+
     SDL_Rect dst_menuJouerOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50 } ;
-    SDL_Rect dst_menuJouerOff = {722/2 , 350, 300, 200} ;
-    SDL_Rect dst_menuQuitOff = {722/2 , 550, 300, 200};
     SDL_Rect dst_menuQuitOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50} ;
+
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuJouerOff, NULL, &dst_menuJouerOff);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitOff);

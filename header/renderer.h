@@ -14,6 +14,8 @@ void renderPlayer(sdl_t *pSDL, player_t *player);
 void renderExplosion(sdl_t *pSDL);
 void renderBlock(sdl_t *pSDL, int x, int y);
 void renderMap(map_t map, sdl_t *pSdl);
+void renderMenu(sdl_t *pSDL);
+void drawMenu(game_t *game);
 
 
 #endif //BOMBERMAN_RENDERER_H

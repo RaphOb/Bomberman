@@ -21,6 +21,7 @@ typedef struct game_s {
     int current_map;
     player_t *players[MAX_PLAYER];
     sdl_t *pSDL;
+    int intmenu;
 } game_t;
 
 game_t *initGame(sdl_t *sdl);

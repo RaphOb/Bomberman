@@ -6,5 +6,6 @@
 #define BOMBERMAN_MENU_H
 
 int menuEvent();
+int menuNetworkEvent();
 
 #endif //BOMBERMAN_MENU_H

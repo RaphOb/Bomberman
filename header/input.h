@@ -6,6 +6,7 @@
 #define BOMBERMAN_INPUT_H
 
 #include "../header/SDLEngine.h"
+#include "../header/renderer.h"
 
 typedef struct input_s {
     char *str;

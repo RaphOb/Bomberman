@@ -27,6 +27,7 @@ int loopInput(sdl_t *pSDL)
 
     while (quit != -1 && quit != 2) {
         SDL_RenderClear(pSDL->pRenderer);
+        renderMenuIp(pSDL);
         renderStringIp(pSDL->pRenderer, ip->textureMsgDisplayed);
         renderStringPort(pSDL->pRenderer, port->textureMsgDisplayed);
         renderInput(textRectPort, pSDL, port);

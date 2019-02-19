@@ -53,6 +53,7 @@ static int c_reception(int code, SOCKET serv_sock);
 static void write_to_serv(char *buffer, int from_keyboard);
 static void write_code_to_server(int code);
 void c_emission(int code);
+int listen_server(int run, struct timeval timeout, fd_set readfs);
 // ----- MAIN -----
 int app_client();
 
@@ -67,7 +68,7 @@ int app_client();
 #define CODE_SIZE 2+1
 
 // Keyboard typing -> 1 else 0
-#define KEYBOARD_TYPING_MODE 1
+#define KEYBOARD_TYPING_MODE 0
 
 static Server serv = { 0 };
 

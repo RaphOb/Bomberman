@@ -141,6 +141,41 @@ void c_emission(int code)
     }
 }
 
+int listen_server(int run, struct timeval timeout, fd_set readfs)
+{
+    char buffer[128] = { '\0' };
+    int n = 0;
+    timeout.tv_sec = 0;
+    timeout.tv_usec = 200;
+    FD_ZERO(&readfs);
+    FD_SET(serv.sock, &readfs);
+    memset(buffer, '\0', 128);
+
+    // Keyboard typing
+    if (KEYBOARD_TYPING_MODE) {
+        SDL_Log("type smt : \n");
+        fgets(buffer, 128, stdin);
+        write_to_serv(buffer, 1);
+    }
+
+    select((int)serv.sock+1, &readfs, NULL, NULL, &timeout);
+
+    memset(buffer, '\0', 128);
+    if (FD_ISSET(serv.sock, &readfs)) {
+        if((n = recv((SOCKET)serv.sock, buffer, 128, 0)) < 0)
+        {
+            SDL_Log("recv()");
+        } else {
+            buffer[n] = 0;
+            if (strlen(buffer) == 2) {
+                return c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
+            } else {
+                SDL_Log("Reception d'un autre message : %s\n", buffer);
+            }
+        }
+    }
+}
+
 int app_client()
 {
     //init();

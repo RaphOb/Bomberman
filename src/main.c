@@ -56,6 +56,11 @@ int main(int argc, char *argv[])
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         drawGame(game);
         start = SDL_GetTicks();
+        fd_set readfs;
+        struct timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = (int)start;
+        listen_server(1, timeout, readfs);
         quit = gameEvent(game);
 
         if(1000 / FPS > SDL_GetTicks() - start) {

@@ -34,3 +34,29 @@ int menuEvent()
 
     return res;
 }
+
+int menuNetworkEvent()
+{
+    int res = 0;
+    SDL_Event event;
+
+    SDL_WaitEvent(&event);
+    if (event.type == SDL_QUIT)
+        res = -1;
+    else if (event.type == SDL_KEYDOWN) {
+        switch (event.key.keysym.sym) {
+            case SDLK_s:
+                res = 1;
+                break;
+            case SDLK_h:
+                res = 2;
+                break;
+            case SDLK_q:
+            case SDLK_ESCAPE:
+                res = -1;
+                break;
+            default:break;
+        }
+    }
+    return res;
+}

@@ -20,20 +20,30 @@ int main(int argc, char *argv[])
 
     int quit = 0;
     int menu = 0;
+    int network = 0;
     int play = 0;
     // First menu
     while(menu == 0) {
-        drawMenu(game);
+        drawMenu(game->pSDL);
         menu = menuEvent();
     }
-    // Input
-    if (menu == 1) {
+    // Menu Network
+    while (menu != -1 && network == 0) {
+        drawMenuNetwork(game->pSDL);
+        network = menuNetworkEvent();
+
+        // Input
         SDL_StartTextInput();
-        play = loopInput(pSDL);
+        if (network == 1) {
+            play = loopInputConnect(game->pSDL);
+        } else if (network == 2) {
+            play = loopInputHost(game->pSDL);
+        }
         SDL_StopTextInput();
     }
+
     // Game
-    while (menu != -1 && quit != -1 && play == 1) {
+    while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         drawGame(game);
         start = SDL_GetTicks();
         quit = gameEvent(game);

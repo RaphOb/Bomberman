@@ -18,11 +18,10 @@ typedef struct input_s {
     SDL_Texture *inputTexture;
 } input_t;
 
-int loopInput(sdl_t *pSDL);
-void renderStringIp(SDL_Renderer *pRenderer, SDL_Texture *textureIp);
-void renderStringPort(SDL_Renderer *pRenderer, SDL_Texture *texturePort);
-SDL_Texture *createTexturePort(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color);
-SDL_Texture *createTextureIp(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color);
+int loopInputConnect(sdl_t *pSDL);
+int loopInputHost(sdl_t *pSDL);
+void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rect dst);
+SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color, char *str);
 void renderInput(SDL_Rect rect, sdl_t *pSDL, input_t *input);
 input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed);
 void destroyInput(input_t *input);

@@ -43,16 +43,16 @@ typedef struct {
 } Server;
 
 // ----- INITIALISATION -----
-static void init(void);
+void init_client(void);
 static void end(void);
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
 static void hello_cli_serv();
 // ----- COMMUNICATION -----
-static int reception(int code, SOCKET serv_sock);
+static int c_reception(int code, SOCKET serv_sock);
 static void write_to_serv(char *buffer, int from_keyboard);
 static void write_code_to_server(int code);
-static void emission(int code);
+void c_emission(int code);
 // ----- MAIN -----
 int app_client();
 

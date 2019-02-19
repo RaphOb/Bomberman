@@ -2,7 +2,7 @@
 #include "../header/client.h"
 
 // ----- INITIALISATION -----
-static void init(void)
+void init_client(void)
 {
 #ifdef WIN32
     WSADATA wsa;
@@ -34,8 +34,18 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     SOCKADDR_IN to = { 0 }; /* initialise la structure avec des 0 */
     int tosize = sizeof to;
 
+    if (ip == NULL) {
+        ip = strdup("127.0.0.1");
+    }
+    if (port == NULL) {
+        port = strdup("1234");
+    }
+    if (pseudo == NULL) {
+        pseudo = strdup("Host");
+    }
+
     to.sin_addr.s_addr = inet_addr(ip);
-    to.sin_port = htons(atoi(port)); /* on utilise htons pour le port */
+    to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
     to.sin_family = AF_INET;
 
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
@@ -49,7 +59,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     }
     //hello_cli_serv();
     if (serv.c_pseudo[0] != '\0') {
-        //emission(PSEUDO_CODE);
+        //c_emission(PSEUDO_CODE);
     }
 }
 
@@ -62,12 +72,12 @@ static void hello_cli_serv()
     if (recv(serv.sock, buffer, 2, MSG_WAITALL) == -1) {
         SDL_Log("recv()");
     } else {
-        reception((int)strtoimax(buffer, NULL, 10), serv.sock);
+        c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
     }
 }
 
 // ----- COMMUNICATION -----
-static int reception(int code, SOCKET serv_sock)
+static int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
@@ -95,11 +105,11 @@ static void write_to_serv(char *buffer, int from_keyboard)
 static void write_code_to_server(int code)
 {
     char buffer[CODE_SIZE] = {'\0'};
-    SDL_Log(buffer, "%d", code);
+    sprintf(buffer, "%d", code);
     write_to_serv(buffer, 0);
 }
 
-static void emission(int code)
+void c_emission(int code)
 {
     switch (code) {
         case PSEUDO_CODE:
@@ -133,7 +143,7 @@ static void emission(int code)
 
 int app_client()
 {
-    init();
+    //init();
     char buffer[128];
     int n = 0;
     int run = 1;
@@ -170,7 +180,7 @@ int app_client()
             } else {
                 buffer[n] = 0;
                 if (strlen(buffer) == 2) {
-                    run = reception((int)strtoimax(buffer, NULL, 10), serv.sock);
+                    run = c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
                 } else {
                     SDL_Log("Reception d'un autre message : %s\n", buffer);
                 }

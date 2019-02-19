@@ -192,7 +192,7 @@ static void set_pseudo(Client *c)
 static void write_code_to_client(Client *c, int code)
 {
     char buffer[CODE_SIZE] = {'\0'};
-    SDL_Log(buffer, "%d", code);
+    sprintf(buffer, "%d", code);
     if(sendto((SOCKET)c->num_client, buffer, (int) strlen(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
     {
         SDL_Log("sendto()");
@@ -208,7 +208,7 @@ static void write_code_to_all_clients(int code)
     }
 }
 
-static void emission(Client *c, int code)
+static void s_emission(Client *c, int code)
 {
     switch (code) {
         case DISCONNECT_CODE:
@@ -231,7 +231,7 @@ static void emission(Client *c, int code)
     }
 }
 
-static int reception(Client *c, char *buffer)
+static int s_reception(Client *c, char *buffer)
 {
     int code;
 
@@ -272,7 +272,7 @@ static int reception(Client *c, char *buffer)
                 break;
         }
     }
-    emission(c, OK_CODE);
+    s_emission(c, OK_CODE);
     return 1;
 }
 
@@ -307,7 +307,7 @@ static void into_thread(void* fd_client)
             } else {
                 buffer[n] = 0;
                 pthread_mutex_lock(&clients->mutex_client);
-                run = reception(c, buffer);
+                run = s_reception(c, buffer);
                 pthread_mutex_unlock(&clients->mutex_client);
             }
         }

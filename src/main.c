@@ -4,7 +4,7 @@
 #include "../header/menu.h"
 #include "../header/input.h"
 #include "../header/serv.h"
-
+#include "../header/client.h"
 
 
 int main(int argc, char *argv[])
@@ -45,6 +45,8 @@ int main(int argc, char *argv[])
                 SDL_Log("thread server fail");
             } else {
                 SDL_Log("creation reussie");
+                init_client();
+                init_co_from_cli_to_serv(NULL, NULL, NULL);
             }
         }
         SDL_StopTextInput();

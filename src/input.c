@@ -30,8 +30,6 @@ int loopInputConnect(sdl_t *pSDL)
     input_t *port = initInput(font, color, texturePort);
     input_t *pseudo = initInput(font, color, texturePseudo);
 
-    init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
-
     int quit = 0;
 
     while (quit != -1 && quit != 3) {
@@ -51,6 +49,9 @@ int loopInputConnect(sdl_t *pSDL)
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
+
+    init_client();
+    init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
 
     destroyInput(ip);
     destroyInput(port);

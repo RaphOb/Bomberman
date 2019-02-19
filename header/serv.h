@@ -71,8 +71,8 @@ static void set_pseudo(Client *c);
 // ----- COMMUNICATION -----
 static void write_code_to_client(Client *c, int code);
 static void write_code_to_all_clients(int code);
-static void emission(Client *c, int code);
-static int reception(Client *c, char *buffer);
+static void s_emission(Client *c, int code);
+static int s_reception(Client *c, char *buffer);
 // ----- MAIN -----
 int app_serv(void);
 

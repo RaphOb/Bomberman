@@ -1,28 +1,62 @@
 #include <stdbool.h>
-#include "../header/SDLEngine.h"
-#include "../header/file.h"
+#include "../header/game.h"
+#include "../header/renderer.h"
+#include "../header/menu.h"
+#include "../header/input.h"
+
 
 
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
-    game_t *game = initGame();
-    sdl_t *pSDL = initSDL(game);
+    Uint32 start;
+    sdl_t *pSDL = initSDL();
+    player_t *player = initPlayer();
+    game_t *game = initGame(pSDL);
+    if (!pSDL || !player || !game) {
+        return (-1);
+    }
+    game->players[0] = player;
 
-    //le jeu
-    bool terminer = false;
-    SDL_Event evenements;
-    while(!terminer)
-    {
-        SDL_WaitEvent(&evenements);
+    int quit = 0;
+    int menu = 0;
+    int network = 0;
+    int play = 0;
+    // First menu
+    while(menu == 0) {
+        drawMenu(game->pSDL);
+        menu = menuEvent();
+    }
+    // Menu Network
+    while (menu != -1 && network == 0) {
+        drawMenuNetwork(game->pSDL);
+        network = menuNetworkEvent();
 
-        if(evenements.type == SDL_QUIT)
-            terminer = true;
+        // Input
+        SDL_StartTextInput();
+        if (network == 1) {
+            play = loopInputConnect(game->pSDL);
+        } else if (network == 2) {
+            play = loopInputHost(game->pSDL);
+        }
+        SDL_StopTextInput();
     }
 
+    // Game
+    while (menu != -1 && quit != -1 && play == 1 && network != -1) {
+        drawGame(game);
+        start = SDL_GetTicks();
+        quit = gameEvent(game);
+
+        if(1000 / FPS > SDL_GetTicks() - start) {
+            SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
+        }
+    }
 
     // On libère la mémoire
     destroySDL(pSDL);
+    free(game->players[0]);
+    free(game);
 
     return EXIT_SUCCESS;
 }

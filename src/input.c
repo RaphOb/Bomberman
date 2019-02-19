@@ -17,8 +17,10 @@ int loopInput(sdl_t *pSDL)
     SDL_Rect textRectPort = {580, 450, 0, 0};
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
-    SDL_Texture *textureIp = createTextureIp(pSDL->pRenderer, font, color);
-    SDL_Texture *texturePort = createTexturePort(pSDL->pRenderer, font, color);
+    SDL_Texture *textureIp = NULL;
+    textureIp = createTextureIp(pSDL->pRenderer, font, color);
+    SDL_Texture *texturePort = NULL;
+    texturePort = createTexturePort(pSDL->pRenderer, font, color);
 
     input_t *ip = initInput(font, color, textureIp);
     input_t *port = initInput(font, color, texturePort);
@@ -124,6 +126,7 @@ input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed)
     input_t *input = malloc(sizeof(input_t));
     if (!input)
         return NULL;
+
     input->font = font;
     input->color = color;
     input->textureMsgDisplayed = msgDisplayed;

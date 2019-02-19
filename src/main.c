@@ -3,7 +3,8 @@
 #include "../header/renderer.h"
 #include "../header/menu.h"
 #include "../header/input.h"
-
+#include "../header/serv.h"
+#include "../header/client.h"
 
 
 int main(int argc, char *argv[])
@@ -38,6 +39,15 @@ int main(int argc, char *argv[])
             play = loopInputConnect(game->pSDL);
         } else if (network == 2) {
             play = loopInputHost(game->pSDL);
+            pthread_t hebergement_thread;
+            int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
+            if (ret_thread != 0) {
+                SDL_Log("thread server fail");
+            } else {
+                SDL_Log("creation reussie");
+                init_client();
+                init_co_from_cli_to_serv(NULL, NULL, NULL);
+            }
         }
         SDL_StopTextInput();
     }
@@ -46,6 +56,11 @@ int main(int argc, char *argv[])
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         drawGame(game);
         start = SDL_GetTicks();
+        fd_set readfs;
+        struct timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = (int)start;
+        listen_server(1, timeout, readfs);
         quit = gameEvent(game);
 
         if(1000 / FPS > SDL_GetTicks() - start) {

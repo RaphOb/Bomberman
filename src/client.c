@@ -116,6 +116,9 @@ void c_emission(int code)
             write_code_to_server(PSEUDO_CODE);
             write_to_serv(serv.c_pseudo, 0);
             break;
+        case DISCONNECT_CODE:
+            write_code_to_server(DISCONNECT_CODE);
+            break;
         case UP_CODE:
             SDL_Log("Send up to server\n");
             write_code_to_server(UP_CODE);

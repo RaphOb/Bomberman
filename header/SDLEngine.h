@@ -33,6 +33,8 @@ struct sdl_s {
     SDL_Texture* textureMenuQuitOff;
     SDL_Texture* textureMenuQuitOn;
     SDL_Texture* textureMenuLogo;
+    SDL_Texture* textureSeconnecter;
+    SDL_Texture* textureHeberger;
 };
 typedef struct sdl_s sdl_t;
 

@@ -61,6 +61,34 @@ sdl_t *initSDL()
  */
 void destroySDL(sdl_t *pSDL)
 {
+    if (pSDL->textureMenuJouerOff) {
+        SDL_DestroyTexture(pSDL->textureMenuJouerOff);
+        pSDL->textureMenuJouerOff = NULL;
+    }
+    if (pSDL->textureSeconnecter) {
+        SDL_DestroyTexture(pSDL->textureSeconnecter);
+        pSDL->textureSeconnecter = NULL;
+    }
+    if (pSDL->textureHeberger) {
+        SDL_DestroyTexture(pSDL->textureHeberger);
+        pSDL->textureHeberger = NULL;
+    }
+    if (pSDL->textureMenuJouerOn) {
+        SDL_DestroyTexture(pSDL->textureMenuJouerOn);
+        pSDL->textureMenuJouerOn = NULL;
+    }
+    if (pSDL->textureMenuQuitOff) {
+        SDL_DestroyTexture(pSDL->textureMenuQuitOff);
+        pSDL->textureMenuQuitOff = NULL;
+    }
+    if (pSDL->textureMenuQuitOn) {
+        SDL_DestroyTexture(pSDL->textureMenuQuitOn);
+        pSDL->textureMenuQuitOn = NULL;
+    }
+    if (pSDL->textureMenuLogo) {
+        SDL_DestroyTexture(pSDL->textureMenuLogo);
+        pSDL->textureMenuLogo = NULL;
+    }
     if (pSDL->textureExplosion) {
         SDL_DestroyTexture(pSDL->textureExplosion);
         pSDL->textureExplosion = NULL;
@@ -119,10 +147,12 @@ void initMenu(sdl_t *pSDL)
     SDL_Surface *menuSelectionJouerOn =IMG_Load("../resources/Menu_Selection_jouerOn.png");
     SDL_Surface *menuSelectionQuitOff =IMG_Load("../resources/Menu_Selection_quitOff.png");
     SDL_Surface *menuSelectionQuitOn =IMG_Load("../resources/Menu_Selection_quitOn.png");
+    SDL_Surface *menuHeberger =IMG_Load("../resources/Menu_hebergerOff.png");
+    SDL_Surface *menuSeconnecter =IMG_Load("../resources/Menu_seconnecterOff.png");
     SDL_Surface *menuLogo =IMG_Load("../resources/B_Logo.png");
 
-    if (!(menuSelectionJouerOff || menuSelectionJouerOn
-    || menuSelectionQuitOff || menuSelectionQuitOn || menuLogo)) {
+    if (!(menuSelectionJouerOff || menuSelectionJouerOn || menuSeconnecter
+    || menuSelectionQuitOff || menuSelectionQuitOn || menuLogo || menuHeberger)) {
         fprintf(stderr, "impossible d'initialiser l'image :%s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
@@ -132,12 +162,21 @@ void initMenu(sdl_t *pSDL)
         pSDL-> textureMenuQuitOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOff);
         pSDL-> textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
         pSDL-> textureMenuLogo = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuLogo);
-        if (!(pSDL-> textureMenuJouerOff || pSDL-> textureMenuJouerOn ||
-        pSDL-> textureMenuQuitOff || pSDL-> textureMenuQuitOn ||pSDL->textureMenuLogo)) {
+        pSDL-> textureSeconnecter = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecter);
+        pSDL-> textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
+        if (!(pSDL-> textureMenuJouerOff || pSDL-> textureMenuJouerOn || pSDL->textureSeconnecter ||
+        pSDL-> textureMenuQuitOff || pSDL-> textureMenuQuitOn ||pSDL->textureMenuLogo || pSDL->textureSeconnecter)) {
             fprintf(stderr, "impossible d'initialiser la texture :%s\n", IMG_GetError());
             return;
         }
     }
+    SDL_FreeSurface(menuSelectionJouerOff);
+    SDL_FreeSurface(menuSelectionJouerOn);
+    SDL_FreeSurface(menuSelectionQuitOff);
+    SDL_FreeSurface(menuSelectionQuitOn);
+    SDL_FreeSurface(menuHeberger);
+    SDL_FreeSurface(menuSeconnecter);
+    SDL_FreeSurface(menuLogo);
 
 }
 

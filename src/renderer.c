@@ -62,6 +62,22 @@ void renderMenu(sdl_t *pSDL)
 }
 
 /**
+ *
+ * @param pSDL
+ */
+void renderMenuIp(sdl_t *pSDL)
+{
+    SDL_Rect dst_menuHeberger = {700, 650, 200, 150};
+    SDL_Rect dst_menuSeconnecter = {900, 650, 200, 150};
+    SDL_Rect dst_menuQuitter = {500, 650, 200, 150};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureHeberger, NULL, &dst_menuHeberger);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureSeconnecter, NULL, &dst_menuSeconnecter);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitter);
+
+
+}
+
+/**
  * function : render de la bomb/ avec effet d'agrandissement/ timing de la bomb
  * @param pSDL
  * @param game

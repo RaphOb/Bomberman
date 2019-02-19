@@ -41,6 +41,11 @@ int main(int argc, char *argv[])
             play = loopInputHost(game->pSDL);
             pthread_t hebergement_thread;
             int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
+            if (ret_thread != 0) {
+                SDL_Log("thread server fail");
+            } else {
+                SDL_Log("creation reussie");
+            }
         }
         SDL_StopTextInput();
     }

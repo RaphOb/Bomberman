@@ -1,3 +1,4 @@
+#include <SDL_log.h>
 #include "../header/client.h"
 
 // ----- INITIALISATION -----
@@ -21,25 +22,25 @@ static void end(void)
 #endif
 }
 
-static void init_co_from_cli_to_serv(char *pseudo)
+void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 {
     SOCKET sock;
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == INVALID_SOCKET) {
-        perror("socket()");
+        SDL_Log("socket()");
         exit(errno);
     }
 
     SOCKADDR_IN to = { 0 }; /* initialise la structure avec des 0 */
     int tosize = sizeof to;
 
-    to.sin_addr.s_addr = inet_addr("127.0.0.1");
-    to.sin_port = htons(1234); /* on utilise htons pour le port */
+    to.sin_addr.s_addr = inet_addr(ip);
+    to.sin_port = htons(atoi(port)); /* on utilise htons pour le port */
     to.sin_family = AF_INET;
 
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
     {
-        perror("connect()");
+        SDL_Log("connect()");
         exit(errno);
     } else {
         serv.sock = sock;
@@ -57,9 +58,9 @@ static void hello_cli_serv()
 {
     // On attend que le serveur envoie le code OK_CODE
     char buffer[128];
-    printf("Waiting OK_CODE from server...\n");
+    SDL_Log("Waiting OK_CODE from server...\n");
     if (recv(serv.sock, buffer, 2, MSG_WAITALL) == -1) {
-        perror("recv()");
+        SDL_Log("recv()");
     } else {
         reception((int)strtoimax(buffer, NULL, 10), serv.sock);
     }
@@ -70,12 +71,12 @@ static int reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
-            printf("Disconnected by the server.\n");
+            SDL_Log("Disconnected by the server.\n");
             closesocket(serv_sock);
             return 0;
             break;
         case OK_CODE:
-            printf("OK\n");
+            SDL_Log("OK\n");
             return 1;
             break;
         default:
@@ -87,14 +88,14 @@ static void write_to_serv(char *buffer, int from_keyboard)
 {
     if(send(serv.sock, buffer, (int) strlen(buffer)-from_keyboard, 0) < 0)
     {
-        perror("send()");
+        SDL_Log("send()");
     }
 }
 
 static void write_code_to_server(int code)
 {
     char buffer[CODE_SIZE] = {'\0'};
-    sprintf(buffer, "%d", code);
+    SDL_Log(buffer, "%d", code);
     write_to_serv(buffer, 0);
 }
 
@@ -106,23 +107,23 @@ static void emission(int code)
             write_to_serv(serv.c_pseudo, 0);
             break;
         case UP_CODE:
-            printf("Send up to server\n");
+            SDL_Log("Send up to server\n");
             write_code_to_server(UP_CODE);
             break;
         case DOWN_CODE:
-            printf("Send down to server\n");
+            SDL_Log("Send down to server\n");
             write_code_to_server(DOWN_CODE);
             break;
         case LEFT_CODE:
-            printf("Send left to server\n");
+            SDL_Log("Send left to server\n");
             write_code_to_server(LEFT_CODE);
             break;
         case RIGHT_CODE:
-            printf("Send right to server\n");
+            SDL_Log("Send right to server\n");
             write_code_to_server(RIGHT_CODE);
             break;
         case BOMB_CODE:
-            printf("Send bomb to server\n");
+            SDL_Log("Send bomb to server\n");
             write_code_to_server(BOMB_CODE);
             break;
         default:
@@ -140,7 +141,7 @@ int app_client()
 
     char *pseudo = "test";
 
-    init_co_from_cli_to_serv(pseudo);
+    //init_co_from_cli_to_serv(pseudo);
 
     fd_set readfs;
     int tosize = sizeof serv.to;
@@ -154,7 +155,7 @@ int app_client()
 
         // Keyboard typing
         if (KEYBOARD_TYPING_MODE) {
-            printf("type smt : \n");
+            SDL_Log("type smt : \n");
             fgets(buffer, 128, stdin);
             write_to_serv(buffer, 1);
         }
@@ -165,13 +166,13 @@ int app_client()
         if (FD_ISSET(serv.sock, &readfs)) {
             if((n = recv((SOCKET)serv.sock, buffer, 128, 0)) < 0)
             {
-                perror("recv()");
+                SDL_Log("recv()");
             } else {
                 buffer[n] = 0;
                 if (strlen(buffer) == 2) {
                     run = reception((int)strtoimax(buffer, NULL, 10), serv.sock);
                 } else {
-                    printf("Reception d'un autre message : %s\n", buffer);
+                    SDL_Log("Reception d'un autre message : %s\n", buffer);
                 }
             }
         }

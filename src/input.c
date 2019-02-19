@@ -9,6 +9,7 @@
 #include <SDL_log.h>
 #include <SDL_ttf.h>
 #include "../header/input.h"
+#include "../header/client.h"
 #define LEN_MAX 80
 
 int loopInputConnect(sdl_t *pSDL)
@@ -28,6 +29,8 @@ int loopInputConnect(sdl_t *pSDL)
     input_t *ip = initInput(font, color, textureIp);
     input_t *port = initInput(font, color, texturePort);
     input_t *pseudo = initInput(font, color, texturePseudo);
+
+    init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
 
     int quit = 0;
 

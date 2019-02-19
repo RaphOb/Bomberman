@@ -45,7 +45,7 @@ typedef struct {
 // ----- INITIALISATION -----
 static void init(void);
 static void end(void);
-static void init_co_from_cli_to_serv(char *pseudo);
+void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
 static void hello_cli_serv();
 // ----- COMMUNICATION -----

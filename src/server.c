@@ -1,3 +1,4 @@
+#include <SDL_log.h>
 #include "../header/serv.h"
 
 
@@ -28,7 +29,7 @@ static int init_co()
     SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
     if(sock == INVALID_SOCKET)
     {
-        perror("socket()");
+        SDL_Log("socket()");
         exit(errno);
     }
 
@@ -38,13 +39,13 @@ static int init_co()
 
     if(bind(sock,(SOCKADDR *) &sin, sizeof sin) == SOCKET_ERROR)
     {
-        perror("bind()");
+        SDL_Log("bind()");
         exit(errno);
     }
 
     if(listen(sock, MAX_CLIENT) == SOCKET_ERROR)
     {
-        perror("listen()");
+        SDL_Log("listen()");
         exit(errno);
     }
 
@@ -61,7 +62,7 @@ static void wait_end_of_threads()
 
 static void delete_one_thread(Client *c)
 {
-    printf("Suppression du thread du client %d\n", c->num_client);
+    SDL_Log("Suppression du thread du client %d\n", c->num_client);
     pthread_cancel(c->c_thread);
 }
 
@@ -86,9 +87,9 @@ static void close_all_socket_clients()
 static void close_socket_client(Client *c)
 {
     if (closesocket((SOCKET)c->num_client) != 0) {
-        perror("closesocket()");
+        SDL_Log("closesocket()");
     } else {
-        printf("Socket fermee pour %d\n", c->num_client);
+        SDL_Log("Socket fermee pour %d\n", c->num_client);
     }
 }
 
@@ -120,7 +121,7 @@ static void delete_all_clients()
 
 static void delete_client(Client *c)
 {
-    printf("Client supprime pour %d\n", c->num_client);
+    SDL_Log("Client supprime pour %d\n", c->num_client);
     c->num_client = 0;
     strcpy(c->name, "\0");
 }
@@ -154,12 +155,12 @@ static void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
         if (clients[i].name[0] != '\0') {
-            printf("client (%s) %d : %d\t", clients[i].name, i, clients[i].num_client);
+            SDL_Log("client (%s) %d : %d\t", clients[i].name, i, clients[i].num_client);
         } else {
-            printf("client %d : %d\t", i, clients[i].num_client);
+            SDL_Log("client %d : %d\t", i, clients[i].num_client);
         }
     }
-    printf("\n");
+    SDL_Log("\n");
 }
 
 // ----- DIVERS -----
@@ -178,7 +179,7 @@ static void set_pseudo(Client *c)
     if (FD_ISSET((SOCKET)c->num_client, &readfs)) {
         if((n = recv((SOCKET)c->num_client, buffer, 1024, 0)) < 0)
         {
-            perror("recv()");
+            SDL_Log("recv()");
             //return -1;
         } else {
             buffer[n] = 0;
@@ -191,10 +192,10 @@ static void set_pseudo(Client *c)
 static void write_code_to_client(Client *c, int code)
 {
     char buffer[CODE_SIZE] = {'\0'};
-    sprintf(buffer, "%d", code);
+    SDL_Log(buffer, "%d", code);
     if(sendto((SOCKET)c->num_client, buffer, (int) strlen(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
     {
-        perror("sendto()");
+        SDL_Log("sendto()");
     }
 }
 
@@ -225,7 +226,7 @@ static void emission(Client *c, int code)
             }
             break;
         default:
-            printf("Case doesnt exist for this code, aborted.\n");
+            SDL_Log("Case doesnt exist for this code, aborted.\n");
             break;
     }
 }
@@ -234,7 +235,7 @@ static int reception(Client *c, char *buffer)
 {
     int code;
 
-    printf("Client dit : %s\n", buffer);
+    SDL_Log("Client dit : %s\n", buffer);
     if (strlen(buffer) == 2) {
         code = (int)strtoimax(buffer, NULL, 10);
         switch (code) {
@@ -252,22 +253,22 @@ static int reception(Client *c, char *buffer)
                 display_clients_co();
                 break;
             case UP_CODE:
-                printf("Client %d : UP\n", c->num_client);
+                SDL_Log("Client %d : UP\n", c->num_client);
                 break;
             case DOWN_CODE:
-                printf("Client %d : DOWN\n", c->num_client);
+                SDL_Log("Client %d : DOWN\n", c->num_client);
                 break;
             case LEFT_CODE:
-                printf("Client %d : LEFT\n", c->num_client);
+                SDL_Log("Client %d : LEFT\n", c->num_client);
                 break;
             case RIGHT_CODE:
-                printf("Client %d : RIGHT\n", c->num_client);
+                SDL_Log("Client %d : RIGHT\n", c->num_client);
                 break;
             case BOMB_CODE:
-                printf("Client %d : BOMB\n", c->num_client);
+                SDL_Log("Client %d : BOMB\n", c->num_client);
                 break;
             default:
-                printf("Case doesnt exist for this code, aborted.\n");
+                SDL_Log("Case doesnt exist for this code, aborted.\n");
                 break;
         }
     }
@@ -298,8 +299,8 @@ static void into_thread(void* fd_client)
         if (FD_ISSET((SOCKET)c->num_client, &readfs)) {
             if((n = recv((SOCKET)c->num_client, buffer, 1024, 0)) < 0)
             {
-                //perror("recv()");
-                printf("Impossible de joindre le client\n");
+                //SDL_Log("recv()");
+                SDL_Log("Impossible de joindre le client\n");
                 close_socket_client(c);
                 delete_client(c);
                 return;
@@ -310,7 +311,7 @@ static void into_thread(void* fd_client)
                 pthread_mutex_unlock(&clients->mutex_client);
             }
         }
-        printf("run = %d\n", run);
+        SDL_Log("run = %d\n", run);
     }
 }
 
@@ -326,23 +327,23 @@ int app_serv(void)
         int sinsize = sizeof(csin);
         SOCKET client = accept(sock, (struct sockaddr *)&csin, &sinsize);
         if (client < 0) {
-            perror("accept()");
+            SDL_Log("accept()");
             return -1;
         }
 
         if (add_client((int)client, csin) == 0) {
-            printf("Server is full.\n");
+            SDL_Log("Server is full.\n");
             closesocket(client);
         } else {
-            printf("Creation du thread client.\n");
+            SDL_Log("Creation du thread client.\n");
             int ret_thread = pthread_create(&get_client((int)client)->c_thread, NULL, (void *(*)(void *)) into_thread, (void *) client);
             if (ret_thread != 0) {
-                printf("Echec de la création du thread, suppression du client.\n");
+                SDL_Log("Echec de la création du thread, suppression du client.\n");
                 delete_client(get_client((int)client));
             }
         }
 
-        printf("loop\n");
+        SDL_Log("loop\n");
     }
     wait_end_of_threads();
     close_all_socket_clients();

@@ -8,7 +8,7 @@
 #include "../header/game.h"
 
 void drawGame(game_t *game);
-void renderBomb(sdl_t *pSDL, game_t *game);
+void renderBomb(sdl_t *pSDL, player_t *player);
 void renderBackground(sdl_t *pSDL);
 void renderPlayer(sdl_t *pSDL, player_t *player);
 void renderExplosion(sdl_t *pSDL);

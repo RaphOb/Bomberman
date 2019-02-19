@@ -34,12 +34,12 @@ void drawGame(game_t *game)
  * Function : speakthemSelf... // TODO : TT
  * @param game
  */
-void drawMenu(game_t *game)
+void drawMenu(sdl_t *pSDL)
 {
-    SDL_RenderClear(game->pSDL->pRenderer);
-    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
-    renderMenu(game->pSDL);
-    SDL_RenderPresent(game->pSDL->pRenderer);
+    SDL_RenderClear(pSDL->pRenderer);
+    SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
+    renderMenu(pSDL);
+    SDL_RenderPresent(pSDL->pRenderer);
 
 }
 
@@ -61,15 +61,26 @@ void renderMenu(sdl_t *pSDL)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitOff);
 }
 
+void drawMenuNetwork(sdl_t *pSDL)
+{
+    SDL_RenderClear(pSDL->pRenderer);
+    SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
+    renderMenuNetwork(pSDL);
+    SDL_RenderPresent(pSDL->pRenderer);
+
+}
+
 /**
  *
  * @param pSDL
  */
-void renderMenuIp(sdl_t *pSDL)
+void renderMenuNetwork(sdl_t *pSDL)
 {
-    SDL_Rect dst_menuHeberger = {700, 650, 200, 150};
-    SDL_Rect dst_menuSeconnecter = {900, 650, 200, 150};
-    SDL_Rect dst_menuQuitter = {500, 650, 200, 150};
+    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (750 / 2), 20, 750, 250};
+    SDL_Rect dst_menuHeberger = {(MAP_SIZE_W / 2) - (200 / 2), 300, 200, 150};
+    SDL_Rect dst_menuSeconnecter = {(MAP_SIZE_W / 2) - (200 / 2), 450, 200, 150};
+    SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (200 / 2), 600, 200, 150};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureHeberger, NULL, &dst_menuHeberger);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureSeconnecter, NULL, &dst_menuSeconnecter);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitter);

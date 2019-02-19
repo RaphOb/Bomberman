@@ -61,7 +61,7 @@ int gameEvent(game_t *game)
         }
     }
     if (game->players[0]->bomb->explosion == 1) {
-        destroyBlock(game->map, game->players[0]->bomb);
+        checkBombDamage(game->map, game->players[0]->bomb);
     }
     doMove(keystates, game->players[0], game->map);
 
@@ -107,7 +107,7 @@ void placeBomb(game_t *game)
 
 }
 
-void destroyBlock(map_t map, bomb_t *b)
+void checkBombDamage(map_t map, bomb_t *b)
 {
     const int pos_x = b->x_pos;
     const int pos_y = b->y_pos;
@@ -116,30 +116,26 @@ void destroyBlock(map_t map, bomb_t *b)
 
     // Left
     if (pos_x - 1 >= 0) {
-        if (getBit(map[pos_y], pos_x - 1, 1) == 1 && getBit(map[pos_y], pos_x - 1, 2) == 1) {
-            toggleBit(map[pos_y], pos_x - 1, 1);
-            toggleBit(map[pos_y], pos_x - 1, 2);
-        }
+        destroyBlock(map, pos_x - 1, pos_y);
     }
     // Right
     if (pos_x + 1 <= 12) {
-        if (getBit(map[pos_y], pos_x + 1, 1) == 1 && getBit(map[pos_y], pos_x + 1, 2) == 1) {
-            toggleBit(map[pos_y], pos_x + 1, 1);
-            toggleBit(map[pos_y], pos_x + 1, 2);
-        }
+        destroyBlock(map, pos_x + 1, pos_y);
     }
     // Up
     if (pos_y - 1 >= 0) {
-        if (getBit(map[pos_y - 1], pos_x, 1) == 1 && getBit(map[pos_y - 1], pos_x, 2) == 1) {
-            toggleBit(map[pos_y - 1], pos_x, 1);
-            toggleBit(map[pos_y - 1], pos_x, 2);
-        }
+        destroyBlock(map, pos_x, pos_y - 1);
     }
     // Down
     if (pos_y + 1 <= 8) {
-        if (getBit(map[pos_y + 1], pos_x, 1) == 1 && getBit(map[pos_y + 1], pos_x, 2) == 1) {
-            toggleBit(map[pos_y + 1], pos_x, 1);
-            toggleBit(map[pos_y + 1], pos_x, 2);
-        }
+        destroyBlock(map, pos_x, pos_y + 1);
+    }
+}
+
+void destroyBlock(map_t map, int pos_x, int pos_y)
+{
+    if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {
+        toggleBit(map[pos_y], pos_x, 1);
+        toggleBit(map[pos_y], pos_x, 2);
     }
 }

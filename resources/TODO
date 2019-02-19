@@ -1,13 +1,13 @@
 TODO :
-Last update : 18/02/2019 - 13h40
+Last update : 19/02/2019 - 10h40
 
 SDL
 Urgent
-    - event quit sur le menu
     - Commentaires
 
 
 Prochainement
+    - Condenser sprite menu
     - Dynamiser le menu ( fond dynamique ? menu selectionné couleurs differentes, declenchement lors du click)
 
 Bonus

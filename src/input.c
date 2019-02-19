@@ -27,7 +27,6 @@ int loopInputConnect(sdl_t *pSDL)
 
     input_t *ip = initInput(font, color, textureIp);
     input_t *port = initInput(font, color, texturePort);
-    input_t *pseudo = initInput(font, color, texturePseudo);
 
     int quit = 0;
 

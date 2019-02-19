@@ -157,15 +157,15 @@ void initMenu(sdl_t *pSDL)
         destroySDL(pSDL);
         return;
     } else {
-        pSDL-> textureMenuJouerOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOff);
-        pSDL-> textureMenuJouerOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
-        pSDL-> textureMenuQuitOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOff);
-        pSDL-> textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
-        pSDL-> textureMenuLogo = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuLogo);
-        pSDL-> textureSeconnecter = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecter);
-        pSDL-> textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
-        if (!(pSDL-> textureMenuJouerOff || pSDL-> textureMenuJouerOn || pSDL->textureSeconnecter ||
-        pSDL-> textureMenuQuitOff || pSDL-> textureMenuQuitOn ||pSDL->textureMenuLogo || pSDL->textureSeconnecter)) {
+        pSDL->textureMenuJouerOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOff);
+        pSDL->textureMenuJouerOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
+        pSDL->textureMenuQuitOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOff);
+        pSDL->textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
+        pSDL->textureMenuLogo = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuLogo);
+        pSDL->textureSeconnecter = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecter);
+        pSDL->textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
+        if (!(pSDL->textureMenuJouerOff || pSDL->textureMenuJouerOn || pSDL->textureSeconnecter ||
+        pSDL->textureMenuQuitOff || pSDL-> textureMenuQuitOn ||pSDL->textureMenuLogo || pSDL->textureSeconnecter)) {
             fprintf(stderr, "impossible d'initialiser la texture :%s\n", IMG_GetError());
             return;
         }

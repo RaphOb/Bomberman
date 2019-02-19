@@ -4,6 +4,7 @@
 
 #ifndef BOMBERMAN_MENU_H
 #define BOMBERMAN_MENU_H
-#include "../header/game.h"
+
+int menuEvent();
 
 #endif //BOMBERMAN_MENU_H

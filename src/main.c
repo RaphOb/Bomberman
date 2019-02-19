@@ -3,6 +3,7 @@
 #include "../header/renderer.h"
 #include "../header/menu.h"
 #include "../header/input.h"
+#include "../header/serv.h"
 
 
 
@@ -38,6 +39,8 @@ int main(int argc, char *argv[])
             play = loopInputConnect(game->pSDL);
         } else if (network == 2) {
             play = loopInputHost(game->pSDL);
+            pthread_t hebergement_thread;
+            int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
         }
         SDL_StopTextInput();
     }

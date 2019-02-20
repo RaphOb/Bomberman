@@ -38,15 +38,18 @@ int main(int argc, char *argv[])
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
         } else if (network == 2) {
-            play = loopInputHost(game->pSDL);
-            pthread_t hebergement_thread;
-            int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
-            if (ret_thread != 0) {
-                SDL_Log("thread server fail");
-            } else {
-                SDL_Log("creation reussie");
-                init_client();
-                init_co_from_cli_to_serv(NULL, NULL, NULL);
+            char *port = malloc(sizeof(char) * 10);
+            play = loopInputHost(game->pSDL, &port);
+            if (play == 1) {
+                pthread_t hebergement_thread;
+                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
+                if (ret_thread != 0) {
+                    SDL_Log("thread server fail");
+                } else {
+                    SDL_Log("creation reussie");
+                    init_client();
+                    init_co_from_cli_to_serv(NULL, port, NULL);
+                }
             }
         }
         SDL_StopTextInput();

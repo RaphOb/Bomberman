@@ -60,8 +60,8 @@ int main(int argc, char *argv[])
         struct timeval timeout;
         timeout.tv_sec = 0;
         timeout.tv_usec = (int)start;
-        listen_server(1, timeout, readfs);
         quit = gameEvent(game);
+        listen_server(1, timeout, readfs);
 
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));

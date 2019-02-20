@@ -5,7 +5,7 @@ set(CMAKE_C_STANDARD 99)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake") #chemin pour accéder au fichier cmake
 #qui vont trouver les différents fichiers nécessaire pour utiliser SDL2
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS}  ") #Affiche TOUS les warnings en mode debug
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror ") #Affiche TOUS les warnings en mode debug
 
 set(SDL2_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")
 set(SDL2_IMAGE_PATH "C:\\Program Files\\mingw-w64\\x86_64-8.1.0-posix-seh-rt_v6-rev0\\mingw64\\x86_64-w64-mingw32")

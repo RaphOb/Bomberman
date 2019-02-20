@@ -52,7 +52,7 @@ void updatePlayerCell(player_t *player)
     player->map_x[1] = (pos_x + PLAYER_WIDTH) / pSizeBlock;
     player->map_y[1] = (pos_y + PLAYER_WIDTH) / pSizeBlock;
 
-    SDL_Log("player_map_x[0] : %d, player_map_x[1] : %d, player_map_y[0] : %d, player_map_y[1] : %d", player->map_x[0], player->map_x[1], player->map_y[0], player->map_y[1]);
+//    SDL_Log("player_map_x[0] : %d, player_map_x[1] : %d, player_map_y[0] : %d, player_map_y[1] : %d", player->map_x[0], player->map_x[1], player->map_y[0], player->map_y[1]);
 
 
 }
@@ -83,8 +83,8 @@ int collideWith(map_t map, player_t *player, int x, int y)
         cell_y2 = (pos_y + 1) / pSizeBlock;
     }
 
-    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
-    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));
+//    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
+//    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));
 
     return (getBit(map[cell_y], cell_x, 1) == 1 || getBit(map[cell_y2], cell_x2, 1) == 1);
 }

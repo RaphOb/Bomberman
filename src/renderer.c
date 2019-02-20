@@ -4,6 +4,7 @@
 
 #include "../header/renderer.h"
 #include "../header/bit.h"
+#include "../header/menu.h"
 
 
 /**
@@ -49,16 +50,12 @@ void drawMenu(sdl_t *pSDL)
  */
 void renderMenu(sdl_t *pSDL)
 {
-    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (750 / 2), 20, 750, 250};
-    SDL_Rect dst_menuJouerOff = {(MAP_SIZE_W / 2) - (696 / 4), 280, 696/2, 564/2} ;
-    SDL_Rect dst_menuQuitOff =  {(MAP_SIZE_W / 2) - (696 / 4), 520, 696/2, 564/2};
-
-    SDL_Rect dst_menuJouerOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50 } ;
-    SDL_Rect dst_menuQuitOn = {START_X_MAP/2 , START_Y_MAP/3, 100, 50} ;
+    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
 
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuJouerOff, NULL, &dst_menuJouerOff);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitOff);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonPlay->textureButton[pSDL->buttonPlay->hover], NULL, &pSDL->buttonPlay->dstRect);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &pSDL->buttonQuit->dstRect);
+
 }
 
 void drawMenuNetwork(sdl_t *pSDL)
@@ -67,7 +64,6 @@ void drawMenuNetwork(sdl_t *pSDL)
     SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
     renderMenuNetwork(pSDL);
     SDL_RenderPresent(pSDL->pRenderer);
-
 }
 
 /**
@@ -76,14 +72,12 @@ void drawMenuNetwork(sdl_t *pSDL)
  */
 void renderMenuNetwork(sdl_t *pSDL)
 {
-    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (750 / 2), 20, 750, 250};
-    SDL_Rect dst_menuHeberger = {(MAP_SIZE_W / 2) - (200 / 2), 300, 200, 150};
-    SDL_Rect dst_menuSeconnecter = {(MAP_SIZE_W / 2) - (200 / 2), 450, 200, 150};
-    SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (200 / 2), 600, 200, 150};
+    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
+    SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6), 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureHeberger, NULL, &dst_menuHeberger);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureSeconnecter, NULL, &dst_menuSeconnecter);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuQuitOff, NULL, &dst_menuQuitter);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonHost->textureButton[0], NULL, &pSDL->buttonHost->dstRect);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonConnect->textureButton[0], NULL, &pSDL->buttonConnect->dstRect);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[0], NULL, &dst_menuQuitter);
 
 
 }

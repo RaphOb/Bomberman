@@ -10,6 +10,7 @@
 #include <SDL_ttf.h>
 #include "../header/input.h"
 #include "../header/client.h"
+#include "../header/menu.h"
 #define LEN_MAX 80
 
 int loopInputConnect(sdl_t *pSDL)
@@ -136,7 +137,7 @@ void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rec
 
 void renderInput(SDL_Rect textRect, sdl_t *pSDL, input_t *input)
 {
-    SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (750 / 2), 20, 750, 250};
+    SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
 
     input->inputSurface = TTF_RenderText_Solid(input->font, input->str, input->color);
     input->inputTexture = SDL_CreateTextureFromSurface(pSDL->pRenderer, input->inputSurface);

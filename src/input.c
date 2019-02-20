@@ -9,6 +9,7 @@
 #include <SDL_log.h>
 #include <SDL_ttf.h>
 #include "../header/input.h"
+#include "../header/client.h"
 #define LEN_MAX 80
 
 int loopInputConnect(sdl_t *pSDL)
@@ -48,7 +49,10 @@ int loopInputConnect(sdl_t *pSDL)
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
-
+    if (quit == 3) {
+        init_client();
+        init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
+    }
     destroyInput(ip);
     destroyInput(port);
     destroyInput(pseudo);
@@ -56,24 +60,39 @@ int loopInputConnect(sdl_t *pSDL)
     return (quit == -1) ? 0 : 1;
 }
 
-int loopInputHost(sdl_t *pSDL)
+int loopInputHost(sdl_t *pSDL, char **p)
 {
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
-    SDL_Rect dstStringPseudo = {500, 400, 0, 0};
-    SDL_Rect textRectPseudo = {500, 440, 0, 0};
+    SDL_Rect dstStringPseudo = {400, 450, 0, 0};
+    SDL_Rect textRectPseudo = {540, 450, 0, 0};
+    SDL_Rect textRectPort = {680, 400, 0, 0};
+    SDL_Rect dstStringPort = {400, 400, 0, 0};
+    SDL_Texture *texturePort = createTextureText(pSDL->pRenderer, font, color, "ENTREZ LE PORT: ");
     SDL_Texture *texturePseudo = createTextureText(pSDL->pRenderer, font, color, "PSEUDO: ");
+
     input_t *pseudo = initInput(font, color, texturePseudo);
+    input_t *port = initInput(font, color, texturePort);
+
 
     int quit = 0;
 
-    while (quit == 0) {
+    while (quit != -1 && quit != 2) {
         SDL_RenderClear(pSDL->pRenderer);
         renderStringText(pSDL->pRenderer, pseudo->textureMsgDisplayed, dstStringPseudo);
+        renderStringText(pSDL->pRenderer, port->textureMsgDisplayed, dstStringPort);
+        renderInput(textRectPort, pSDL, port);
         renderInput(textRectPseudo, pSDL, pseudo);
-        quit = manageInput(pseudo, pSDL);
+        if (quit == 0) {
+            quit = manageInput(port, pSDL);
+        } else if (quit == 1) {
+            quit = manageInput(pseudo, pSDL);
+        }
         SDL_RenderPresent(pSDL->pRenderer);
     }
+
+    if (quit == 2)
+        *p = strdup(port->str);
 
     destroyInput(pseudo);
     TTF_CloseFont(font);

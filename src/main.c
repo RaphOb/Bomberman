@@ -3,7 +3,8 @@
 #include "../header/renderer.h"
 #include "../header/menu.h"
 #include "../header/input.h"
-
+#include "../header/serv.h"
+#include "../header/client.h"
 
 
 int main(int argc, char *argv[])
@@ -37,7 +38,19 @@ int main(int argc, char *argv[])
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
         } else if (network == 2) {
-            play = loopInputHost(game->pSDL);
+            char *port = malloc(sizeof(char) * 10);
+            play = loopInputHost(game->pSDL, &port);
+            if (play == 1) {
+                pthread_t hebergement_thread;
+                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
+                if (ret_thread != 0) {
+                    SDL_Log("thread server fail");
+                } else {
+                    SDL_Log("creation reussie");
+                    init_client();
+                    init_co_from_cli_to_serv(NULL, port, NULL);
+                }
+            }
         }
         SDL_StopTextInput();
     }
@@ -46,7 +59,12 @@ int main(int argc, char *argv[])
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         drawGame(game);
         start = SDL_GetTicks();
+        fd_set readfs;
+        struct timeval timeout;
+        timeout.tv_sec = 0;
+        timeout.tv_usec = (int)start;
         quit = gameEvent(game);
+        listen_server(1, timeout, readfs);
 
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));

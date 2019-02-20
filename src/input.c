@@ -9,6 +9,7 @@
 #include <SDL_log.h>
 #include <SDL_ttf.h>
 #include "../header/input.h"
+#include "../header/client.h"
 #define LEN_MAX 80
 
 int loopInputConnect(sdl_t *pSDL)
@@ -48,6 +49,9 @@ int loopInputConnect(sdl_t *pSDL)
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
+
+    init_client();
+    init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
 
     destroyInput(ip);
     destroyInput(port);

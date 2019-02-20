@@ -5,6 +5,8 @@
 #ifndef BOMBERMAN_MENU_H
 #define BOMBERMAN_MENU_H
 
+#include <pthread.h>
+
 int menuEvent();
 int menuNetworkEvent();
 

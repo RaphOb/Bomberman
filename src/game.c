@@ -10,6 +10,7 @@
 #include "../header/move.h"
 #include "../header/bit.h"
 #include "../header/renderer.h"
+#include "../header/client.h"
 
 /**
  * function : init game
@@ -48,9 +49,11 @@ int gameEvent(game_t *game)
             //
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE :
+                    c_emission(DISCONNECT_CODE);
                     res = -1;
                     break;
                 case SDLK_b:
+                    c_emission(BOMB_CODE);
                     if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && isPlayerOnOneCell(game->players[0]))
                         placeBomb(game->pSDL, game->players[0]);
                     break;

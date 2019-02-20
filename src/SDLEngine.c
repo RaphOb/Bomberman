@@ -6,6 +6,7 @@
 #include "../header/SDLEngine.h"
 #include "../header/map.h"
 #include "../header/player.h"
+#include "../header/menu.h"
 
 /**
  * function : init SDL map and texture
@@ -61,33 +62,33 @@ sdl_t *initSDL()
  */
 void destroySDL(sdl_t *pSDL)
 {
-    if (pSDL->textureMenuJouerOff) {
-        SDL_DestroyTexture(pSDL->textureMenuJouerOff);
-        pSDL->textureMenuJouerOff = NULL;
+    if (pSDL->buttonConnect->textureButton[0]) {
+        SDL_DestroyTexture(pSDL->buttonConnect->textureButton[0]);
+        pSDL->buttonConnect->textureButton[0] = NULL;
     }
-    if (pSDL->textureSeconnecter) {
-        SDL_DestroyTexture(pSDL->textureSeconnecter);
-        pSDL->textureSeconnecter = NULL;
+    if (pSDL->buttonHost->textureButton[0]) {
+        SDL_DestroyTexture(pSDL->buttonHost->textureButton[0]);
+        pSDL->buttonHost->textureButton[0] = NULL;
     }
-    if (pSDL->textureHeberger) {
-        SDL_DestroyTexture(pSDL->textureHeberger);
-        pSDL->textureHeberger = NULL;
+    if (pSDL->buttonQuit->textureButton[0]) {
+        SDL_DestroyTexture(pSDL->buttonQuit->textureButton[0]);
+        pSDL->buttonQuit->textureButton[0] = NULL;
     }
-    if (pSDL->textureMenuJouerOn) {
-        SDL_DestroyTexture(pSDL->textureMenuJouerOn);
-        pSDL->textureMenuJouerOn = NULL;
-    }
-    if (pSDL->textureMenuQuitOff) {
-        SDL_DestroyTexture(pSDL->textureMenuQuitOff);
-        pSDL->textureMenuQuitOff = NULL;
-    }
-    if (pSDL->textureMenuQuitOn) {
-        SDL_DestroyTexture(pSDL->textureMenuQuitOn);
-        pSDL->textureMenuQuitOn = NULL;
+    if (pSDL->buttonPlay->textureButton[0]) {
+        SDL_DestroyTexture(pSDL->buttonPlay->textureButton[0]);
+        pSDL->buttonPlay->textureButton[0] = NULL;
     }
     if (pSDL->textureMenuLogo) {
         SDL_DestroyTexture(pSDL->textureMenuLogo);
         pSDL->textureMenuLogo = NULL;
+    }
+    if (pSDL->buttonPlay->textureButton[1]) {
+        SDL_DestroyTexture(pSDL->buttonPlay->textureButton[1]);
+        pSDL->buttonPlay->textureButton[1] = NULL;
+    }
+    if (pSDL->buttonQuit->textureButton[1]) {
+        SDL_DestroyTexture(pSDL->buttonQuit->textureButton[1]);
+        pSDL->buttonQuit->textureButton[1] = NULL;
     }
     if (pSDL->textureExplosion) {
         SDL_DestroyTexture(pSDL->textureExplosion);
@@ -157,18 +158,30 @@ void initMenu(sdl_t *pSDL)
         destroySDL(pSDL);
         return;
     } else {
-        pSDL->textureMenuJouerOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOff);
-        pSDL->textureMenuJouerOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
-        pSDL->textureMenuQuitOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOff);
-        pSDL->textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
         pSDL->textureMenuLogo = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuLogo);
-        pSDL->textureSeconnecter = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecter);
-        pSDL->textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
-        if (!(pSDL->textureMenuJouerOff || pSDL->textureMenuJouerOn || pSDL->textureSeconnecter ||
-        pSDL->textureMenuQuitOff || pSDL-> textureMenuQuitOn ||pSDL->textureMenuLogo || pSDL->textureSeconnecter)) {
+        SDL_Texture *textureMenuJouerOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOff);
+        SDL_Texture *textureMenuJouerOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionJouerOn);
+        SDL_Texture *textureMenuQuitOff = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOff);
+        SDL_Texture *textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOn);
+        SDL_Texture *textureSeconnecter = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecter);
+        SDL_Texture *textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
+        if (!(textureMenuJouerOff || textureMenuJouerOn || textureSeconnecter ||
+        textureMenuQuitOff || textureMenuQuitOn || pSDL->textureMenuLogo || textureSeconnecter || textureHeberger)) {
             fprintf(stderr, "impossible d'initialiser la texture :%s\n", IMG_GetError());
             return;
         }
+
+
+        SDL_Rect dst_menuJouerOff = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 4), 280, IMG_MENU_W / 2, IMG_MENU_H / 2};
+        SDL_Rect dst_menuQuitOff =  {(MAP_SIZE_W / 2) - (IMG_MENU_W / 4), 520, IMG_MENU_W / 2, IMG_MENU_H / 2};
+        SDL_Rect dst_menuHeberger = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6), 300, IMG_MENU_W / 3, IMG_MENU_H / 3};
+        SDL_Rect dst_menuSeconnecter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6), 450, IMG_MENU_W / 3, IMG_MENU_H / 3};
+
+        pSDL->buttonPlay = initButton(dst_menuJouerOff, textureMenuJouerOff, textureMenuJouerOn);
+        pSDL->buttonQuit = initButton(dst_menuQuitOff, textureMenuQuitOff, textureMenuQuitOn);
+        pSDL->buttonHost = initButton(dst_menuHeberger, textureHeberger, NULL);
+        pSDL->buttonConnect = initButton(dst_menuSeconnecter, textureSeconnecter, NULL);
+
     }
     SDL_FreeSurface(menuSelectionJouerOff);
     SDL_FreeSurface(menuSelectionJouerOn);
@@ -178,6 +191,23 @@ void initMenu(sdl_t *pSDL)
     SDL_FreeSurface(menuSeconnecter);
     SDL_FreeSurface(menuLogo);
 
+}
+
+
+button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff)
+{
+    button_t *b = malloc(sizeof(button_t));
+
+    if (!b) {
+        SDL_Log("erreur malloc bouton");
+        return NULL;
+    }
+
+    b->hover = 0;
+    b->textureButton[0] = textureOn;
+    b->textureButton[1] = textureOff;
+    b->dstRect = rect;
+    return b;
 }
 
 /**

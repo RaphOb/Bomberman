@@ -32,7 +32,7 @@ int menuEvent(sdl_t *pSDL)
                     fprintf(stderr, "touche inconnue %d\n", event.key.keysym.sym);
                     break;
             }
-        }else if (event.type == SDL_MOUSEBUTTONDOWN) {
+        }else if (event.type == SDL_MOUSEBUTTONUP) {
                 if (event.button.x >((MAP_SIZE_W / 2) - (696 / 4)) && event.button.y > 520 && event.button.y < 520 + 564/2 && event.button.x < ((MAP_SIZE_W / 2) - (696 / 4)) + 696/2) {
                     res = -1;
                 }
@@ -78,7 +78,7 @@ int menuNetworkEvent()
                 break;
             default:break;
         }
-    } else if (event.type == SDL_MOUSEBUTTONDOWN) {
+    } else if (event.type == SDL_MOUSEBUTTONUP) {
         int size = (MAP_SIZE_W / 2) - (200 / 2);
         if ( event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 300 &&  event.button.y < 300 + 150) {
             res = 2;

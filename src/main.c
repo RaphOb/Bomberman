@@ -34,7 +34,7 @@ int main(int argc, char *argv[])
     // Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);
-        network = menuNetworkEvent();
+        network = menuNetworkEvent(game->pSDL);
 
         // Input
         SDL_StartTextInput();

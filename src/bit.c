@@ -2,7 +2,7 @@
 // Created by geoff on 30/01/2019.
 //
 
-#include <SDL_log.h>
+#include <SDL2/SDL_log.h>
 #include "../header/bit.h"
 
 /** TODO

@@ -3,7 +3,7 @@
 //
 
 #include <stdlib.h>
-#include <SDL_log.h>
+#include <SDL2/SDL_log.h>
 #include "../header/player.h"
 #include "../header/map.h"
 #include "../header/bit.h"

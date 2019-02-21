@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
                     SDL_Log("Thread server fail");
                 } else {
                     SDL_Log("creation reussie");
-                    init_client();
+                    init();
                     init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
                 }
             }

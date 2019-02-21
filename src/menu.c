@@ -2,10 +2,10 @@
 // Created by oraph on 18/02/2019.
 //
 
-#include <SDL_quit.h>
-#include <SDL_events.h>
+#include <SDL2/SDL_quit.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_log.h>
 #include <stdio.h>
-#include <SDL_log.h>
 #include "../header/menu.h"
 #include "../header/map.h"
 #include "../header/SDLEngine.h"

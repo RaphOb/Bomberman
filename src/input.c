@@ -5,13 +5,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
-#include <SDL_events.h>
-#include <SDL_log.h>
-#include <SDL_ttf.h>
+#include <SDL2/SDL_events.h>
+#include <SDL2/SDL_log.h>
+#include <SDL2/SDL_ttf.h>
 #include "../header/input.h"
-#include "../header/client.h"
+#include "../header/reseau.h"
 #include "../header/menu.h"
 #define LEN_MAX 80
+
 
 int loopInputConnect(sdl_t *pSDL)
 {
@@ -42,16 +43,16 @@ int loopInputConnect(sdl_t *pSDL)
         renderInput(textRectIp, pSDL, ip);
         renderInput(textRectPseudo, pSDL, pseudo);
         if (quit == 0) {
-            quit = manageInput(ip, pSDL);
+            quit = manageInput(ip);
         } else if (quit == 1) {
-            quit = manageInput(port, pSDL);
+            quit = manageInput(port);
         } else {
-            quit = manageInput(pseudo, pSDL);
+            quit = manageInput(pseudo);
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
     if (quit == 3) {
-        init_client();
+        init();
         init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
     }
     destroyInput(ip);
@@ -85,27 +86,28 @@ int loopInputHost(sdl_t *pSDL, char **p)
         renderInput(textRectPort, pSDL, port);
         renderInput(textRectPseudo, pSDL, pseudo);
         if (quit == 0) {
-            quit = manageInput(port, pSDL);
+            quit = manageInput(port);
         } else if (quit == 1) {
-            quit = manageInput(pseudo, pSDL);
+            quit = manageInput(pseudo);
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
 
-    if (quit == 2)
+    if (quit == 2) {
         *p = strdup(port->str);
+    }
 
     destroyInput(pseudo);
+    destroyInput(port);
     TTF_CloseFont(font);
     return (quit == -1) ? 0 : 1;
 
 }
 
-int manageInput(input_t *input, sdl_t *pSDL)
+int manageInput(input_t *input)
 {
     SDL_Event event;
     static int quit = 0;
-    int renderText = 0;
 
     SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT)
@@ -114,7 +116,6 @@ int manageInput(input_t *input, sdl_t *pSDL)
         if (event.key.keysym.sym == SDLK_BACKSPACE && input->len) {
             input->str[input->len - 1] = '\0';
             input->len--;
-            renderText = 1;
         } else if (event.key.keysym.sym == SDLK_RETURN) {
             quit += 1;
         } else if (event.key.keysym.sym == SDLK_ESCAPE) {
@@ -123,7 +124,6 @@ int manageInput(input_t *input, sdl_t *pSDL)
     } else if (event.type == SDL_TEXTINPUT) {
         input->len += strlen(event.text.text);;
         strcat(input->str, event.text.text);
-        renderText = 1;
     }
 
     return quit;
@@ -167,6 +167,7 @@ input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed)
     input->str[0] = '\0';
     input->len = 0;
 
+    return input;
 }
 
 void destroyInput(input_t *input)

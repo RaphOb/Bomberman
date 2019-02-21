@@ -280,7 +280,7 @@ int s_reception(Client *c, char *buffer)
 }
 
 // ----- THREAD -----
-void into_thread(void* fd_client)
+int into_thread(void* fd_client)
 {
     fd_set readfs;
     int run = 1;
@@ -306,7 +306,7 @@ void into_thread(void* fd_client)
                 SDL_Log("[Server] Impossible de joindre le client\n");
                 close_socket_client(c);
                 delete_client(c);
-                return;
+                return -1;
             } else {
                 buffer[n] = 0;
                 pthread_mutex_lock(&clients->mutex_client);
@@ -316,6 +316,7 @@ void into_thread(void* fd_client)
         }
         SDL_Log("[Server] run = %d\n", run);
     }
+    return 1;
 }
 
 // ----- MAIN -----
@@ -332,7 +333,7 @@ int app_serv(void* serv_port)
         int sinsize = sizeof(csin);
         SDL_Log("[Server] Attente d'un client...\n");
         SOCKET client = accept(sock, (struct sockaddr *)&csin, &sinsize);
-        if (client < 0) {
+        if (client == INVALID_SOCKET) {
             SDL_Log("[Server] accept()");
             return -1;
         }
@@ -342,7 +343,7 @@ int app_serv(void* serv_port)
             closesocket(client);
         } else {
             SDL_Log("[Server] Creation du thread client.\n");
-            int ret_thread = pthread_create(&get_client((int)client)->c_thread, NULL, (void *(*)(void *)) into_thread, (void *) (uintptr_t) client);
+            int ret_thread = pthread_create(&get_client((int)client)->c_thread, NULL, (void *) into_thread, (void *) (uintptr_t) client);
             if (ret_thread != 0) {
                 SDL_Log("[Server] Echec de la création du thread, suppression du client.\n");
                 delete_client(get_client((int)client));

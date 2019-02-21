@@ -54,7 +54,7 @@ int init_co(char *port);
 void delete_one_thread(Client *c);
 void delete_all_threads();
 void wait_end_of_threads();
-void into_thread(void* fd_client);
+int into_thread(void* fd_client);
 // ----- SOCKET -----
 void close_socket_client(Client *c);
 void close_all_socket_clients();

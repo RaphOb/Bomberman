@@ -18,13 +18,13 @@ int menuEvent(sdl_t *pSDL)
     int mouse_x = 0;
     int mouse_y = 0;
     SDL_GetMouseState(&mouse_x, &mouse_y);
-    pSDL->buttonPlay->hover = SDL_FALSE;
-    pSDL->buttonQuit->hover = SDL_FALSE;
+    pSDL->buttonPlay->hover = 0;
+    pSDL->buttonQuit->hover = 0;
     const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
     if (SDL_HasIntersection(&mouse, &pSDL->buttonPlay->dstRect)) {
-        pSDL->buttonPlay->hover = SDL_TRUE;
+        pSDL->buttonPlay->hover = 1;
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
-        pSDL->buttonQuit->hover = SDL_TRUE;
+        pSDL->buttonQuit->hover = 1;
     }
 
     if (SDL_PollEvent(&event)) {
@@ -61,10 +61,25 @@ int menuEvent(sdl_t *pSDL)
     return res;
 }
 
-int menuNetworkEvent()
+int menuNetworkEvent(sdl_t *pSDL)
 {
     int res = 0;
     SDL_Event event;
+
+    int mouse_x = 0;
+    int mouse_y = 0;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    pSDL->buttonConnect->hover = 0;
+    pSDL->buttonHost->hover = 0;
+    pSDL->buttonQuit->hover = 0;
+    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
+    if (SDL_HasIntersection(&mouse, &pSDL->buttonConnect->dstRect)) {
+        pSDL->buttonConnect->hover = 1;
+    } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
+        pSDL->buttonQuit->hover = 1;
+    } else if (SDL_HasIntersection(&mouse, &pSDL->buttonHost->dstRect)) {
+        pSDL->buttonHost->hover = 1;
+    }
 
     SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT)

@@ -49,7 +49,7 @@ typedef struct
 // ----- INITIALISATION -----
 static void init(void);
 static void end(void);
-static int init_co();
+static int init_co(char *port);
 // ----- THREAD -----
 static void delete_one_thread(Client *c);
 static void delete_all_threads();
@@ -74,18 +74,10 @@ static void write_code_to_all_clients(int code);
 static void s_emission(Client *c, int code);
 static int s_reception(Client *c, char *buffer);
 // ----- MAIN -----
-int app_serv(void);
+int app_serv(void* struct_serv);
 
 #define MAX_CLIENT 4
-#define CODE_SIZE 2+1
-#define DISCONNECT_CODE 10
-#define OK_CODE 11
-#define PSEUDO_CODE 20
-#define UP_CODE 30
-#define DOWN_CODE 31
-#define LEFT_CODE 32
-#define RIGHT_CODE 33
-#define BOMB_CODE 34
+
 static Client clients[MAX_CLIENT] = { 0 };
 static SOCKET sock;
 

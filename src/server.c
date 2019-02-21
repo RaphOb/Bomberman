@@ -1,5 +1,5 @@
 #include <SDL_log.h>
-#include "../header/serv.h"
+#include "../header/reseau.h"
 
 
 // ----- INITIALISATION -----
@@ -23,7 +23,7 @@ static void end(void)
 #endif
 }
 
-static int init_co()
+static int init_co(char *port)
 {
     SOCKADDR_IN sin = { 0 };
     SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -32,10 +32,10 @@ static int init_co()
         SDL_Log("[Server] socket()");
         exit(errno);
     }
-
+    SDL_Log("[Server] Ecoute sur le port : %s\n", port);
     sin.sin_addr.s_addr = htonl(INADDR_ANY);
     sin.sin_family = AF_INET;
-    sin.sin_port = htons(1234);
+    sin.sin_port = htons((u_short) atoi(port));
 
     if(bind(sock,(SOCKADDR *) &sin, sizeof sin) == SOCKET_ERROR)
     {
@@ -132,7 +132,7 @@ static int add_client(int s, SOCKADDR_IN csin)
         if (clients[i].num_client == 0) {
             clients[i].num_client = s;
             clients[i].csin = csin;
-            clients[i].mutex_client = PTHREAD_MUTEX_INITIALIZER;
+            pthread_mutex_init(&clients[i].mutex_client, NULL);
             display_clients_co();
             return 1;
         }
@@ -160,7 +160,6 @@ static void display_clients_co()
             SDL_Log("[Server] client %d : %d\t", i, clients[i].num_client);
         }
     }
-    SDL_Log("[Server] \n");
 }
 
 // ----- DIVERS -----
@@ -316,15 +315,18 @@ static void into_thread(void* fd_client)
 }
 
 // ----- MAIN -----
-int app_serv(void)
+int app_serv(void* serv_port)
 {
     init();
 
-    sock = (SOCKET)init_co();
+    char *port = strdup((char *)serv_port);
+
+    sock = (SOCKET)init_co(port);
 
     while (1) {
         SOCKADDR_IN csin = { 0 };
         int sinsize = sizeof(csin);
+        SDL_Log("[Server] Attente d'un client...\n");
         SOCKET client = accept(sock, (struct sockaddr *)&csin, &sinsize);
         if (client < 0) {
             SDL_Log("[Server] accept()");
@@ -342,8 +344,6 @@ int app_serv(void)
                 delete_client(get_client((int)client));
             }
         }
-
-        SDL_Log("[Server] loop\n");
     }
     wait_end_of_threads();
     close_all_socket_clients();

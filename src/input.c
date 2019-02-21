@@ -13,6 +13,7 @@
 #include "../header/menu.h"
 #define LEN_MAX 80
 
+
 int loopInputConnect(sdl_t *pSDL)
 {
     SDL_Rect textRectPseudo = {440, 500, 0, 0};
@@ -97,6 +98,7 @@ int loopInputHost(sdl_t *pSDL, char **p)
     }
 
     destroyInput(pseudo);
+    destroyInput(port);
     TTF_CloseFont(font);
     return (quit == -1) ? 0 : 1;
 

@@ -35,6 +35,7 @@ player_t *initPlayer()
     p->frame_time = 0;
     p->direction = 2;
     p->still = 1;
+    b->explosion = 0;
     p->bomb = b;
 
     return p;

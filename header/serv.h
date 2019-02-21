@@ -78,5 +78,4 @@ int app_serv(void* struct_serv);
 
 #define MAX_CLIENT 4
 
-
 #endif //BOMBERMAN_SERV_H

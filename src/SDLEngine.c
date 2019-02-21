@@ -125,6 +125,10 @@ void destroySDL(sdl_t *pSDL)
     }
     TTF_Quit();
     SDL_Quit();
+    free(pSDL->buttonPlay);
+    free(pSDL->buttonQuit);
+    free(pSDL->buttonHost);
+    free(pSDL->buttonConnect);
     free(pSDL);
     SDL_Log("Destroy SDL");
 }
@@ -165,8 +169,8 @@ void initMenu(sdl_t *pSDL)
         SDL_Texture *textureMenuQuitOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSelectionQuitOn);
         SDL_Texture *textureSeconnecter = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecter);
         SDL_Texture *textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
-        if (!(textureMenuJouerOff || textureMenuJouerOn || textureSeconnecter ||
-        textureMenuQuitOff || textureMenuQuitOn || pSDL->textureMenuLogo || textureSeconnecter || textureHeberger)) {
+        if (!textureMenuJouerOff || !textureMenuJouerOn || !textureSeconnecter ||
+        !textureMenuQuitOff || !textureMenuQuitOn || !pSDL->textureMenuLogo || !textureHeberger) {
             fprintf(stderr, "impossible d'initialiser la texture :%s\n", IMG_GetError());
             return;
         }

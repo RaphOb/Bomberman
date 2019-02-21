@@ -5,11 +5,12 @@
 #include "../header/input.h"
 #include "../header/reseau.h"
 
-
+static Server serv = { 0 };
 
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
+    SDL_Log("argc: %d, argv : %s", argc, argv[0]);
     Uint32 start;
     sdl_t *pSDL = initSDL();
     player_t *player = initPlayer();
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
                     SDL_Log("Thread server fail");
                 } else {
                     SDL_Log("creation reussie");
+                    SDL_Delay(500);
                     init();
                     init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
                 }

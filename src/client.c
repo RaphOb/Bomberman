@@ -22,6 +22,8 @@
 //#endif
 //}
 
+static Server serv = { 0 };
+
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 {
     SOCKET sock;

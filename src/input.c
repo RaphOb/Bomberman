@@ -9,7 +9,7 @@
 #include <SDL_log.h>
 #include <SDL_ttf.h>
 #include "../header/input.h"
-#include "../header/client.h"
+#include "../header/reseau.h"
 #include "../header/menu.h"
 #define LEN_MAX 80
 
@@ -92,8 +92,9 @@ int loopInputHost(sdl_t *pSDL, char **p)
         SDL_RenderPresent(pSDL->pRenderer);
     }
 
-    if (quit == 2)
+    if (quit == 2) {
         *p = strdup(port->str);
+    }
 
     destroyInput(pseudo);
     TTF_CloseFont(font);

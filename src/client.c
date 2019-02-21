@@ -1,5 +1,5 @@
 #include <SDL_log.h>
-#include "../header/client.h"
+#include "../header/reseau.h"
 
 // ----- INITIALISATION -----
 void init_client(void)
@@ -44,6 +44,8 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
         pseudo = strdup("Host");
     }
 
+    SDL_Log("[Client] Connexion sur le port : %s\n", port);
+
     to.sin_addr.s_addr = inet_addr(ip);
     to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
     to.sin_family = AF_INET;
@@ -55,6 +57,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     } else {
         serv.sock = sock;
         serv.to = to;
+        serv.s_port = port;
         serv.c_pseudo = pseudo;
     }
     //hello_cli_serv();
@@ -148,8 +151,7 @@ int listen_server(int run, struct timeval timeout, fd_set readfs)
 {
     char buffer[128] = { '\0' };
     int n = 0;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 200;
+
     FD_ZERO(&readfs);
     FD_SET(serv.sock, &readfs);
     memset(buffer, '\0', 128);

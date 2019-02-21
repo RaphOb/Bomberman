@@ -10,7 +10,7 @@
 #include "../header/move.h"
 #include "../header/bit.h"
 #include "../header/renderer.h"
-#include "../header/client.h"
+#include "../header/reseau.h"
 
 /**
  * function : init game

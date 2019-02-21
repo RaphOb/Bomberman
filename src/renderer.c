@@ -78,8 +78,6 @@ void renderMenuNetwork(sdl_t *pSDL)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonHost->textureButton[pSDL->buttonHost->hover], NULL, &pSDL->buttonHost->dstRect);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonConnect->textureButton[pSDL->buttonConnect->hover], NULL, &pSDL->buttonConnect->dstRect);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
-
-
 }
 
 /**

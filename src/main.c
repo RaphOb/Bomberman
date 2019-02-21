@@ -3,13 +3,14 @@
 #include "../header/renderer.h"
 #include "../header/menu.h"
 #include "../header/input.h"
-#include "../header/serv.h"
-#include "../header/client.h"
+#include "../header/reseau.h"
 
+static Server serv = { 0 };
 
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
+    SDL_Log("argc: %d, argv : %s", argc, argv[0]);
     Uint32 start;
     sdl_t *pSDL = initSDL();
     player_t *player = initPlayer();
@@ -23,6 +24,8 @@ int main(int argc, char *argv[])
     int menu = 0;
     int network = 0;
     int play = 0;
+    fd_set readfs;
+    struct timeval timeout;
     // First menu
     while(menu == 0) {
         drawMenu(game->pSDL);
@@ -40,15 +43,18 @@ int main(int argc, char *argv[])
         } else if (network == 2) {
             char *port = malloc(sizeof(char) * 10);
             play = loopInputHost(game->pSDL, &port);
+            serv.s_port = strdup(port);
+            SDL_Log("set port : %s\n", port);
             if (play == 1) {
                 pthread_t hebergement_thread;
-                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) NULL);
+                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *) app_serv, (void *) serv.s_port);
                 if (ret_thread != 0) {
-                    SDL_Log("thread server fail");
+                    SDL_Log("Thread server fail");
                 } else {
                     SDL_Log("creation reussie");
-                    init_client();
-                    init_co_from_cli_to_serv(NULL, port, NULL);
+                    SDL_Delay(500);
+                    init();
+                    init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
                 }
             }
         }
@@ -59,8 +65,6 @@ int main(int argc, char *argv[])
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         drawGame(game);
         start = SDL_GetTicks();
-        fd_set readfs;
-        struct timeval timeout;
         timeout.tv_sec = 0;
         timeout.tv_usec = (int)start;
         quit = gameEvent(game);

@@ -3,7 +3,7 @@
 //
 
 #include "../header/move.h"
-#include "../header/client.h"
+#include "../header/reseau.h"
 
 const move_t move[] = {
         {moveUp, SDL_SCANCODE_UP},

@@ -47,46 +47,35 @@ typedef struct
 }Client;
 
 // ----- INITIALISATION -----
-static void init(void);
-static void end(void);
-static int init_co();
+void init(void);
+void end(void);
+int init_co(char *port);
 // ----- THREAD -----
-static void delete_one_thread(Client *c);
-static void delete_all_threads();
-static void wait_end_of_threads();
-static void into_thread(void* fd_client);
+void delete_one_thread(Client *c);
+void delete_all_threads();
+void wait_end_of_threads();
+int into_thread(void* fd_client);
 // ----- SOCKET -----
-static void close_socket_client(Client *c);
-static void close_all_socket_clients();
+void close_socket_client(Client *c);
+void close_all_socket_clients();
 // ----- CLIENTS -----
-static void disconnect_client(Client *c);
-static void disconnect_all_clients();
-static void delete_client(Client *c);
-static void delete_all_clients();
-static Client* get_client(int c);
-static int add_client(int s, SOCKADDR_IN csin);
-static void display_clients_co();
+void disconnect_client(Client *c);
+void disconnect_all_clients();
+void delete_client(Client *c);
+void delete_all_clients();
+Client* get_client(int c);
+int add_client(int s, SOCKADDR_IN csin);
+void display_clients_co();
 // ----- DIVERS -----
-static void set_pseudo(Client *c);
+void set_pseudo(Client *c);
 // ----- COMMUNICATION -----
-static void write_code_to_client(Client *c, int code);
-static void write_code_to_all_clients(int code);
-static void s_emission(Client *c, int code);
-static int s_reception(Client *c, char *buffer);
+void write_code_to_client(Client *c, int code);
+void write_code_to_all_clients(int code);
+void s_emission(Client *c, int code);
+int s_reception(Client *c, char *buffer);
 // ----- MAIN -----
-int app_serv(void);
+int app_serv(void* struct_serv);
 
 #define MAX_CLIENT 4
-#define CODE_SIZE 2+1
-#define DISCONNECT_CODE 10
-#define OK_CODE 11
-#define PSEUDO_CODE 20
-#define UP_CODE 30
-#define DOWN_CODE 31
-#define LEFT_CODE 32
-#define RIGHT_CODE 33
-#define BOMB_CODE 34
-static Client clients[MAX_CLIENT] = { 0 };
-static SOCKET sock;
 
 #endif //BOMBERMAN_SERV_H

@@ -125,6 +125,10 @@ void destroySDL(sdl_t *pSDL)
     }
     TTF_Quit();
     SDL_Quit();
+    free(pSDL->buttonPlay);
+    free(pSDL->buttonQuit);
+    free(pSDL->buttonHost);
+    free(pSDL->buttonConnect);
     free(pSDL);
     SDL_Log("Destroy SDL");
 }

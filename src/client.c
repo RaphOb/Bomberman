@@ -1,26 +1,28 @@
-#include <SDL_log.h>
-#include "../header/client.h"
+#include <SDL2/SDL_log.h>
+#include "../header/reseau.h"
 
 // ----- INITIALISATION -----
-void init_client(void)
-{
-#ifdef WIN32
-    WSADATA wsa;
-    int err = WSAStartup(MAKEWORD(2, 2), &wsa);
-    if(err < 0)
-    {
-        puts("WSAStartup failed !");
-        exit(EXIT_FAILURE);
-    }
-#endif
-}
+//void init_client(void)
+//{
+//#ifdef WIN32
+//    WSADATA wsa;
+//    int err = WSAStartup(MAKEWORD(2, 2), &wsa);
+//    if(err < 0)
+//    {
+//        puts("WSAStartup failed !");
+//        exit(EXIT_FAILURE);
+//    }
+//#endif
+//}
+//
+//static void end(void)
+//{
+//#ifdef WIN32
+//    WSACleanup();
+//#endif
+//}
 
-static void end(void)
-{
-#ifdef WIN32
-    WSACleanup();
-#endif
-}
+static Server serv = { 0 };
 
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 {
@@ -32,7 +34,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     }
 
     SOCKADDR_IN to = { 0 }; /* initialise la structure avec des 0 */
-    int tosize = sizeof to;
+//    int tosize = sizeof to;
 
     if (ip == NULL) {
         ip = strdup("127.0.0.1");
@@ -44,9 +46,13 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
         pseudo = strdup("Host");
     }
 
+    SDL_Log("[Client] Connexion sur le port : %s\n", port);
+
     to.sin_addr.s_addr = inet_addr(ip);
     to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
     to.sin_family = AF_INET;
+
+    SDL_Log("port: %hu", to.sin_port);
 
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
     {
@@ -55,6 +61,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     } else {
         serv.sock = sock;
         serv.to = to;
+        serv.s_port = port;
         serv.c_pseudo = pseudo;
     }
     //hello_cli_serv();
@@ -64,7 +71,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 }
 
 // ----- DIVERS -----
-static void hello_cli_serv()
+void hello_cli_serv()
 {
     // On attend que le serveur envoie le code OK_CODE
     char buffer[128];
@@ -77,24 +84,22 @@ static void hello_cli_serv()
 }
 
 // ----- COMMUNICATION -----
-static int c_reception(int code, SOCKET serv_sock)
+int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
             SDL_Log("Disconnected by the server.\n");
             closesocket(serv_sock);
             return 0;
-            break;
         case OK_CODE:
             SDL_Log("OK\n");
             return 1;
-            break;
         default:
-            break;
+            return -1;
     }
 }
 
-static void write_to_serv(char *buffer, int from_keyboard)
+void write_to_serv(char *buffer, int from_keyboard)
 {
     if(send(serv.sock, buffer, (int) strlen(buffer)-from_keyboard, 0) < 0)
     {
@@ -102,7 +107,7 @@ static void write_to_serv(char *buffer, int from_keyboard)
     }
 }
 
-static void write_code_to_server(int code)
+void write_code_to_server(int code)
 {
     char buffer[CODE_SIZE] = {'\0'};
     sprintf(buffer, "%d", code);
@@ -148,8 +153,7 @@ int listen_server(int run, struct timeval timeout, fd_set readfs)
 {
     char buffer[128] = { '\0' };
     int n = 0;
-    timeout.tv_sec = 0;
-    timeout.tv_usec = 200;
+//    SDL_Log("run: %d", run);
     FD_ZERO(&readfs);
     FD_SET(serv.sock, &readfs);
     memset(buffer, '\0', 128);
@@ -177,6 +181,7 @@ int listen_server(int run, struct timeval timeout, fd_set readfs)
             }
         }
     }
+    return 1;
 }
 
 int app_client()
@@ -187,12 +192,12 @@ int app_client()
     int run = 1;
     struct timeval timeout;
 
-    char *pseudo = "test";
+//    char *pseudo = "test";
 
     //init_co_from_cli_to_serv(pseudo);
 
     fd_set readfs;
-    int tosize = sizeof serv.to;
+//    int tosize = sizeof serv.to;
 
     while (run) {
         timeout.tv_sec = 0;

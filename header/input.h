@@ -25,6 +25,6 @@ SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Colo
 void renderInput(SDL_Rect rect, sdl_t *pSDL, input_t *input);
 input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed);
 void destroyInput(input_t *input);
-int manageInput(input_t *input, sdl_t *pSDL);
+int manageInput(input_t *input);
 
 #endif //BOMBERMAN_INPUT_H

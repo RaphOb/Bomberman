@@ -14,6 +14,6 @@
 
 
 int menuEvent(sdl_t *pSDL);
-int menuNetworkEvent();
+int menuNetworkEvent(sdl_t *pSDL);
 
 #endif //BOMBERMAN_MENU_H

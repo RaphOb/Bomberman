@@ -9,6 +9,8 @@
 
 #elif defined (linux) /* si vous êtes sous Linux */
 
+#include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <errno.h>
 #include <sys/types.h>
@@ -44,15 +46,15 @@ typedef struct {
 } Server;
 
 // ----- INITIALISATION -----
-void init_client(void);
-static void end(void);
+//void init_client(void);
+//void end(void);
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
-static void hello_cli_serv();
+void hello_cli_serv();
 // ----- COMMUNICATION -----
-static int c_reception(int code, SOCKET serv_sock);
-static void write_to_serv(char *buffer, int from_keyboard);
-static void write_code_to_server(int code);
+int c_reception(int code, SOCKET serv_sock);
+void write_to_serv(char *buffer, int from_keyboard);
+void write_code_to_server(int code);
 void c_emission(int code);
 int listen_server(int run, struct timeval timeout, fd_set readfs);
 // ----- MAIN -----

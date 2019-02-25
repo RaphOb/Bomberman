@@ -17,7 +17,7 @@
 
 typedef struct button_s {
     SDL_Texture *textureButton[2];
-    SDL_bool hover;
+    int hover;
     SDL_Rect dstRect;
 } button_t;
 

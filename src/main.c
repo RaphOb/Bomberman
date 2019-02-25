@@ -5,11 +5,12 @@
 #include "../header/input.h"
 #include "../header/reseau.h"
 
-
+static Server serv = { 0 };
 
 int main(int argc, char *argv[])
 {
     // Initialisation du jeu
+    SDL_Log("argc: %d, argv : %s", argc, argv[0]);
     Uint32 start;
     sdl_t *pSDL = initSDL();
     player_t *player = initPlayer();
@@ -33,7 +34,7 @@ int main(int argc, char *argv[])
     // Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);
-        network = menuNetworkEvent();
+        network = menuNetworkEvent(game->pSDL);
 
         // Input
         SDL_StartTextInput();
@@ -46,12 +47,13 @@ int main(int argc, char *argv[])
             SDL_Log("set port : %s\n", port);
             if (play == 1) {
                 pthread_t hebergement_thread;
-                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) serv.s_port);
+                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *) app_serv, (void *) serv.s_port);
                 if (ret_thread != 0) {
                     SDL_Log("Thread server fail");
                 } else {
                     SDL_Log("creation reussie");
-                    init_client();
+                    SDL_Delay(500);
+                    init();
                     init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
                 }
             }

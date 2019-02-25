@@ -153,7 +153,7 @@ int listen_server(int run, struct timeval timeout, fd_set readfs)
 {
     char buffer[128] = { '\0' };
     int n = 0;
-
+//    SDL_Log("run: %d", run);
     FD_ZERO(&readfs);
     FD_SET(serv.sock, &readfs);
     memset(buffer, '\0', 128);

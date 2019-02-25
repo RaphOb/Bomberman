@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
             SDL_Log("set port : %s\n", port);
             if (play == 1) {
                 pthread_t hebergement_thread;
-                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *(*)(void *)) app_serv, (void *) serv.s_port);
+                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *) app_serv, (void *) serv.s_port);
                 if (ret_thread != 0) {
                     SDL_Log("Thread server fail");
                 } else {

@@ -103,7 +103,7 @@ void write_to_serv(char *buffer, int from_keyboard)
 {
     if(send(serv.sock, buffer, (int) strlen(buffer)-from_keyboard, 0) < 0)
     {
-        SDL_Log("send()");
+//        SDL_Log("send()");
     }
 }
 
@@ -125,19 +125,19 @@ void c_emission(int code)
             write_code_to_server(DISCONNECT_CODE);
             break;
         case UP_CODE:
-            SDL_Log("Send up to server\n");
+//            SDL_Log("Send up to server\n");
             write_code_to_server(UP_CODE);
             break;
         case DOWN_CODE:
-            SDL_Log("Send down to server\n");
+//            SDL_Log("Send down to server\n");
             write_code_to_server(DOWN_CODE);
             break;
         case LEFT_CODE:
-            SDL_Log("Send left to server\n");
+//            SDL_Log("Send left to server\n");
             write_code_to_server(LEFT_CODE);
             break;
         case RIGHT_CODE:
-            SDL_Log("Send right to server\n");
+//            SDL_Log("Send right to server\n");
             write_code_to_server(RIGHT_CODE);
             break;
         case BOMB_CODE:

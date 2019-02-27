@@ -54,7 +54,7 @@ int gameEvent(game_t *game)
                     break;
                 case SDLK_b:
                     c_emission(BOMB_CODE);
-                    if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && isPlayerOnOneCell(game->players[0]))
+                    if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && canPlayerPlaceBomb(game->players[0]))
                         placeBomb(game->pSDL, game->players[0]);
                     break;
                 default :
@@ -95,8 +95,8 @@ void makeExplosion(sdl_t *pSDL, player_t *player)
 void placeBomb(sdl_t *pSDL, player_t *player)
 {
     const int pSizeBlock = BLOCK_SIZE * SIZE_M;
-    int cell_x = START_X_MAP + player->map_x[0] * pSizeBlock + (pSizeBlock / 2) - (BOMB_PNG_W / 2);
-    int cell_y = START_Y_MAP + player->map_y[0] * pSizeBlock + (pSizeBlock / 2) - (BOMB_PNG_H / 2);
+    int cell_x = START_X_MAP + (player->bomb->x_pos * pSizeBlock) + (pSizeBlock / 2) - (BOMB_PNG_W / 2);
+    int cell_y = START_Y_MAP + (player->bomb->y_pos * pSizeBlock) + (pSizeBlock / 2) - (BOMB_PNG_H / 2);
 
     pSDL->dst_bomb.h = BOMB_PNG_H;
     pSDL->dst_bomb.w = BOMB_PNG_W;
@@ -104,8 +104,8 @@ void placeBomb(sdl_t *pSDL, player_t *player)
     pSDL->dst_bomb.y = cell_y;
 //    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
 
-    player->bomb->x_pos = player->map_x[0];
-    player->bomb->y_pos = player->map_y[0];
+//    player->bomb->x_pos = player->map_x[0];
+//    player->bomb->y_pos = player->map_y[0];
     player->bombPosed = 1;
     player->bomb->tickBombDropped = SDL_GetTicks();
 

@@ -54,7 +54,7 @@ int gameEvent(game_t *game)
                     break;
                 case SDLK_b:
                     c_emission(BOMB_CODE);
-                    if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && isPlayerOnOneCell(game->players[0]))
+                    if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && canPlayerPlaceBomb(game->players[0]))
                         placeBomb(game->pSDL, game->players[0]);
                     break;
                 default :

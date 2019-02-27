@@ -11,8 +11,8 @@
 #define TEXTURE_HEIGHT 128
 #define FRAME_WIDTH TEXTURE_WIDTH / 3
 #define FRAME_HEIGHT TEXTURE_HEIGHT / 4
-#define PLAYER_WIDTH FRAME_WIDTH + (FRAME_WIDTH / 2)
-#define PLAYER_HEIGHT FRAME_HEIGHT + (FRAME_HEIGHT / 2)
+#define PLAYER_WIDTH (int) (FRAME_WIDTH + (FRAME_WIDTH / 2))
+#define PLAYER_HEIGHT (int) (FRAME_HEIGHT + (FRAME_HEIGHT / 2))
 
 typedef struct bombs_s {
     int x_pos;

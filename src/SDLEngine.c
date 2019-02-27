@@ -258,7 +258,7 @@ button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *texture
  */
 void initPlayerSDL(sdl_t *pSDL)
 {
-    SDL_Surface *surfaceTrump = IMG_Load("../resources/player3.png");
+    SDL_Surface *surfaceTrump = IMG_Load("../resources/perso3.png");
     if (!surfaceTrump) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);

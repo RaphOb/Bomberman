@@ -23,8 +23,10 @@ int menuEvent(sdl_t *pSDL)
     const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
     if (SDL_HasIntersection(&mouse, &pSDL->buttonPlay->dstRect)) {
         pSDL->buttonPlay->hover = 1;
+        playHover();
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
+        playHover();
     }
 
     if (SDL_PollEvent(&event)) {

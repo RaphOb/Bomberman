@@ -45,7 +45,7 @@ sdl_t *initSDL()
         destroySDL(pSDL);
         return NULL;
     }
-    
+
     initPlayerSDL(pSDL);
     initMap(pSDL);
     initBlock(pSDL);
@@ -53,6 +53,34 @@ sdl_t *initSDL()
     initExplosion(pSDL);
     initMenu(pSDL);
     return pSDL;
+}
+void playHover()
+{
+    SDL_AudioSpec wavSpec;
+    Uint32 wavLength;
+    Uint8 *wavBuffer;
+
+    SDL_LoadWAV("../resources/hey.wav", &wavSpec, &wavBuffer, &wavLength);
+    SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+    int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+    SDL_PauseAudioDevice(deviceId, 0);
+    
+}
+
+void playExplosion()
+{
+    SDL_AudioSpec wavSpec;
+    Uint32 wavLength;
+    Uint8 *wavBuffer;
+
+    SDL_LoadWAV("../resources/explosion.wav", &wavSpec, &wavBuffer, &wavLength);
+    SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
+    int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+    SDL_PauseAudioDevice(deviceId, 0);
+
+  //  SDL_CloseAudioDevice(deviceId);
+   // SDL_FreeWAV(wavBuffer);
+
 }
 
 /**
@@ -123,6 +151,7 @@ void destroySDL(sdl_t *pSDL)
         SDL_DestroyWindow(pSDL->pWindow);
         pSDL-> pWindow = NULL;
     }
+
     TTF_Quit();
     SDL_Quit();
     free(pSDL->buttonPlay);

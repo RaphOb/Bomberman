@@ -78,6 +78,7 @@ void makeExplosion(sdl_t *pSDL, player_t *player)
     pSDL->dst_explosion2.w = 1;
     player->bomb->explosion = 1;
     player->bomb->tickExplosion = SDL_GetTicks();
+    playExplosion();
 //    game->pSDL->dst_explosion2.x = game->pSDL->dst_bomb.x + ((game->pSDL->dst_bomb.w - game->pSDL->dst_explosion2.w) / 2);
 //    game->pSDL->dst_explosion2.y = game->pSDL->dst_bomb.y + ((game->pSDL->dst_bomb.h - game->pSDL->dst_explosion2.h) / 2);
 //    SDL_Log("explo : x: %d, y: %d", game->pSDL->dst_explosion2.x, game->pSDL->dst_explosion2.y);

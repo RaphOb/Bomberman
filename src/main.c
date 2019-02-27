@@ -30,6 +30,7 @@ int main(int argc, char *argv[])
     while(menu == 0) {
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL);
+
     }
     // Menu Network
     while (menu != -1 && network == 0) {

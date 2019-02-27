@@ -59,6 +59,8 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
+void playExplosion();
+void playHover();
 
 void clear(SDL_Renderer *sdl_renderer);
 

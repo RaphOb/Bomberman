@@ -69,15 +69,11 @@ int gameEvent(game_t *game)
     return res;
 }
 
-void makeExplosion(sdl_t *pSDL, player_t *player)
+void makeExplosion(player_t *player)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    pSDL->dst_explosion.h = REAL_BLOCK_SIZE;
-    pSDL->dst_explosion.w = REAL_BLOCK_SIZE;
     player->bomb->explosion = 1;
     player->bomb->tickExplosion = SDL_GetTicks();
-
-
 
 }
 

@@ -23,11 +23,16 @@ void drawGame(game_t *game)
             renderBomb(game->pSDL, game->players[i]);
         }
         if (game->players[i]->bomb->explosion == 1) {
+            int frame = 0;
             int currentTick = SDL_GetTicks();
+            if (currentTick - game->players[i]->bomb->tickExplosion > 200) frame = 1;
+            if (currentTick - game->players[i]->bomb->tickExplosion > 400) frame = 2;
+            if (currentTick - game->players[i]->bomb->tickExplosion > 600) frame = 3;
+            if (currentTick - game->players[i]->bomb->tickExplosion > 800) frame = 4;
             if (currentTick - game->players[i]->bomb->tickExplosion > 1000) {
                 game->players[i]->bomb->explosion = 0;
             }
-            renderExplosion(game->pSDL);
+            renderExplosion(game->pSDL, frame, game->map);
         }
         renderPlayer(game->pSDL, game->players[i]);
     }
@@ -104,24 +109,34 @@ void renderBomb(sdl_t *pSDL, player_t *player)
     if (currentTick - player->bomb->tickBombDropped > 2000) {
         player->bombPosed = 0;
         player->bomb->tickBombDropped = 0;
-        makeExplosion(pSDL, player);
+        makeExplosion(player);
         n = 0;
     }
 }
-void renderExplosion(sdl_t *pSDL)
+void renderExplosion(sdl_t *pSDL, int frame, map_t map)
 {
+    const int cell_x = (pSDL->dst_bomb.x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
+    const int cell_y = (pSDL->dst_bomb.y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
+    SDL_Rect dst_mid = {pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - REAL_BLOCK_SIZE) / 2), pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - REAL_BLOCK_SIZE) / 2), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
 
-//    if (pSDL->dst_explosion.h < BLOCK_SIZE_PNG * SIZE_M * 3) {
-//        pSDL->dst_explosion.h += 20;
-//        pSDL->dst_explosion.w += 20;
-//    }
-
-    pSDL->dst_explosion.x = pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - pSDL->dst_explosion.w) / 2);
-    pSDL->dst_explosion.y = pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - pSDL->dst_explosion.h) / 2);
-
-    SDL_Rect dst_right = {pSDL->dst_explosion.x + REAL_BLOCK_SIZE, pSDL->dst_explosion.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], NULL, &pSDL->dst_explosion);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], NULL, &dst_right);
+    SDL_Rect src = {0, 64 - frame * 16, 16, 16};
+    SDL_Rect dst_right = {dst_mid.x + REAL_BLOCK_SIZE, dst_mid.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+    SDL_Rect dst_left = {dst_mid.x - REAL_BLOCK_SIZE, dst_mid.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+    SDL_Rect dst_up = {dst_mid.x, dst_mid.y - REAL_BLOCK_SIZE, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+    SDL_Rect dst_down = {dst_mid.x, dst_mid.y + REAL_BLOCK_SIZE, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], &src, &dst_mid);
+    if (!getBit(map[cell_y], cell_x + 1, 1) && cell_x + 1 <= 12) {
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], &src, &dst_right);
+    }
+    if (!getBit(map[cell_y], cell_x - 1, 1) && cell_x - 1 >= 0) {
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[LEFTFLAME], &src, &dst_left);
+    }
+    if (!getBit(map[cell_y - 1], cell_x, 1) && cell_y - 1 >= 0) {
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[UPFLAME], &src, &dst_up);
+    }
+    if (!getBit(map[cell_y + 1], cell_x, 1) && cell_y + 1 <= 12) {
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[DOWNFLAME], &src, &dst_down);
+    }
 }
 
 void renderBackground(sdl_t *pSDL)

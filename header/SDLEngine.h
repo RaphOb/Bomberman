@@ -34,7 +34,6 @@ struct sdl_s {
     SDL_Texture *textureBomb;
     SDL_Texture *textureExplosion;
     SDL_Texture *textureExplosion2[7];
-    SDL_Rect dst_explosion;
     button_t *buttonPlay;
     button_t *buttonQuit;
     button_t *buttonConnect;

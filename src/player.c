@@ -11,6 +11,7 @@
 
 player_t *initPlayer()
 {
+    static unsigned int nb = 0;
     player_t *p = malloc(sizeof(player_t));
     if(!p) {
       SDL_Log("Erreur malloc player");
@@ -25,14 +26,23 @@ player_t *initPlayer()
     p->bombPosed = 0;
     p->bombs_left = 20;
     p->frags = 0;
-    p->map_x[0] = 0;
-    p->map_x[1] = 0;
-    p->map_y[0] = 0;
-    p->map_y[1] = 0;
-    p->x_pos = START_X_MAP;
-    p->y_pos = START_Y_MAP;
+    p->number = nb++;
+    if (p->number == 0) {
+        p->x_pos = START_X_MAP;
+        p->y_pos = START_Y_MAP;
+        p->map_x[0] = 0;
+        p->map_x[1] = 0;
+        p->map_y[0] = 0;
+        p->map_y[1] = 0;
+    } else if (p->number == 1) {
+        p->x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE * 2);
+        p->y_pos = MAP_SIZE_H - ((REAL_BLOCK_SIZE / 2) * 3);
+        p->map_x[0] = 12;
+        p->map_x[1] = 12;
+        p->map_y[0] = 8;
+        p->map_y[1] = 8;
+    }
     p->speed = 1;
-    p->number = 1;
     p->current_frame = 1;
     p->frame_time = 0;
     p->direction = 2;
@@ -47,13 +57,12 @@ void updatePlayerCell(player_t *player)
 {
     const int pos_x = player->x_pos - 80;
     const int pos_y = player->y_pos - 40;
-    const int pSizeBlock = BLOCK_SIZE * SIZE_M;
 
-    player->map_x[0] = (pos_x) / pSizeBlock;
-    player->map_y[0] = (pos_y) / pSizeBlock;
+    player->map_x[0] = (pos_x) / REAL_BLOCK_SIZE;
+    player->map_y[0] = (pos_y) / REAL_BLOCK_SIZE;
 
-    player->map_x[1] = (pos_x + PLAYER_WIDTH) / pSizeBlock;
-    player->map_y[1] = (pos_y + PLAYER_HEIGHT) / pSizeBlock;
+    player->map_x[1] = (pos_x + PLAYER_WIDTH) / REAL_BLOCK_SIZE;
+    player->map_y[1] = (pos_y + PLAYER_HEIGHT) / REAL_BLOCK_SIZE;
 
 //    SDL_Log("player_map_x[0] : %d, player_map_x[1] : %d, player_map_y[0] : %d, player_map_y[1] : %d", player->map_x[0], player->map_x[1], player->map_y[0], player->map_y[1]);
 
@@ -62,27 +71,26 @@ void updatePlayerCell(player_t *player)
 
 int collideWith(map_t map, player_t *player, int x, int y)
 {
-    const int pSizeBlock = BLOCK_SIZE * SIZE_M;
     const int pos_x = x - 80;
     const int pos_y = y - 40;
-    int cell_x = (pos_x + 1) / pSizeBlock;
-    int cell_y = (pos_y + 1) / pSizeBlock;
+    int cell_x = (pos_x + 1) / REAL_BLOCK_SIZE;
+    int cell_y = (pos_y + 1) / REAL_BLOCK_SIZE;
 //    SDL_Log("%d, %d", PLAYER_WIDTH, PLAYER_HEIGHT);
-    int cell_x2 = (pos_x + PLAYER_WIDTH - 1) / pSizeBlock;
-    int cell_y2 = (pos_y + PLAYER_HEIGHT - 1) / pSizeBlock;
+    int cell_x2 = (pos_x + PLAYER_WIDTH - 1) / REAL_BLOCK_SIZE;
+    int cell_y2 = (pos_y + PLAYER_HEIGHT - 1) / REAL_BLOCK_SIZE;
 
     // Down
     if (player->direction == 0) {
-        cell_y = (pos_y + PLAYER_HEIGHT - 1) / pSizeBlock;
+        cell_y = (pos_y + PLAYER_HEIGHT - 1) / REAL_BLOCK_SIZE;
     // Right
     } else if (player->direction == 2) {
-        cell_x = (pos_x + PLAYER_WIDTH - 1) / pSizeBlock;
+        cell_x = (pos_x + PLAYER_WIDTH - 1) / REAL_BLOCK_SIZE;
     // Left
     } else if (player->direction == 1) {
-        cell_x2 = (pos_x + 1) / pSizeBlock;
+        cell_x2 = (pos_x + 1) / REAL_BLOCK_SIZE;
     // Up
     } else {
-        cell_y2 = (pos_y + 1) / pSizeBlock;
+        cell_y2 = (pos_y + 1) / REAL_BLOCK_SIZE;
     }
 
 //    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
@@ -102,7 +110,7 @@ int canPlayerPlaceBomb(player_t *player)
         if (player->map_x[0] != player->map_x[1]) {
             const int pos_x = player->x_pos - 80;
             const int pos_x2 = player->x_pos - 80 + PLAYER_WIDTH;
-            const int middle_x = player->map_x[1] * BLOCK_SIZE * SIZE_M;
+            const int middle_x = player->map_x[1] * REAL_BLOCK_SIZE;
             const int abs_x = abs(middle_x - pos_x);
             const int abs_x2 = abs(middle_x - pos_x2);
 //            SDL_Log("abs_x: %d", abs_x);
@@ -120,7 +128,7 @@ int canPlayerPlaceBomb(player_t *player)
         } else {
             const int pos_y = player->y_pos - 40;
             const int pos_y2 = player->y_pos - 40 + PLAYER_HEIGHT;
-            const int middle_y = player->map_y[1] * BLOCK_SIZE * SIZE_M;
+            const int middle_y = player->map_y[1] * REAL_BLOCK_SIZE;
             const int abs_y = abs(middle_y - pos_y);
             const int abs_y2 = abs(middle_y - pos_y2);
 //            SDL_Log("abs_y: %d", abs_y);

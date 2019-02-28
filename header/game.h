@@ -18,7 +18,6 @@
 
 typedef struct game_s {
     map_t map;
-    int current_map;
     player_t *players[MAX_PLAYER];
     sdl_t *pSDL;
 } game_t;

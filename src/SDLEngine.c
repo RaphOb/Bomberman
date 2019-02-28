@@ -90,15 +90,24 @@ void destroySDL(sdl_t *pSDL)
         SDL_DestroyTexture(pSDL->buttonQuit->textureButton[1]);
         pSDL->buttonQuit->textureButton[1] = NULL;
     }
+    if (pSDL->buttonConnect->textureButton[1]) {
+        SDL_DestroyTexture(pSDL->buttonConnect->textureButton[1]);
+        pSDL->buttonConnect->textureButton[1] = NULL;
+    }
+    if (pSDL->buttonHost->textureButton[1]) {
+        SDL_DestroyTexture(pSDL->buttonHost->textureButton[1]);
+        pSDL->buttonHost->textureButton[1] = NULL;
+    }
+    for (int i = 0; i < 7; i++) {
+        if (pSDL->textureExplosion2[i]) {
+            SDL_DestroyTexture(pSDL->textureExplosion2[i]);
+            pSDL->textureExplosion2[i] = NULL;
+        }
+    }
     if (pSDL->textureExplosion) {
         SDL_DestroyTexture(pSDL->textureExplosion);
         pSDL->textureExplosion = NULL;
     }
-    if (pSDL->textureExplosion2) {
-        SDL_DestroyTexture(pSDL->textureExplosion2);
-        pSDL->textureExplosion2 = NULL;
-    }
-
     if (pSDL->textureBomb) {
         SDL_DestroyTexture(pSDL->textureBomb);
         pSDL->textureBomb = NULL;
@@ -111,9 +120,13 @@ void destroySDL(sdl_t *pSDL)
         SDL_DestroyTexture(pSDL->textureMap);
         pSDL->textureMap = NULL;
     }
-    if (pSDL->texturePlayer) {
-        SDL_DestroyTexture(pSDL->texturePlayer);
-        pSDL->texturePlayer = NULL;
+    if (pSDL->texturePlayers[0]) {
+        SDL_DestroyTexture(pSDL->texturePlayers[0]);
+        pSDL->texturePlayers[0] = NULL;
+    }
+    if (pSDL->texturePlayers[1]) {
+        SDL_DestroyTexture(pSDL->texturePlayers[1]);
+        pSDL->texturePlayers[1] = NULL;
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
@@ -131,15 +144,6 @@ void destroySDL(sdl_t *pSDL)
     free(pSDL->buttonConnect);
     free(pSDL);
     SDL_Log("Destroy SDL");
-}
-
-/** TODO
- * function : comment plz
- * @param sdl_renderer
- */
-void clear(SDL_Renderer *sdl_renderer) {
-    SDL_RenderClear(sdl_renderer);
-    SDL_RenderPresent(sdl_renderer);
 }
 
 /**
@@ -229,24 +233,26 @@ button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *texture
  */
 void initPlayerSDL(sdl_t *pSDL)
 {
-    SDL_Surface *surfaceTrump = IMG_Load("../resources/perso3.png");
-    if (!surfaceTrump) {
+    SDL_Surface *surfacePlayer = IMG_Load("../resources/perso1.png");
+    SDL_Surface *surfacePlayer2 = IMG_Load("../resources/perso2.png");
+    if (!surfacePlayer || !surfacePlayer2) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
     } else {
-        pSDL->texturePlayer = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceTrump);
-        if (!pSDL->texturePlayer) {
+        pSDL->texturePlayers[0] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer);
+        pSDL->texturePlayers[1] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer2);
+        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1]) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
             destroySDL(pSDL);
             return;
         }
 
-        SDL_Rect d = {START_X_MAP, START_Y_MAP, FRAME_WIDTH, FRAME_HEIGHT};
-        pSDL->dst_player = d;
     }
-    SDL_FreeSurface(surfaceTrump);
-    surfaceTrump = NULL;
+    SDL_FreeSurface(surfacePlayer);
+    SDL_FreeSurface(surfacePlayer2);
+    surfacePlayer = NULL;
+    surfacePlayer2 = NULL;
 }
 
 /**
@@ -277,23 +283,42 @@ void initBomb(sdl_t *pSDL)
 void initExplosion(sdl_t *pSDL)
 {
     SDL_Surface *explosion = IMG_Load("../resources/explosion.png");
-    SDL_Surface *explosion2 = IMG_Load("../resources/Explosion2.png");
-    if (!explosion2 || !explosion) {
+    SDL_Surface *center = IMG_Load("../resources/flamecenter.png");
+    SDL_Surface *down = IMG_Load("../resources/flamedown.png");
+    SDL_Surface *horizontal = IMG_Load("../resources/flamehorizontal.png");
+    SDL_Surface *left = IMG_Load("../resources/flameleft.png");
+    SDL_Surface *right = IMG_Load("../resources/flameright.png");
+    SDL_Surface *up = IMG_Load("../resources/flameup.png");
+    SDL_Surface *vertical = IMG_Load("../resources/flamevertical.png");
+    if (!explosion || !center || !down || !horizontal || !left || !right || !up || !vertical) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
     } else {
         pSDL->textureExplosion = SDL_CreateTextureFromSurface(pSDL->pRenderer, explosion);
-        pSDL->textureExplosion2 = SDL_CreateTextureFromSurface(pSDL->pRenderer, explosion2);
-        if (!pSDL->textureExplosion || !pSDL->textureExplosion2) {
+        pSDL->textureExplosion2[CENTERFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, center);
+        pSDL->textureExplosion2[DOWNFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, down);
+        pSDL->textureExplosion2[HORIZONTALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, horizontal);
+        pSDL->textureExplosion2[LEFTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, left);
+        pSDL->textureExplosion2[RIGHTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, right);
+        pSDL->textureExplosion2[UPFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, up);
+        pSDL->textureExplosion2[VERTICALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, vertical);
+        if (!pSDL->textureExplosion || !pSDL->textureExplosion2[CENTERFLAME] || !pSDL->textureExplosion2[DOWNFLAME] || !pSDL->textureExplosion2[HORIZONTALFLAME] ||
+            !pSDL->textureExplosion2[LEFTFLAME] || !pSDL->textureExplosion2[RIGHTFLAME] || !pSDL->textureExplosion2[UPFLAME] || !pSDL->textureExplosion2[VERTICALFLAME]) {
             fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
             destroySDL(pSDL);
             return;
         }
         SDL_Log("Explosion initialised");
     }
-    SDL_FreeSurface(explosion2);
     SDL_FreeSurface(explosion);
+    SDL_FreeSurface(center);
+    SDL_FreeSurface(down);
+    SDL_FreeSurface(horizontal);
+    SDL_FreeSurface(left);
+    SDL_FreeSurface(right);
+    SDL_FreeSurface(up);
+    SDL_FreeSurface(vertical);
 }
 
 void initBlock(sdl_t *pSDL)

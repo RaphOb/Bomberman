@@ -17,17 +17,20 @@ void drawGame(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    if (game->players[0]->bombPosed == 1) {
-        renderBomb(game->pSDL, game->players[0]);
-    }
-    if (game->players[0]->bomb->explosion == 1) {
-        int currentTick = SDL_GetTicks();
-        if (currentTick - game->players[0]->bomb->tickExplosion > 400) {
-            game->players[0]->bomb->explosion = 0;
+    for (int i = 0; game->players[i] != NULL; i++) {
+//        SDL_Log("drawGame i: %d", i);
+        if (game->players[i]->bombPosed == 1) {
+            renderBomb(game->pSDL, game->players[i]);
         }
-        renderExplosion(game->pSDL);
+        if (game->players[i]->bomb->explosion == 1) {
+            int currentTick = SDL_GetTicks();
+            if (currentTick - game->players[i]->bomb->tickExplosion > 1000) {
+                game->players[i]->bomb->explosion = 0;
+            }
+            renderExplosion(game->pSDL);
+        }
+        renderPlayer(game->pSDL, game->players[i]);
     }
-    renderPlayer(game->pSDL, game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
@@ -108,21 +111,17 @@ void renderBomb(sdl_t *pSDL, player_t *player)
 void renderExplosion(sdl_t *pSDL)
 {
 
-    if (pSDL->dst_explosion2.h < BLOCK_SIZE * SIZE_M * 3) {
-        pSDL->dst_explosion2.h += 20;
-        pSDL->dst_explosion2.w += 20;
-    }
+//    if (pSDL->dst_explosion.h < BLOCK_SIZE_PNG * SIZE_M * 3) {
+//        pSDL->dst_explosion.h += 20;
+//        pSDL->dst_explosion.w += 20;
+//    }
 
-//    pSDL->dst_explosion.h += 3;
-//    pSDL->dst_explosion.w += 3;
-    pSDL->dst_explosion2.x = pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - pSDL->dst_explosion2.w) / 2);
-    pSDL->dst_explosion2.y = pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - pSDL->dst_explosion2.h) / 2);
+    pSDL->dst_explosion.x = pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - pSDL->dst_explosion.w) / 2);
+    pSDL->dst_explosion.y = pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - pSDL->dst_explosion.h) / 2);
 
-//    pSDL->dst_explosion.x = (int) (pSDL->dst_explosion2.x + pSDL->dst_explosion.w / 3);
-//    pSDL->dst_explosion.y = (int) (pSDL->dst_explosion2.y + pSDL->dst_explosion.h / 3);
-
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2, NULL, &pSDL->dst_explosion2);
-//    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion, NULL, &pSDL->dst_explosion);
+    SDL_Rect dst_right = {pSDL->dst_explosion.x + REAL_BLOCK_SIZE, pSDL->dst_explosion.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], NULL, &pSDL->dst_explosion);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], NULL, &dst_right);
 }
 
 void renderBackground(sdl_t *pSDL)
@@ -141,7 +140,10 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, (FRAME_HEIGHT) * player->direction, FRAME_WIDTH, FRAME_HEIGHT};
 //    SDL_Log("player_x : %d, player_y : %d", player->x_pos, player->y_pos);
     SDL_Rect r = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayer, &src, &r);
+//    SDL_Log("x_pos: %d, y_pos: %d", player->x_pos, player->y_pos);
+//    SDL_Log("player number: %d", player->number);
+//    SDL_Log("player texture: %d", pSDL->texturePlayers[player->number] != NULL);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[player->number], &src, &r);
 
     if (player->still == 0) {
         player->frame_time++;
@@ -160,11 +162,11 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
  */
 void renderBlock(sdl_t *pSDL, int x, int y)
 {
-    SDL_Rect src_block = {0, 0, BLOCK_SIZE, BLOCK_SIZE};
-    SDL_Rect dst_block = {START_X_MAP + (16 * x * SIZE_M),
-                          START_Y_MAP + (BLOCK_SIZE * y * SIZE_M),
-                          BLOCK_SIZE * SIZE_M,
-                          BLOCK_SIZE * SIZE_M};
+    SDL_Rect src_block = {0, 0, BLOCK_SIZE_PNG, BLOCK_SIZE_PNG};
+    SDL_Rect dst_block = {START_X_MAP + (x * REAL_BLOCK_SIZE),
+                          START_Y_MAP + (y * REAL_BLOCK_SIZE),
+                          REAL_BLOCK_SIZE,
+                          REAL_BLOCK_SIZE};
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBlock, &src_block, &dst_block);
 }
 

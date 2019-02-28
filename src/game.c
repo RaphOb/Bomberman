@@ -23,7 +23,6 @@ game_t *initGame(sdl_t *pSDL)
         return (NULL);
     }
 
-    game->current_map = 0;
     if (extractArrayFromFile(game->map) == 0) {
         return (NULL);
     }
@@ -46,7 +45,6 @@ int gameEvent(game_t *game)
         if (event.type == SDL_QUIT) {
             res = -1;
         } else if (event.type == SDL_KEYDOWN) {
-            //
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE :
                     c_emission(DISCONNECT_CODE);
@@ -54,8 +52,9 @@ int gameEvent(game_t *game)
                     break;
                 case SDLK_b:
                     c_emission(BOMB_CODE);
-                    if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && canPlayerPlaceBomb(game->players[0]))
-                        placeBomb(game->pSDL, game->players[0]);
+                        if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 &&
+                            canPlayerPlaceBomb(game->players[0]))
+                            placeBomb(game->pSDL, game->players[0]);
                     break;
                 default :
                     fprintf(stderr,"touche inconnue %d\n", event.key.keysym.sym);
@@ -63,39 +62,29 @@ int gameEvent(game_t *game)
             }
         }
     }
-    if (game->players[0]->bomb->explosion == 1) {
-        checkBombDamage(game->map, game->players[0]->bomb);
-    }
-    doMove(keystates, game->players[0], game->map);
-
+        if (game->players[0]->bomb->explosion == 1) {
+            checkBombDamage(game->map, game->players[0]->bomb);
+        }
+        doMove(keystates, game->players[0], game->map);
     return res;
 }
 
 void makeExplosion(sdl_t *pSDL, player_t *player)
 {
-    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    pSDL->dst_explosion2.h = 1;
-    pSDL->dst_explosion2.w = 1;
+//    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
+    pSDL->dst_explosion.h = REAL_BLOCK_SIZE;
+    pSDL->dst_explosion.w = REAL_BLOCK_SIZE;
     player->bomb->explosion = 1;
     player->bomb->tickExplosion = SDL_GetTicks();
-//    game->pSDL->dst_explosion2.x = game->pSDL->dst_bomb.x + ((game->pSDL->dst_bomb.w - game->pSDL->dst_explosion2.w) / 2);
-//    game->pSDL->dst_explosion2.y = game->pSDL->dst_bomb.y + ((game->pSDL->dst_bomb.h - game->pSDL->dst_explosion2.h) / 2);
-//    SDL_Log("explo : x: %d, y: %d", game->pSDL->dst_explosion2.x, game->pSDL->dst_explosion2.y);
 
-//    game->pSDL->dst_explosion.x = game->pSDL->dst_explosion2.x + 40;
-//    game->pSDL->dst_explosion.y = game->pSDL->dst_explosion2.y + 30;
-//    game->pSDL->dst_explosion.h = 10;
-//    game->pSDL->dst_explosion.h = BLOCK_SIZE * SIZE_M * 2;
-//    game->pSDL->dst_explosion.w = 10;
-//    game->pSDL->dst_explosion.w = BLOCK_SIZE * SIZE_M * 2;
+
 
 }
 
 void placeBomb(sdl_t *pSDL, player_t *player)
 {
-    const int pSizeBlock = BLOCK_SIZE * SIZE_M;
-    int cell_x = START_X_MAP + (player->bomb->x_pos * pSizeBlock) + (pSizeBlock / 2) - (BOMB_PNG_W / 2);
-    int cell_y = START_Y_MAP + (player->bomb->y_pos * pSizeBlock) + (pSizeBlock / 2) - (BOMB_PNG_H / 2);
+    int cell_x = START_X_MAP + (player->bomb->x_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
+    int cell_y = START_Y_MAP + (player->bomb->y_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
 
     pSDL->dst_bomb.h = BOMB_PNG_H;
     pSDL->dst_bomb.w = BOMB_PNG_W;
@@ -103,8 +92,6 @@ void placeBomb(sdl_t *pSDL, player_t *player)
     pSDL->dst_bomb.y = cell_y;
 //    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
 
-//    player->bomb->x_pos = player->map_x[0];
-//    player->bomb->y_pos = player->map_y[0];
     player->bombPosed = 1;
     player->bomb->tickBombDropped = SDL_GetTicks();
 
@@ -138,5 +125,6 @@ void destroyBlock(map_t map, int pos_x, int pos_y)
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {
         toggleBit(map[pos_y], pos_x, 1);
         toggleBit(map[pos_y], pos_x, 2);
+
     }
 }

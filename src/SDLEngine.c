@@ -54,33 +54,27 @@ sdl_t *initSDL()
     initMenu(pSDL);
     return pSDL;
 }
-void playHover()
+
+/**
+ * functin :Play sound
+ * @param path
+ */
+void playSound(char* path)
 {
     SDL_AudioSpec wavSpec;
     Uint32 wavLength;
     Uint8 *wavBuffer;
 
-    SDL_LoadWAV("../resources/hey.wav", &wavSpec, &wavBuffer, &wavLength);
+    SDL_LoadWAV(path, &wavSpec, &wavBuffer, &wavLength);
     SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-    int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-    SDL_PauseAudioDevice(deviceId, 0);
-    
-}
-
-void playExplosion()
-{
-    SDL_AudioSpec wavSpec;
-    Uint32 wavLength;
-    Uint8 *wavBuffer;
-
-    SDL_LoadWAV("../resources/explosion.wav", &wavSpec, &wavBuffer, &wavLength);
-    SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-    int success = SDL_QueueAudio(deviceId, wavBuffer, wavLength);
+     SDL_QueueAudio(deviceId, wavBuffer, wavLength);
     SDL_PauseAudioDevice(deviceId, 0);
 
-  //  SDL_CloseAudioDevice(deviceId);
-   // SDL_FreeWAV(wavBuffer);
-
+    if (SDL_GetQueuedAudioSize(deviceId) == 0) {
+        SDL_Log("hello");
+       // SDL_CloseAudioDevice(deviceId);
+        SDL_FreeWAV(wavBuffer);
+    }
 }
 
 /**

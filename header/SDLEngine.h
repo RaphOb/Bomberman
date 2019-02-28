@@ -15,6 +15,10 @@
 #define BOMB_PNG_W 30
 #define BOMB_PNG_H 32
 
+//Path wav sound
+#define EXPLOSION_SOUND     "../resources/explosion.wav"
+#define HOVER_SOUND         "../resources/menu_hover.wav"
+
 typedef struct button_s {
     SDL_Texture *textureButton[2];
     int hover;
@@ -59,8 +63,8 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
-void playExplosion();
-void playHover();
+void playSound(char* path);
+
 
 void clear(SDL_Renderer *sdl_renderer);
 

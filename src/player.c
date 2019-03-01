@@ -55,11 +55,11 @@ void updatePlayerCell(player_t *player)
     const int pos_x = player->x_pos - 80;
     const int pos_y = player->y_pos - 40;
 
-    player->map_x[0] = (pos_x) / REAL_BLOCK_SIZE;
-    player->map_y[0] = (pos_y) / REAL_BLOCK_SIZE;
+    player->map_x[0] = (pos_x + 1) / REAL_BLOCK_SIZE;
+    player->map_y[0] = (pos_y + 1) / REAL_BLOCK_SIZE;
 
-    player->map_x[1] = (pos_x + PLAYER_WIDTH) / REAL_BLOCK_SIZE;
-    player->map_y[1] = (pos_y + PLAYER_HEIGHT) / REAL_BLOCK_SIZE;
+    player->map_x[1] = (pos_x + PLAYER_WIDTH - 1) / REAL_BLOCK_SIZE;
+    player->map_y[1] = (pos_y + PLAYER_HEIGHT - 1) / REAL_BLOCK_SIZE;
 
 //    SDL_Log("player_map_x[0] : %d, player_map_x[1] : %d, player_map_y[0] : %d, player_map_y[1] : %d", player->map_x[0], player->map_x[1], player->map_y[0], player->map_y[1]);
 

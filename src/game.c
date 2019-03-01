@@ -65,7 +65,7 @@ int gameEvent(game_t *game)
     }
     if (game->players[0]->bomb->explosion == 1) {
         checkBombDamage(game->map, game->players[0]->bomb);
-        checkBombPlayer(game->players[0], game->players[0]->bomb, game->pSDL);
+        checkBombPlayer(game->players[0], game->players[0]->bomb);
     }
     doMove(keystates, game->players[0], game->map);
 
@@ -117,7 +117,7 @@ void placeBomb(sdl_t *pSDL, player_t *player)
  * @param b
  * @param pSDL
  */
-void checkBombPlayer(player_t *player, bomb_t *b, sdl_t *pSDL) {
+void checkBombPlayer(player_t *player, bomb_t *b) {
     const int bpos_x = b->x_pos;
     const int bpos_y = b->y_pos;
     const int ppos_x = player->map_x[0];

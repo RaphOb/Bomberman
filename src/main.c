@@ -27,7 +27,7 @@ int main(int argc, char *argv[])
     int quit = 0;
     int menu = 0;
     int network = 0;
-    int play = 1;
+    int play = 0;
     fd_set readfs;
     struct timeval timeout;
     // First menu

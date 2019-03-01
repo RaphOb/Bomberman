@@ -15,6 +15,10 @@
 #define BOMB_PNG_W 30
 #define BOMB_PNG_H 32
 
+//Path wav sound
+#define EXPLOSION_SOUND     "../resources/explosion.wav"
+#define HOVER_SOUND         "../resources/menu_hover.wav"
+
 // CENTERFLAME = 0, UPFLAME = 1, ...
 enum Flame { CENTERFLAME, UPFLAME, DOWNFLAME, RIGHTFLAME, LEFTFLAME, HORIZONTALFLAME, VERTICALFLAME};
 
@@ -59,5 +63,6 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
+void playSound(char* path);
 
 #endif //BOMBERMAN_SDLENGINE_H

@@ -29,7 +29,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     SOCKET sock;
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == INVALID_SOCKET) {
-        SDL_Log("socket()");
+//        SDL_Log("socket()");
         exit(errno);
     }
 
@@ -46,17 +46,17 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
         pseudo = strdup("Host");
     }
 
-    SDL_Log("[Client] Connexion sur le port : %s\n", port);
+//    SDL_Log("[Client] Connexion sur le port : %s\n", port);
 
     to.sin_addr.s_addr = inet_addr(ip);
     to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
     to.sin_family = AF_INET;
 
-    SDL_Log("port: %hu", to.sin_port);
+//    SDL_Log("port: %hu", to.sin_port);
 
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
     {
-        SDL_Log("connect()");
+//        SDL_Log("connect()");
         exit(errno);
     } else {
         serv.sock = sock;
@@ -75,9 +75,9 @@ void hello_cli_serv()
 {
     // On attend que le serveur envoie le code OK_CODE
     char buffer[128];
-    SDL_Log("Waiting OK_CODE from server...\n");
+//    SDL_Log("Waiting OK_CODE from server...\n");
     if (recv(serv.sock, buffer, 2, MSG_WAITALL) == -1) {
-        SDL_Log("recv()");
+//        SDL_Log("recv()");
     } else {
         c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
     }
@@ -88,11 +88,11 @@ int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
-            SDL_Log("Disconnected by the server.\n");
+//            SDL_Log("Disconnected by the server.\n");
             closesocket(serv_sock);
             return 0;
         case OK_CODE:
-            SDL_Log("OK\n");
+//            SDL_Log("OK\n");
             return 1;
         default:
             return -1;
@@ -171,13 +171,13 @@ int listen_server(int run, struct timeval timeout, fd_set readfs)
     if (FD_ISSET(serv.sock, &readfs)) {
         if((n = recv((SOCKET)serv.sock, buffer, 128, 0)) < 0)
         {
-            SDL_Log("recv()");
+//            SDL_Log("recv()");
         } else {
             buffer[n] = 0;
             if (strlen(buffer) == 2) {
                 return c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
             } else {
-                SDL_Log("Reception d'un autre message : %s\n", buffer);
+//                SDL_Log("Reception d'un autre message : %s\n", buffer);
             }
         }
     }
@@ -225,7 +225,7 @@ int app_client()
                 if (strlen(buffer) == 2) {
                     run = c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
                 } else {
-                    SDL_Log("Reception d'un autre message : %s\n", buffer);
+//                    SDL_Log("Reception d'un autre message : %s\n", buffer);
                 }
             }
         }

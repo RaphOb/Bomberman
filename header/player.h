@@ -17,6 +17,7 @@
 typedef struct bombs_s {
     int x_pos;
     int y_pos;
+    int range;
     int explosion;
     int tickBombDropped;
     int tickExplosion;
@@ -37,7 +38,7 @@ typedef struct player_s {
     int frame_time;
     int direction;
     int still;
-    bomb_t *bomb;
+    bomb_t bomb;
 } player_t;
 
 player_t *initPlayer();

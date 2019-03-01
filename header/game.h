@@ -18,7 +18,6 @@
 
 typedef struct game_s {
     map_t map;
-    int current_map;
     player_t *players[MAX_PLAYER];
     sdl_t *pSDL;
 } game_t;
@@ -26,9 +25,9 @@ typedef struct game_s {
 game_t *initGame(sdl_t *sdl);
 int gameEvent(game_t *game);
 void placeBomb(sdl_t *pSDL, player_t *player);
-void makeExplosion(sdl_t *pSDL, player_t *player);
-void checkBombDamage(map_t map, bomb_t *b);
+void makeExplosion(player_t *player);
+void checkBombDamage(map_t map, bomb_t b);
 void destroyBlock(map_t map, int pos_x, int pos_y);
-void checkBombPlayer(player_t *player, bomb_t *b);
+void checkBombPlayer(player_t *player, bomb_t b);
 
 #endif //BOMBERMAN_GAME_H

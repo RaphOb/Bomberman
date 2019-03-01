@@ -14,11 +14,15 @@ int main(int argc, char *argv[])
     Uint32 start;
     sdl_t *pSDL = initSDL();
     player_t *player = initPlayer();
+    player_t *player2 = initPlayer();
+//    player_t *player3 = initPlayer();
+//    player_t *player4 = initPlayer();
     game_t *game = initGame(pSDL);
-    if (!pSDL || !player || !game) {
+    if (!pSDL || !player || !player2 || !game) {
         return (-1);
     }
     game->players[0] = player;
+    game->players[1] = player2;
 
     int quit = 0;
     int menu = 0;
@@ -30,7 +34,6 @@ int main(int argc, char *argv[])
     while(menu == 0) {
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL);
-
     }
     // Menu Network
     while (menu != -1 && network == 0) {

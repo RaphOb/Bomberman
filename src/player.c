@@ -31,7 +31,7 @@ player_t *initPlayer()
     p->map_y[1] = 0;
     p->x_pos = START_X_MAP;
     p->y_pos = START_Y_MAP;
-    p->speed = 1;
+    p->speed = 3;
     p->number = 1;
     p->current_frame = 1;
     p->frame_time = 0;

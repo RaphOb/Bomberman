@@ -118,26 +118,28 @@ void placeBomb(sdl_t *pSDL, player_t *player)
  * @param pSDL
  */
 void checkBombPlayer(player_t *player, bomb_t *b, sdl_t *pSDL) {
-    const int bpos_x = pSDL->dst_bomb.x;
-    const int bpos_y = pSDL->dst_bomb.y;
-    const int ppos_x = player->x_pos;
-    const int ppos_y = player->y_pos;
+    const int bpos_x = b->x_pos;
+    const int bpos_y = b->y_pos;
+    const int ppos_x = player->map_x[0];
+    const int ppos_y = player->map_y[0];
+    SDL_Log("%d", player->map_x[0]);
+    SDL_Log("%d", b->y_pos);
 
     //left
-    if (ppos_x <= bpos_x && ppos_x >= bpos_x - 120) {
+    if ((bpos_x - 1 == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
         SDL_Log("leffft");
     }
     //right
-    if (ppos_x >= bpos_x && ppos_x <= bpos_x + 120) {
-        SDL_Log("riiighhht");
+    if ((bpos_x + 1 == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y) {
+        SDL_Log("right");
     }
     //top
-    if (ppos_y <= bpos_y && ppos_x >= bpos_y - 120) {
-        SDL_Log("topp");
+    if ((bpos_y - 1 == ppos_x || bpos_y == ppos_y) && bpos_x == ppos_x) {
+        SDL_Log("top");
     }
     //bottom
-    if (ppos_x >= bpos_y && ppos_x <= bpos_y + 120) {
-        SDL_Log("BOTTOM§");
+    if ((bpos_y + 1 == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
+        SDL_Log("bottom");
     }
 }
 /**

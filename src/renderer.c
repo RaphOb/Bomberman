@@ -114,7 +114,6 @@ void renderBomb(sdl_t *pSDL, player_t *player)
 }
 void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
 {
-    // TODO add to the struct bomb an integer range
     int isRightBlocked = 0;
     int isLeftBlocked = 0;
     int isUpBlocked = 0;

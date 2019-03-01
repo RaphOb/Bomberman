@@ -126,10 +126,6 @@ void destroySDL(sdl_t *pSDL)
             pSDL->textureExplosion2[i] = NULL;
         }
     }
-    if (pSDL->textureExplosion) {
-        SDL_DestroyTexture(pSDL->textureExplosion);
-        pSDL->textureExplosion = NULL;
-    }
     if (pSDL->textureBomb) {
         SDL_DestroyTexture(pSDL->textureBomb);
         pSDL->textureBomb = NULL;
@@ -175,15 +171,15 @@ void destroySDL(sdl_t *pSDL)
  */
 void initMenu(sdl_t *pSDL)
 {
-    SDL_Surface *menuSelectionJouerOff =IMG_Load("../resources/Menu_Selection_jouerOff.png");
-    SDL_Surface *menuSelectionJouerOn =IMG_Load("../resources/Menu_Selection_jouerOn.png");
-    SDL_Surface *menuSelectionQuitOff =IMG_Load("../resources/Menu_Selection_quitOff.png");
-    SDL_Surface *menuSelectionQuitOn =IMG_Load("../resources/Menu_Selection_quitOn.png");
-    SDL_Surface *menuHeberger =IMG_Load("../resources/Menu_hebergerOff.png");
-    SDL_Surface *menuHebergerOn =IMG_Load("../resources/Menu_hebergerOn.png");
-    SDL_Surface *menuSeconnecter =IMG_Load("../resources/Menu_seconnecterOff.png");
-    SDL_Surface *menuSeconnecterOn =IMG_Load("../resources/Menu_seconnecterOn.png");
-    SDL_Surface *menuLogo =IMG_Load("../resources/B_Logo.png");
+    SDL_Surface *menuSelectionJouerOff =IMG_Load("../resources/img/Menu_Selection_jouerOff.png");
+    SDL_Surface *menuSelectionJouerOn =IMG_Load("../resources/img/Menu_Selection_jouerOn.png");
+    SDL_Surface *menuSelectionQuitOff =IMG_Load("../resources/img/Menu_Selection_quitOff.png");
+    SDL_Surface *menuSelectionQuitOn =IMG_Load("../resources/img/Menu_Selection_quitOn.png");
+    SDL_Surface *menuHeberger =IMG_Load("../resources/img/Menu_hebergerOff.png");
+    SDL_Surface *menuHebergerOn =IMG_Load("../resources/img/Menu_hebergerOn.png");
+    SDL_Surface *menuSeconnecter =IMG_Load("../resources/img/Menu_seconnecterOff.png");
+    SDL_Surface *menuSeconnecterOn =IMG_Load("../resources/img/Menu_seconnecterOn.png");
+    SDL_Surface *menuLogo =IMG_Load("../resources/img/B_Logo.png");
 
     if (!(menuSelectionJouerOff || menuSelectionJouerOn || menuSeconnecter
     || menuSelectionQuitOff || menuSelectionQuitOn || menuLogo || menuHeberger
@@ -256,8 +252,8 @@ button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *texture
  */
 void initPlayerSDL(sdl_t *pSDL)
 {
-    SDL_Surface *surfacePlayer = IMG_Load("../resources/perso1.png");
-    SDL_Surface *surfacePlayer2 = IMG_Load("../resources/perso2.png");
+    SDL_Surface *surfacePlayer = IMG_Load("../resources/sprite/perso1.png");
+    SDL_Surface *surfacePlayer2 = IMG_Load("../resources/sprite/perso2.png");
     if (!surfacePlayer || !surfacePlayer2) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -285,7 +281,7 @@ void initPlayerSDL(sdl_t *pSDL)
  */
 void initBomb(sdl_t *pSDL)
 {
-    SDL_Surface* surfaceBomb = IMG_Load("../resources/bomb-sprite-png-5.png");
+    SDL_Surface* surfaceBomb = IMG_Load("../resources/img/bomb.png");
     if (!surfaceBomb) {
         SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -305,20 +301,18 @@ void initBomb(sdl_t *pSDL)
 
 void initExplosion(sdl_t *pSDL)
 {
-    SDL_Surface *explosion = IMG_Load("../resources/explosion.png");
-    SDL_Surface *center = IMG_Load("../resources/flamecenter.png");
-    SDL_Surface *down = IMG_Load("../resources/flamedown.png");
-    SDL_Surface *horizontal = IMG_Load("../resources/flamehorizontal.png");
-    SDL_Surface *left = IMG_Load("../resources/flameleft.png");
-    SDL_Surface *right = IMG_Load("../resources/flameright.png");
-    SDL_Surface *up = IMG_Load("../resources/flameup.png");
-    SDL_Surface *vertical = IMG_Load("../resources/flamevertical.png");
-    if (!explosion || !center || !down || !horizontal || !left || !right || !up || !vertical) {
+    SDL_Surface *center = IMG_Load("../resources/sprite/flamecenter.png");
+    SDL_Surface *down = IMG_Load("../resources/sprite/flamedown.png");
+    SDL_Surface *horizontal = IMG_Load("../resources/sprite/flamehorizontal.png");
+    SDL_Surface *left = IMG_Load("../resources/sprite/flameleft.png");
+    SDL_Surface *right = IMG_Load("../resources/sprite/flameright.png");
+    SDL_Surface *up = IMG_Load("../resources/sprite/flameup.png");
+    SDL_Surface *vertical = IMG_Load("../resources/sprite/flamevertical.png");
+    if (!center || !down || !horizontal || !left || !right || !up || !vertical) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
     } else {
-        pSDL->textureExplosion = SDL_CreateTextureFromSurface(pSDL->pRenderer, explosion);
         pSDL->textureExplosion2[CENTERFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, center);
         pSDL->textureExplosion2[DOWNFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, down);
         pSDL->textureExplosion2[HORIZONTALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, horizontal);
@@ -326,7 +320,7 @@ void initExplosion(sdl_t *pSDL)
         pSDL->textureExplosion2[RIGHTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, right);
         pSDL->textureExplosion2[UPFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, up);
         pSDL->textureExplosion2[VERTICALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, vertical);
-        if (!pSDL->textureExplosion || !pSDL->textureExplosion2[CENTERFLAME] || !pSDL->textureExplosion2[DOWNFLAME] || !pSDL->textureExplosion2[HORIZONTALFLAME] ||
+        if (!pSDL->textureExplosion2[CENTERFLAME] || !pSDL->textureExplosion2[DOWNFLAME] || !pSDL->textureExplosion2[HORIZONTALFLAME] ||
             !pSDL->textureExplosion2[LEFTFLAME] || !pSDL->textureExplosion2[RIGHTFLAME] || !pSDL->textureExplosion2[UPFLAME] || !pSDL->textureExplosion2[VERTICALFLAME]) {
             fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
             destroySDL(pSDL);
@@ -334,7 +328,6 @@ void initExplosion(sdl_t *pSDL)
         }
         SDL_Log("Explosion initialised");
     }
-    SDL_FreeSurface(explosion);
     SDL_FreeSurface(center);
     SDL_FreeSurface(down);
     SDL_FreeSurface(horizontal);
@@ -346,7 +339,7 @@ void initExplosion(sdl_t *pSDL)
 
 void initBlock(sdl_t *pSDL)
 {
-    SDL_Surface *block = IMG_Load("../resources/block_map1.png");
+    SDL_Surface *block = IMG_Load("../resources/img/block_map1.png");
     if (!block) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -365,7 +358,7 @@ void initBlock(sdl_t *pSDL)
 
 void initMap(sdl_t *pSDL)
 {
-    SDL_Surface *map = IMG_Load("../resources/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
+    SDL_Surface *map = IMG_Load("../resources/sprite/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
     if (!map) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);

@@ -16,8 +16,8 @@
 #define BOMB_PNG_H 32
 
 //Path wav sound
-#define EXPLOSION_SOUND     "../resources/explosion.wav"
-#define HOVER_SOUND         "../resources/menu_hover.wav"
+#define EXPLOSION_SOUND     "../resources/sound/explosion.wav"
+#define HOVER_SOUND         "../resources/sound/menu_hover.wav"
 
 // CENTERFLAME = 0, UPFLAME = 1, ...
 enum Flame { CENTERFLAME, UPFLAME, DOWNFLAME, RIGHTFLAME, LEFTFLAME, HORIZONTALFLAME, VERTICALFLAME};
@@ -36,7 +36,6 @@ struct sdl_s {
     SDL_Texture *texturePlayers[4];
     SDL_Rect dst_bomb;
     SDL_Texture *textureBomb;
-    SDL_Texture *textureExplosion;
     SDL_Texture *textureExplosion2[7];
     button_t *buttonPlay;
     button_t *buttonQuit;

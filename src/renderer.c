@@ -18,21 +18,20 @@ void drawGame(game_t *game)
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; game->players[i] != NULL; i++) {
-//        SDL_Log("drawGame i: %d", i);
         if (game->players[i]->bombPosed == 1) {
             renderBomb(game->pSDL, game->players[i]);
         }
-        if (game->players[i]->bomb->explosion == 1) {
+        if (game->players[i]->bomb.explosion == 1) {
             int frame = 0;
             int currentTick = SDL_GetTicks();
-            if (currentTick - game->players[i]->bomb->tickExplosion > 200) frame = 1;
-            if (currentTick - game->players[i]->bomb->tickExplosion > 400) frame = 2;
-            if (currentTick - game->players[i]->bomb->tickExplosion > 600) frame = 3;
-            if (currentTick - game->players[i]->bomb->tickExplosion > 800) frame = 4;
-            if (currentTick - game->players[i]->bomb->tickExplosion > 1000) {
-                game->players[i]->bomb->explosion = 0;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 200) frame = 1;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 400) frame = 2;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 600) frame = 3;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 800) frame = 4;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 1000) {
+                game->players[i]->bomb.explosion = 0;
             }
-            renderExplosion(game->pSDL, frame, game->map);
+            renderExplosion(game->pSDL, frame, game->map, game->players[i]->bomb.range);
         }
         renderPlayer(game->pSDL, game->players[i]);
     }
@@ -58,7 +57,7 @@ void drawMenu(sdl_t *pSDL)
  */
 void renderMenu(sdl_t *pSDL)
 {
-    SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
+    SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
 
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonPlay->textureButton[pSDL->buttonPlay->hover], NULL, &pSDL->buttonPlay->dstRect);
@@ -99,43 +98,58 @@ void renderBomb(sdl_t *pSDL, player_t *player)
     const int size_m = 2;
     int currentTick = SDL_GetTicks();
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb);
-    if (currentTick - player->bomb->tickBombDropped > 1000 && n == 0) {
+    if (currentTick - player->bomb.tickBombDropped > 1000 && n == 0) {
         pSDL->dst_bomb.x -= BOMB_PNG_W / size_m;
         pSDL->dst_bomb.y -= BOMB_PNG_W / size_m;
         pSDL->dst_bomb.h *= size_m;
         pSDL->dst_bomb.w *= size_m;
         n = 1;
     }
-    if (currentTick - player->bomb->tickBombDropped > 2000) {
+    if (currentTick - player->bomb.tickBombDropped > 2000) {
         player->bombPosed = 0;
-        player->bomb->tickBombDropped = 0;
+        player->bomb.tickBombDropped = 0;
         makeExplosion(player);
         n = 0;
     }
 }
-void renderExplosion(sdl_t *pSDL, int frame, map_t map)
+void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
 {
+    // TODO add to the struct bomb an integer range
+    int isRightBlocked = 0;
+    int isLeftBlocked = 0;
+    int isUpBlocked = 0;
+    int isDownBlocked = 0;
     const int cell_x = (pSDL->dst_bomb.x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
     const int cell_y = (pSDL->dst_bomb.y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
     SDL_Rect dst_mid = {pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - REAL_BLOCK_SIZE) / 2), pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - REAL_BLOCK_SIZE) / 2), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
-
     SDL_Rect src = {0, 64 - frame * 16, 16, 16};
-    SDL_Rect dst_right = {dst_mid.x + REAL_BLOCK_SIZE, dst_mid.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
-    SDL_Rect dst_left = {dst_mid.x - REAL_BLOCK_SIZE, dst_mid.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
-    SDL_Rect dst_up = {dst_mid.x, dst_mid.y - REAL_BLOCK_SIZE, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
-    SDL_Rect dst_down = {dst_mid.x, dst_mid.y + REAL_BLOCK_SIZE, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], &src, &dst_mid);
-    if (!getBit(map[cell_y], cell_x + 1, 1) && cell_x + 1 <= 12) {
-        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], &src, &dst_right);
-    }
-    if (!getBit(map[cell_y], cell_x - 1, 1) && cell_x - 1 >= 0) {
-        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[LEFTFLAME], &src, &dst_left);
-    }
-    if (!getBit(map[cell_y - 1], cell_x, 1) && cell_y - 1 >= 0) {
-        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[UPFLAME], &src, &dst_up);
-    }
-    if (!getBit(map[cell_y + 1], cell_x, 1) && cell_y + 1 <= 12) {
-        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[DOWNFLAME], &src, &dst_down);
+
+    for (int i = 0; i < range; i++) {
+
+        SDL_Rect dst_right = {dst_mid.x +  ((i + 1) * REAL_BLOCK_SIZE), dst_mid.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+        SDL_Rect dst_left = {dst_mid.x - ((i + 1) * REAL_BLOCK_SIZE), dst_mid.y, REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+        SDL_Rect dst_up = {dst_mid.x, dst_mid.y - ((i + 1) * REAL_BLOCK_SIZE), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+        SDL_Rect dst_down = {dst_mid.x, dst_mid.y + ((i + 1) * REAL_BLOCK_SIZE), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], &src, &dst_mid);
+        // passe à travers bloc destructible car détruit avant le render
+
+        if (!getBit(map[cell_y], cell_x + 1 + i, 1) && cell_x + 1 + i <= 12 && !isRightBlocked) {
+            if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], &src, &dst_right);
+            else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[HORIZONTALFLAME], &src, &dst_right);
+        } else isRightBlocked = 1;
+        if (!getBit(map[cell_y], cell_x - 1 - i, 1) && cell_x - 1 - i >= 0 && !isLeftBlocked) {
+            if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[LEFTFLAME], &src, &dst_left);
+            else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[HORIZONTALFLAME], &src, &dst_left);
+        } else isLeftBlocked = 1;
+        if (!getBit(map[cell_y - 1 - i], cell_x, 1) && cell_y - 1 - i >= 0 && !isUpBlocked) {
+            if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[UPFLAME], &src, &dst_up);
+            else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_up);
+        } else isUpBlocked = 1;
+        if (!getBit(map[cell_y + 1 + i], cell_x, 1) && cell_y + 1 + i <= 12 && !isDownBlocked) {
+            if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[DOWNFLAME], &src, &dst_down);
+            else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_down);
+        } else isDownBlocked = 1;
+
     }
 }
 

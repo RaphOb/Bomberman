@@ -17,11 +17,7 @@ player_t *initPlayer()
       SDL_Log("Erreur malloc player");
       return NULL;
     }
-    bomb_t *b = malloc(sizeof(bomb_t));
-    if (!b) {
-        SDL_Log("Erreur malloc bombPosed");
-        return NULL;
-    }
+    bomb_t b;
     p->alive = 'Y';
     p->bombPosed = 0;
     p->bombs_left = 20;
@@ -47,7 +43,8 @@ player_t *initPlayer()
     p->frame_time = 0;
     p->direction = 2;
     p->still = 1;
-    b->explosion = 0;
+    b.explosion = 0;
+    b.range = 1;
     p->bomb = b;
 
     return p;
@@ -103,8 +100,8 @@ int canPlayerPlaceBomb(player_t *player)
 {
     const float percentage = 0.6f;
     if (isPlayerOnOneCell(player)) {
-        player->bomb->x_pos = player->map_x[0];
-        player->bomb->y_pos = player->map_y[0];
+        player->bomb.x_pos = player->map_x[0];
+        player->bomb.y_pos = player->map_y[0];
         return 1;
     } else {
         if (player->map_x[0] != player->map_x[1]) {
@@ -118,8 +115,8 @@ int canPlayerPlaceBomb(player_t *player)
 //            SDL_Log("0.8 * player_width: %f", percentage * PLAYER_WIDTH);
 //            SDL_Log("1: %d, 2: %d", abs_x >= percentage * PLAYER_WIDTH, abs_x2 >= percentage * PLAYER_WIDTH);
             if (abs_x >= percentage * PLAYER_WIDTH || abs_x2 >= percentage * PLAYER_WIDTH) {
-                player->bomb->x_pos = (abs_x >= percentage * PLAYER_WIDTH) ? player->map_x[0] : player->map_x[1];
-                player->bomb->y_pos = player->map_y[0];
+                player->bomb.x_pos = (abs_x >= percentage * PLAYER_WIDTH) ? player->map_x[0] : player->map_x[1];
+                player->bomb.y_pos = player->map_y[0];
 //                SDL_Log("x_pos: %d, y_pos: %d", player->bomb->x_pos, player->bomb->y_pos);
                 return 1;
             } else {
@@ -136,8 +133,8 @@ int canPlayerPlaceBomb(player_t *player)
 //            SDL_Log("0.8 * player_height: %f", percentage * PLAYER_HEIGHT);
 //            SDL_Log("1: %d, 2: %d", abs_y >= percentage * PLAYER_HEIGHT, abs_y2 >= percentage * PLAYER_HEIGHT);
             if (abs_y >= percentage * PLAYER_HEIGHT || abs_y2 >= percentage * PLAYER_HEIGHT) {
-                player->bomb->x_pos = player->map_x[0];
-                player->bomb->y_pos = (abs_y >= percentage * PLAYER_HEIGHT) ? player->map_y[0] : player->map_y[1];
+                player->bomb.x_pos = player->map_x[0];
+                player->bomb.y_pos = (abs_y >= percentage * PLAYER_HEIGHT) ? player->map_y[0] : player->map_y[1];
 //                SDL_Log("x_pos: %d, y_pos: %d", player->bomb->x_pos, player->bomb->y_pos);
                 return 1;
             } else {

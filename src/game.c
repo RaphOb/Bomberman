@@ -52,8 +52,7 @@ int gameEvent(game_t *game)
                     break;
                 case SDLK_b:
                     c_emission(BOMB_CODE);
-                        if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 &&
-                            canPlayerPlaceBomb(game->players[0]))
+                        if (game->players[0]->bombPosed == 0 && game->players[0]->bomb.explosion == 0 && canPlayerPlaceBomb(game->players[0]))
                             placeBomb(game->pSDL, game->players[0]);
                     break;
                 default :
@@ -62,7 +61,7 @@ int gameEvent(game_t *game)
             }
         }
     }
-        if (game->players[0]->bomb->explosion == 1) {
+        if (game->players[0]->bomb.explosion == 1) {
             checkBombDamage(game->map, game->players[0]->bomb);
         }
         doMove(keystates, game->players[0], game->map);
@@ -72,15 +71,15 @@ int gameEvent(game_t *game)
 void makeExplosion(player_t *player)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    player->bomb->explosion = 1;
-    player->bomb->tickExplosion = SDL_GetTicks();
+    player->bomb.explosion = 1;
+    player->bomb.tickExplosion = SDL_GetTicks();
 
 }
 
 void placeBomb(sdl_t *pSDL, player_t *player)
 {
-    int cell_x = START_X_MAP + (player->bomb->x_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
-    int cell_y = START_Y_MAP + (player->bomb->y_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
+    int cell_x = START_X_MAP + (player->bomb.x_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
+    int cell_y = START_Y_MAP + (player->bomb.y_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
 
     pSDL->dst_bomb.h = BOMB_PNG_H;
     pSDL->dst_bomb.w = BOMB_PNG_W;
@@ -89,14 +88,14 @@ void placeBomb(sdl_t *pSDL, player_t *player)
 //    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
 
     player->bombPosed = 1;
-    player->bomb->tickBombDropped = SDL_GetTicks();
+    player->bomb.tickBombDropped = SDL_GetTicks();
 
 }
 
-void checkBombDamage(map_t map, bomb_t *b)
+void checkBombDamage(map_t map, bomb_t b)
 {
-    const int pos_x = b->x_pos;
-    const int pos_y = b->y_pos;
+    const int pos_x = b.x_pos;
+    const int pos_y = b.y_pos;
 
     // Left
     if (pos_x - 1 >= 0) {

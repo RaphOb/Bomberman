@@ -26,7 +26,7 @@ game_t *initGame(sdl_t *sdl);
 int gameEvent(game_t *game);
 void placeBomb(sdl_t *pSDL, player_t *player);
 void makeExplosion(player_t *player);
-void checkBombDamage(map_t map, bomb_t *b);
+void checkBombDamage(map_t map, bomb_t b);
 void destroyBlock(map_t map, int pos_x, int pos_y);
 
 #endif //BOMBERMAN_GAME_H

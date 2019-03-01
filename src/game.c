@@ -65,6 +65,7 @@ int gameEvent(game_t *game)
     }
     if (game->players[0]->bomb->explosion == 1) {
         checkBombDamage(game->map, game->players[0]->bomb);
+        checkBombPlayer(game->players[0], game->players[0]->bomb, game->pSDL);
     }
     doMove(keystates, game->players[0], game->map);
 
@@ -110,7 +111,40 @@ void placeBomb(sdl_t *pSDL, player_t *player)
     player->bomb->tickBombDropped = SDL_GetTicks();
 
 }
+/**
+ * function : check  if player within bombrange
+ * @param player
+ * @param b
+ * @param pSDL
+ */
+void checkBombPlayer(player_t *player, bomb_t *b, sdl_t *pSDL) {
+    const int bpos_x = pSDL->dst_bomb.x;
+    const int bpos_y = pSDL->dst_bomb.y;
+    const int ppos_x = player->x_pos;
+    const int ppos_y = player->y_pos;
 
+    //left
+    if (ppos_x <= bpos_x && ppos_x >= bpos_x - 120) {
+        SDL_Log("leffft");
+    }
+    //right
+    if (ppos_x >= bpos_x && ppos_x <= bpos_x + 120) {
+        SDL_Log("riiighhht");
+    }
+    //top
+    if (ppos_y <= bpos_y && ppos_x >= bpos_y - 120) {
+        SDL_Log("topp");
+    }
+    //bottom
+    if (ppos_x >= bpos_y && ppos_x <= bpos_y + 120) {
+        SDL_Log("BOTTOM§");
+    }
+}
+/**
+ * function : check if block is within a bomb's range
+ * @param map
+ * @param b
+ */
 void checkBombDamage(map_t map, bomb_t *b)
 {
     const int pos_x = b->x_pos;

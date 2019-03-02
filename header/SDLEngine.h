@@ -18,6 +18,10 @@
 //Path wav sound
 #define EXPLOSION_SOUND     "../resources/sound/explosion.wav"
 #define HOVER_SOUND         "../resources/sound/menu_hover.wav"
+#define TROPSTYLE1_SOUND    "../resources/sound/Hotline-Miami-OST-Musikk-per-automatikk-_Elliott-Berlin_.wav"
+#define TROPSTYLE2_SOUND    "../resources/sound/lastman-tv-series-original-soundtrack-preview.wav"
+#define TROPSTYLE3_SOUND    "../resources/sound/M.O.O.N.-_Hydrogen_-_Hotline-Miami-Soundtrack_.wav"
+#define POURLESRELOUXAUXGOUTSDEME_SOUND    "../resources/sound/Waterflame - Glorious morning.wav"
 
 // CENTERFLAME = 0, UPFLAME = 1, ...
 enum Flame { CENTERFLAME, UPFLAME, DOWNFLAME, RIGHTFLAME, LEFTFLAME, HORIZONTALFLAME, VERTICALFLAME};

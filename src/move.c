@@ -42,8 +42,8 @@ void moveUp(player_t *player, map_t map)
 void moveRight(player_t *player, map_t map)
 {
     player->direction = 2;
-    if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (REAL_BLOCK_SIZE)))
     c_emission(player, RIGHT_CODE);
+    if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (REAL_BLOCK_SIZE)))
         && collideWith(map, player, player->x_pos + 3, player->y_pos) == 0) {
         player->x_pos += 3 * player->speed;
     }

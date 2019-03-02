@@ -19,7 +19,6 @@ int main(int argc, char *argv[])
         return (-1);
     }
     game->players[0] = player;
-    game->players[1] = player2;
 
     int quit = 0;
     int menu = 0;

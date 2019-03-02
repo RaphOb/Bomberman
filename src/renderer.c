@@ -17,25 +17,27 @@ void drawGame(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    for (int i = 0; game->players[i] != NULL; i++) {
-        if (game->players[i]->bombPosed == 1) {
-            renderBomb(game->pSDL, game->players[i]);
-        }
-        if (game->players[i]->bomb.explosion == 1) {
-            int frame = 0;
-            int currentTick = SDL_GetTicks();
-            if (currentTick - game->players[i]->bomb.tickExplosion > 200) frame = 1;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 400) frame = 2;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 600) frame = 3;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 800) frame = 4;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 1000) {
-                game->players[i]->bomb.explosion = 0;
+    for (int i = 0; i < MAX_PLAYER ; i++) {
+        if (game->players[i].number > 0) {
+            //SDL_Log("player : %d\n", game->players[i].number);
+            if (game->players[i].bombPosed == 1) {
+                renderBomb(game->pSDL, &game->players[i]);
             }
-            renderExplosion(game->pSDL, frame, game->map, game->players[i]->bomb.range);
+            if (game->players[i].bomb.explosion == 1) {
+                int frame = 0;
+                int currentTick = SDL_GetTicks();
+                if (currentTick - game->players[i].bomb.tickExplosion > 200) frame = 1;
+                if (currentTick - game->players[i].bomb.tickExplosion > 400) frame = 2;
+                if (currentTick - game->players[i].bomb.tickExplosion > 600) frame = 3;
+                if (currentTick - game->players[i].bomb.tickExplosion > 800) frame = 4;
+                if (currentTick - game->players[i].bomb.tickExplosion > 1000) {
+                    game->players[i].bomb.explosion = 0;
+                }
+                renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb.range);
+            }
+            renderPlayer(game->pSDL, &game->players[i]);
         }
-        renderPlayer(game->pSDL, game->players[i]);
     }
-    renderPlayer(game->pSDL, game->players[i]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
@@ -172,7 +174,7 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
 //    SDL_Log("x_pos: %d, y_pos: %d", player->x_pos, player->y_pos);
 //    SDL_Log("player number: %d", player->number);
 //    SDL_Log("player texture: %d", pSDL->texturePlayers[player->number] != NULL);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[player->number], &src, &r);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[0], &src, &r);
 
     if (player->still == 0) {
         player->frame_time++;

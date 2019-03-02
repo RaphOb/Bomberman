@@ -138,6 +138,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].csin = csin;
             clients[i].p.number = i;
             clients[i].is_host = 0;
+            clients[i].alive = 'Y';
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;
@@ -258,6 +259,8 @@ game_t init_game_server_side()
         g.players[i].y_pos = c.p.y_pos;
         g.players[i].direction = c.p.direction;
         g.players[i].number = c.num_client;
+        g.players[i].alive = c.alive;
+        g.players[i].speed = 1;
     }
 
     return g;
@@ -314,7 +317,7 @@ int game_thread()
     SDL_Log("[Server] Lancement de game thread\n");
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
-        SDL_Delay(40);
+        SDL_Delay(35);
         // NULL -> tous les clients ; 0 Pas de code particulier
         s_emission(NULL, 0);
     }

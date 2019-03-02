@@ -22,6 +22,11 @@
 #define TROPSTYLE2_SOUND    "../resources/sound/lastman-tv-series-original-soundtrack-preview.wav"
 #define TROPSTYLE3_SOUND    "../resources/sound/M.O.O.N.-_Hydrogen_-_Hotline-Miami-Soundtrack_.wav"
 #define POURLESRELOUXAUXGOUTSDEME_SOUND    "../resources/sound/Waterflame - Glorious morning.wav"
+void my_audio_callback(void *userdata, Uint8 *stream, int len);
+
+// variable declarations
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
+static Uint32 audio_len; // remaining length of the sample we have to play
 
 // CENTERFLAME = 0, UPFLAME = 1, ...
 enum Flame { CENTERFLAME, UPFLAME, DOWNFLAME, RIGHTFLAME, LEFTFLAME, HORIZONTALFLAME, VERTICALFLAME};
@@ -67,5 +72,6 @@ void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
 void playSound(char* path);
+int playsound(char* path);
 
 #endif //BOMBERMAN_SDLENGINE_H

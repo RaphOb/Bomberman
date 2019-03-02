@@ -15,6 +15,22 @@
 #define BOMB_PNG_W 30
 #define BOMB_PNG_H 32
 
+//Path wav sound
+#define EXPLOSION_SOUND     "../resources/sound/explosion.wav"
+#define HOVER_SOUND         "../resources/sound/menu_hover.wav"
+#define TROPSTYLE1_SOUND    "../resources/sound/Hotline-Miami-OST-Musikk-per-automatikk-_Elliott-Berlin_.wav"
+#define TROPSTYLE2_SOUND    "../resources/sound/lastman-tv-series-original-soundtrack-preview.wav"
+#define TROPSTYLE3_SOUND    "../resources/sound/M.O.O.N.-_Hydrogen_-_Hotline-Miami-Soundtrack_.wav"
+#define POURLESRELOUXAUXGOUTSDEME_SOUND    "../resources/sound/Waterflame - Glorious morning.wav"
+void my_audio_callback(void *userdata, Uint8 *stream, int len);
+
+// variable declarations
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
+static Uint32 audio_len; // remaining length of the music we have to play
+
+// CENTERFLAME = 0, UPFLAME = 1, ...
+enum Flame { CENTERFLAME, UPFLAME, DOWNFLAME, RIGHTFLAME, LEFTFLAME, HORIZONTALFLAME, VERTICALFLAME};
+
 typedef struct button_s {
     SDL_Texture *textureButton[2];
     int hover;
@@ -26,14 +42,10 @@ struct sdl_s {
     SDL_Renderer *pRenderer;
     SDL_Texture *textureMap;
     SDL_Texture *textureBlock;
-    SDL_Rect dst_player;
-    SDL_Texture *texturePlayer;
+    SDL_Texture *texturePlayers[4];
     SDL_Rect dst_bomb;
-    SDL_Texture* textureBomb;
-    SDL_Texture* textureExplosion;
-    SDL_Texture* textureExplosion2;
-    SDL_Rect dst_explosion;
-    SDL_Rect dst_explosion2;
+    SDL_Texture *textureBomb;
+    SDL_Texture *textureExplosion2[7];
     button_t *buttonPlay;
     button_t *buttonQuit;
     button_t *buttonConnect;
@@ -59,7 +71,7 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
-
-void clear(SDL_Renderer *sdl_renderer);
+void playSound(char* path);
+int playsound(char* path);
 
 #endif //BOMBERMAN_SDLENGINE_H

@@ -11,9 +11,14 @@
 #include "../header/SDLEngine.h"
 
 
+     int hover_on = 0;
+     int hover_off = 1;
+     int hover_on1 = 0;
+     int hover_off1 = 1;
 int menuEvent(sdl_t *pSDL)
 {
     int res = 0;
+
     SDL_Event event;
     int mouse_x = 0;
     int mouse_y = 0;
@@ -23,9 +28,19 @@ int menuEvent(sdl_t *pSDL)
     const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
     if (SDL_HasIntersection(&mouse, &pSDL->buttonPlay->dstRect)) {
         pSDL->buttonPlay->hover = 1;
+        hover_on = 1;
+        if (hover_on == 1 && hover_off == 1) {
+            hover_off = 0;
+            playSound(HOVER_SOUND);
+        }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
-    }
+        hover_on = 1;
+        if (hover_on == 1 && hover_off== 1) {
+            hover_off = 0;
+            playSound(HOVER_SOUND);
+        }
+    } else { hover_off = 1;}
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -75,11 +90,26 @@ int menuNetworkEvent(sdl_t *pSDL)
     const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
     if (SDL_HasIntersection(&mouse, &pSDL->buttonConnect->dstRect)) {
         pSDL->buttonConnect->hover = 1;
+        hover_on1 = 1;
+        if (hover_on1 == 1 && hover_off1 == 1) {
+            hover_off1 = 0;
+            playSound(HOVER_SOUND);
+        }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
+        hover_on1 = 1;
+        if (hover_on1 == 1 && hover_off1 == 1) {
+            hover_off1 = 0;
+            playSound(HOVER_SOUND);
+        }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonHost->dstRect)) {
         pSDL->buttonHost->hover = 1;
-    }
+        hover_on1 = 1;
+        if (hover_on1 == 1 && hover_off1 == 1) {
+            hover_off1 = 0;
+            playSound(HOVER_SOUND);
+        }
+    } else {hover_off1 = 1;}
 
     SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT)

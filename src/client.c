@@ -1,5 +1,7 @@
 #include <SDL2/SDL_log.h>
+#include <math.h>
 #include "../header/reseau.h"
+#include "../header/game.h"
 
 // ----- INITIALISATION -----
 //void init_client(void)
@@ -29,7 +31,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     SOCKET sock;
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == INVALID_SOCKET) {
-        SDL_Log("socket()");
+//        SDL_Log("socket()");
         exit(errno);
     }
 
@@ -46,40 +48,33 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
         pseudo = strdup("Host");
     }
 
-    SDL_Log("[Client] Connexion sur le port : %s\n", port);
+//    SDL_Log("[Client] Connexion sur le port : %s\n", port);
 
     to.sin_addr.s_addr = inet_addr(ip);
     to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
     to.sin_family = AF_INET;
 
-    SDL_Log("port: %hu", to.sin_port);
-
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
     {
-        SDL_Log("connect()");
+//        SDL_Log("connect()");
         exit(errno);
     } else {
         serv.sock = sock;
         serv.to = to;
         serv.s_port = port;
-        serv.c_pseudo = pseudo;
-    }
-    //hello_cli_serv();
-    if (serv.c_pseudo[0] != '\0') {
-        //c_emission(PSEUDO_CODE);
     }
 }
 
 // ----- DIVERS -----
-void hello_cli_serv()
+int getNbClientServer()
 {
-    // On attend que le serveur envoie le code OK_CODE
-    char buffer[128];
-    SDL_Log("Waiting OK_CODE from server...\n");
-    if (recv(serv.sock, buffer, 2, MSG_WAITALL) == -1) {
+    char buffer[128] = {'\0'};
+    SDL_Log("[Client] NB_CLIENT_SERVER_CODE from server...\n");
+    if (recv(serv.sock, buffer, 10, MSG_WAITALL) == -1) {
         SDL_Log("recv()");
     } else {
-        c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
+        SDL_Log("[Client] nb_client_server set to : %d\n", atoi(buffer));
+        return atoi(buffer);
     }
 }
 
@@ -88,152 +83,115 @@ int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
-            SDL_Log("Disconnected by the server.\n");
+//            SDL_Log("Disconnected by the server.\n");
             closesocket(serv_sock);
             return 0;
-        case OK_CODE:
-            SDL_Log("OK\n");
-            return 1;
         default:
             return -1;
     }
 }
 
-void write_to_serv(char *buffer, int from_keyboard)
+void write_to_serv(t_client_request c_request)
 {
-    if(send(serv.sock, buffer, (int) strlen(buffer)-from_keyboard, 0) < 0)
+    if(send(serv.sock, (char*)&c_request, sizeof(c_request), 0) < 0)
     {
-        SDL_Log("send()");
+//        SDL_Log("send()");
     }
 }
 
-void write_code_to_server(int code)
+void c_emission(player_t *player, int code)
 {
-    char buffer[CODE_SIZE] = {'\0'};
-    sprintf(buffer, "%d", code);
-    write_to_serv(buffer, 0);
-}
-
-void c_emission(int code)
-{
+    t_client_request c_request;
+    c_request.x_pos = player->x_pos;
+    c_request.y_pos = player->y_pos;
+    c_request.dir = player->direction;
     switch (code) {
-        case PSEUDO_CODE:
-            write_code_to_server(PSEUDO_CODE);
-            write_to_serv(serv.c_pseudo, 0);
-            break;
         case DISCONNECT_CODE:
-            write_code_to_server(DISCONNECT_CODE);
+            c_request.code_reseau = DISCONNECT_CODE;
             break;
         case UP_CODE:
-            SDL_Log("Send up to server\n");
-            write_code_to_server(UP_CODE);
+            c_request.code_reseau = UP_CODE;
             break;
         case DOWN_CODE:
-            SDL_Log("Send down to server\n");
-            write_code_to_server(DOWN_CODE);
+            c_request.code_reseau = DOWN_CODE;
             break;
         case LEFT_CODE:
-            SDL_Log("Send left to server\n");
-            write_code_to_server(LEFT_CODE);
+            c_request.code_reseau = LEFT_CODE;
             break;
         case RIGHT_CODE:
-            SDL_Log("Send right to server\n");
-            write_code_to_server(RIGHT_CODE);
+            c_request.code_reseau = RIGHT_CODE;
             break;
-        case BOMB_CODE:
-            SDL_Log("Send bomb to server\n");
-            write_code_to_server(BOMB_CODE);
+        case 200:
+            c_request.code_reseau = 200;
             break;
         default:
+            c_request.code_reseau = 0;
             break;
     }
+    write_to_serv(c_request);
 }
 
-int listen_server(int run, struct timeval timeout, fd_set readfs)
+void listen_server(void* g_param)
 {
-    char buffer[128] = { '\0' };
+    SDL_Log("[Client] Listen server is ON");
     int n = 0;
-//    SDL_Log("run: %d", run);
-    FD_ZERO(&readfs);
-    FD_SET(serv.sock, &readfs);
-    memset(buffer, '\0', 128);
+    game_t *game = (game_t*)(uintptr_t)g_param;
 
-    // Keyboard typing
-    if (KEYBOARD_TYPING_MODE) {
-        SDL_Log("type smt : \n");
-        fgets(buffer, 128, stdin);
-        write_to_serv(buffer, 1);
-    }
+    while(1) {
+        FD_ZERO(&serv.readfs);
+        FD_SET(serv.sock, &serv.readfs);
 
-    select((int)serv.sock+1, &readfs, NULL, NULL, &timeout);
+        game_t g = {0};
 
-    memset(buffer, '\0', 128);
-    if (FD_ISSET(serv.sock, &readfs)) {
-        if((n = recv((SOCKET)serv.sock, buffer, 128, 0)) < 0)
-        {
-            SDL_Log("recv()");
-        } else {
-            buffer[n] = 0;
-            if (strlen(buffer) == 2) {
-                return c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
-            } else {
-                SDL_Log("Reception d'un autre message : %s\n", buffer);
-            }
-        }
-    }
-    return 1;
-}
+        select((int)serv.sock+1, &serv.readfs, NULL, NULL, NULL);
 
-int app_client()
-{
-    //init();
-    char buffer[128];
-    int n = 0;
-    int run = 1;
-    struct timeval timeout;
-
-//    char *pseudo = "test";
-
-    //init_co_from_cli_to_serv(pseudo);
-
-    fd_set readfs;
-//    int tosize = sizeof serv.to;
-
-    while (run) {
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 200;
-        FD_ZERO(&readfs);
-        FD_SET(serv.sock, &readfs);
-        memset(buffer, '\0', 128);
-
-        // Keyboard typing
-        if (KEYBOARD_TYPING_MODE) {
-            SDL_Log("type smt : \n");
-            fgets(buffer, 128, stdin);
-            write_to_serv(buffer, 1);
-        }
-
-        select((int)serv.sock+1, &readfs, NULL, NULL, &timeout);
-
-        memset(buffer, '\0', 128);
-        if (FD_ISSET(serv.sock, &readfs)) {
-            if((n = recv((SOCKET)serv.sock, buffer, 128, 0)) < 0)
+        if (FD_ISSET(serv.sock, &serv.readfs)) {
+            if((n = recv((SOCKET)serv.sock, (char *)&g, sizeof(g), 0)) < 0)
             {
                 SDL_Log("recv()");
             } else {
-                buffer[n] = 0;
-                if (strlen(buffer) == 2) {
-                    run = c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
-                } else {
-                    SDL_Log("Reception d'un autre message : %s\n", buffer);
+                //SDL_Log("[Client] Reception de données serveur...\n");
+                // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
+                for (int i = 0; i < MAX_PLAYER ; i++) {
+                    if (g.players[i].number > 0) {
+                        //SDL_Log("g.players[i].number : %d", g.players[i].number);
+                        if (game->nb_client_serv == g.players[i].number) {
+                            maj_player(game, 0, &g.players[i]);
+                        } else {
+                            maj_player(game, i + 1, &g.players[i]);
+                        }
+                    }
                 }
+                c_reception(game->players[0].code_reseau, serv.sock);
             }
         }
     }
+}
 
-    buffer[n] = '\0';
-    closesocket(serv.sock);
-    end();
-    return 0;
-
+void maj_player(game_t *g, int indice, player_t *p)
+{
+    pthread_mutex_lock(&g->players[indice].mutex_player);
+    //SDL_Log("g->players[indice].x_pos : %d", g->players[indice].x_pos);
+    //SDL_Log("p->x_pos : %d", p->x_pos);
+    if (g->players[indice].x_pos == 0) {
+        g->players[indice].x_pos = p->x_pos;
+    } else {
+        double x = (p->x_pos * 100 / g->players[indice].x_pos) - 100;
+        if (fabs(x) > 3 ) {
+            g->players[indice].x_pos = p->x_pos;
+        }
+    }
+    if (g->players[indice].y_pos == 0) {
+        g->players[indice].y_pos = p->y_pos;
+    } else {
+        double y = (p->y_pos * 100 / g->players[indice].y_pos) - 100;
+        if (fabs(y) > 3 ) {
+            g->players[indice].y_pos = p->y_pos;
+        }
+    }
+    g->players[indice].code_reseau = p->code_reseau;
+    g->players[indice].direction = p->direction;
+    g->players[indice].speed = p->speed;
+    g->players[indice].number = p->number;
+    pthread_mutex_unlock(&g->players[indice].mutex_player);
 }

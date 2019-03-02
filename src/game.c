@@ -49,13 +49,13 @@ int gameEvent(game_t *game)
             //
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE :
-                    c_emission(DISCONNECT_CODE);
+                    c_emission(&game->players[0], DISCONNECT_CODE);
                     res = -1;
                     break;
                 case SDLK_b:
-                    c_emission(BOMB_CODE);
-                    if (game->players[0]->bombPosed == 0 && game->players[0]->bomb->explosion == 0 && isPlayerOnOneCell(game->players[0]))
-                        placeBomb(game->pSDL, game->players[0]);
+                    c_emission(&game->players[0], BOMB_CODE);
+                    if (game->players[0].bombPosed == 0 && game->players[0].bomb->explosion == 0 && isPlayerOnOneCell(&game->players[0]))
+                        placeBomb(game->pSDL, &game->players[0]);
                     break;
                 default :
                     fprintf(stderr,"touche inconnue %d\n", event.key.keysym.sym);
@@ -63,10 +63,10 @@ int gameEvent(game_t *game)
             }
         }
     }
-    if (game->players[0]->bomb->explosion == 1) {
-        checkBombDamage(game->map, game->players[0]->bomb);
+    if (game->players[0].bomb->explosion == 1) {
+        checkBombDamage(game->map, game->players[0].bomb);
     }
-    doMove(keystates, game->players[0], game->map);
+    doMove(keystates, &game->players[0], game->map);
 
     return res;
 }

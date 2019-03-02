@@ -17,17 +17,17 @@ void drawGame(game_t *game)
     SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    if (game->players[0]->bombPosed == 1) {
-        renderBomb(game->pSDL, game->players[0]);
+    if (game->players[0].bombPosed == 1) {
+        renderBomb(game->pSDL, &game->players[0]);
     }
-    if (game->players[0]->bomb->explosion == 1) {
+    if (game->players[0].bomb->explosion == 1) {
         int currentTick = SDL_GetTicks();
-        if (currentTick - game->players[0]->bomb->tickExplosion > 400) {
-            game->players[0]->bomb->explosion = 0;
+        if (currentTick - game->players[0].bomb->tickExplosion > 400) {
+            game->players[0].bomb->explosion = 0;
         }
         renderExplosion(game->pSDL);
     }
-    renderPlayer(game->pSDL, game->players[0]);
+    renderPlayer(game->pSDL, &game->players[0]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 

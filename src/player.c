@@ -8,35 +8,33 @@
 #include "../header/map.h"
 #include "../header/bit.h"
 
-player_t *initPlayer()
+player_t initPlayer()
 {
-    player_t *p = malloc(sizeof(player_t));
-    if(!p) {
-      SDL_Log("Erreur malloc player");
-      return NULL;
-    }
+    player_t p;
+
     bomb_t *b = malloc(sizeof(bomb_t));
     if (!b) {
         SDL_Log("Erreur malloc bombPosed");
-        return NULL;
+        //return NULL;
     }
-    p->alive = 'Y';
-    p->bombPosed = 0;
-    p->bombs_left = 20;
-    p->frags = 0;
-    p->map_x[0] = 0;
-    p->map_x[1] = 0;
-    p->map_y[0] = 0;
-    p->map_y[1] = 0;
-    p->x_pos = START_X_MAP;
-    p->y_pos = START_Y_MAP;
-    p->number = 1;
-    p->current_frame = 1;
-    p->frame_time = 0;
-    p->direction = 2;
-    p->still = 1;
+    p.alive = 'Y';
+    p.bombPosed = 0;
+    p.bombs_left = 20;
+    p.frags = 0;
+    p.map_x[0] = 0;
+    p.map_x[1] = 0;
+    p.map_y[0] = 0;
+    p.map_y[1] = 0;
+    p.x_pos = START_X_MAP;
+    p.y_pos = START_Y_MAP;
+    p.number = 1;
+    p.current_frame = 1;
+    p.frame_time = 0;
+    p.direction = 2;
+    p.still = 1;
     b->explosion = 0;
-    p->bomb = b;
+    p.bomb = b;
+    pthread_mutex_init(&p.mutex_player, NULL);
 
     return p;
 }

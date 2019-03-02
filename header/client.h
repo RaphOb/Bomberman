@@ -37,13 +37,28 @@ typedef struct in_addr IN_ADDR;
 #include <stdio.h>
 #include <inttypes.h>
 #include <stdlib.h>
+#include "player.h"
+#include "game.h"
 
 typedef struct {
     SOCKET sock;
     SOCKADDR_IN to;
     char *s_port;
-    char *c_pseudo;
+    struct timeval timeout;
+    fd_set readfs;
 } Server;
+
+typedef struct s_client_request
+{
+    unsigned int magic; /* Un magic number commun entre le client et le serveur, ou l’identifiant d’un type de structure */
+    int x_pos; /* La position x souhaitée par le client */
+    int y_pos; /* La position y souhaitée par le client */
+    int dir; /* La direction souhaitée par le client */
+    int command; /* Une commande du client (0 : Ne rien faire / 1 : Poser une bombe) */
+    int speed; /* La vitesse du joueur */
+    int ckecksum; /* Un checksum simple */
+    int code_reseau;
+} t_client_request;
 
 // ----- INITIALISATION -----
 //void init_client(void);
@@ -51,12 +66,13 @@ typedef struct {
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
 void hello_cli_serv();
+int getNbClientServer();
+void maj_player(game_t *g, int indice, player_t *p);
 // ----- COMMUNICATION -----
 int c_reception(int code, SOCKET serv_sock);
-void write_to_serv(char *buffer, int from_keyboard);
-void write_code_to_server(int code);
-void c_emission(int code);
-int listen_server(int run, struct timeval timeout, fd_set readfs);
+void write_to_serv(t_client_request c_request);
+void c_emission(player_t *player, int code);
+void listen_server(void* game);
 // ----- MAIN -----
 int app_client();
 

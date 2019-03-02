@@ -36,14 +36,18 @@ typedef struct in_addr IN_ADDR;
 #include <pthread.h>
 #include <inttypes.h>
 #include <stdlib.h>
+#include "game.h"
 
+// Structure concernant un client (spécifique au serveur)
 typedef struct
 {
     int num_client;
+    int is_host;
     pthread_t c_thread;
     pthread_mutex_t mutex_client;
     char name[1024];
     SOCKADDR_IN csin;
+    player_t p;
 }Client;
 
 // ----- INITIALISATION -----
@@ -55,6 +59,7 @@ void delete_one_thread(Client *c);
 void delete_all_threads();
 void wait_end_of_threads();
 int into_thread(void* fd_client);
+int game_thread();
 // ----- SOCKET -----
 void close_socket_client(Client *c);
 void close_all_socket_clients();
@@ -67,14 +72,15 @@ Client* get_client(int c);
 int add_client(int s, SOCKADDR_IN csin);
 void display_clients_co();
 // ----- DIVERS -----
-void set_pseudo(Client *c);
 // ----- COMMUNICATION -----
-void write_code_to_client(Client *c, int code);
-void write_code_to_all_clients(int code);
+void write_to_client(Client *c, int code);
+void write_to_all_clients(int code);
 void s_emission(Client *c, int code);
-int s_reception(Client *c, char *buffer);
+int s_reception(Client *c, t_client_request *c_request);
 // ----- MAIN -----
 int app_serv(void* struct_serv);
+
+game_t init_game_server_side();
 
 #define MAX_CLIENT 4
 

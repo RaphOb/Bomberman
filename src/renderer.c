@@ -35,6 +35,7 @@ void drawGame(game_t *game)
         }
         renderPlayer(game->pSDL, game->players[i]);
     }
+    renderPlayer(game->pSDL, game->players[i]);
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 

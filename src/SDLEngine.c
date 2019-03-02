@@ -374,4 +374,4 @@ void initMap(sdl_t *pSDL)
     SDL_FreeSurface(map);
     map = NULL;
 }
-
+//la un commentaire on s'en fou

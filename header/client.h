@@ -50,7 +50,6 @@ typedef struct {
 
 typedef struct s_client_request
 {
-    unsigned int magic; /* Un magic number commun entre le client et le serveur, ou l’identifiant d’un type de structure */
     int x_pos; /* La position x souhaitée par le client */
     int y_pos; /* La position y souhaitée par le client */
     int dir; /* La direction souhaitée par le client */
@@ -65,7 +64,6 @@ typedef struct s_client_request
 //void end(void);
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
-void hello_cli_serv();
 int getNbClientServer();
 void maj_player(game_t *g, int indice, player_t *p);
 // ----- COMMUNICATION -----

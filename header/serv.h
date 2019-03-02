@@ -42,6 +42,7 @@ typedef struct in_addr IN_ADDR;
 typedef struct
 {
     int num_client;
+    int is_host;
     pthread_t c_thread;
     pthread_mutex_t mutex_client;
     char name[1024];
@@ -71,11 +72,9 @@ Client* get_client(int c);
 int add_client(int s, SOCKADDR_IN csin);
 void display_clients_co();
 // ----- DIVERS -----
-void set_pseudo(Client *c);
 // ----- COMMUNICATION -----
 void write_to_client(Client *c, int code);
 void write_to_all_clients(int code);
-//player_t *fillPlayerInfo(Client *c, int code);
 void s_emission(Client *c, int code);
 int s_reception(Client *c, t_client_request *c_request);
 // ----- MAIN -----

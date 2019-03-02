@@ -41,6 +41,7 @@ int main(int argc, char *argv[])
         SDL_StartTextInput();
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
+            game->nb_client_serv = getNbClientServer();
         } else if (network == 2) {
             host = 1;
             char *port = malloc(sizeof(char) * 10);
@@ -68,6 +69,7 @@ int main(int argc, char *argv[])
     // Game
     if (host == 1) {
         // Lancer la partie cote serveur
+        SDL_Log("[Client] Signal debut de partie au serveur");
         c_emission(&game->players[0], 200);
     }
     pthread_t listen_server_thread;
@@ -75,10 +77,7 @@ int main(int argc, char *argv[])
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         drawGame(game);
         start = SDL_GetTicks();
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 10000;
         quit = gameEvent(game);
-        //listen_server(game);
 
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));

@@ -66,7 +66,7 @@ void wait_end_of_threads()
 
 void delete_one_thread(Client *c)
 {
-    SDL_Log("[Server] Suppression du thread du client %d\n", c->num_client);
+    SDL_Log("[Server (%d)] Suppression du thread du client %d\n", c->num_client, c->num_client);
     pthread_cancel(c->c_thread);
 }
 
@@ -91,16 +91,16 @@ void close_all_socket_clients()
 void close_socket_client(Client *c)
 {
     if (closesocket((SOCKET)c->num_client) != 0) {
-        SDL_Log("[Server] closesocket()");
+        SDL_Log("[Server (%d)] closesocket()", c->num_client);
     } else {
-        SDL_Log("[Server] Socket fermee pour %d\n", c->num_client);
+        SDL_Log("[Server (%d)] Socket fermee pour %d\n", c->num_client, c->num_client);
     }
 }
 
 // ----- CLIENTS -----
 void disconnect_all_clients()
 {
-    //write_code_to_all_clients(DISCONNECT_CODE);
+    write_to_all_clients(DISCONNECT_CODE);
     close_all_socket_clients();
     delete_all_threads();
     delete_all_clients();
@@ -108,7 +108,7 @@ void disconnect_all_clients()
 
 void disconnect_client(Client *c)
 {
-    //write_code_to_client(c, DISCONNECT_CODE);
+    write_to_client(c, DISCONNECT_CODE);
     close_socket_client(c);
     delete_client(c);
 }
@@ -125,7 +125,7 @@ void delete_all_clients()
 
 void delete_client(Client *c)
 {
-    SDL_Log("[Server] Client supprime pour %d\n", c->num_client);
+    SDL_Log("[Server (%d)] Client supprime pour %d\n", c->num_client, c->num_client);
     c->num_client = 0;
     strcpy(c->name, "\0");
 }
@@ -137,9 +137,31 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].num_client = s;
             clients[i].csin = csin;
             clients[i].p.number = i;
-            clients[i].p.x_pos = START_X_MAP;
-            clients[i].p.y_pos = START_Y_MAP;
-            clients[i].p.direction = 2;
+            clients[i].is_host = 0;
+            switch (i) {
+                case 0:
+                    clients[i].p.x_pos = START_X_MAP;
+                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.direction = 2;
+                    break;
+                case 1:
+                    clients[i].p.x_pos = START_X_MAP;
+                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.direction = 0;
+                    break;
+                case 2:
+                    clients[i].p.x_pos = START_X_MAP;
+                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.direction = 1;
+                    break;
+                case 3:
+                    clients[i].p.x_pos = START_X_MAP;
+                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.direction = 3;
+                    break;
+                default:
+                    break;
+            }
             pthread_mutex_init(&clients[i].mutex_client, NULL);
             display_clients_co();
             return 1;
@@ -163,37 +185,14 @@ void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
         if (clients[i].name[0] != '\0') {
-            SDL_Log("[Server] client (%s) %d : %d\t", clients[i].name, i, clients[i].num_client);
+            SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].name, i, clients[i].num_client);
         } else {
-            SDL_Log("[Server] client %d : %d\t", i, clients[i].num_client);
+            SDL_Log("[Server (%d)] client %d : %d\t", i, clients[i].num_client, clients[i].num_client);
         }
     }
 }
 
 // ----- DIVERS -----
-void set_pseudo(Client *c)
-{
-    char buffer[1024];
-    memset(buffer, '\0', 1024);
-    int n = 0;
-    fd_set readfs;
-
-    FD_ZERO(&readfs);
-    FD_SET((SOCKET)c->num_client, &readfs);
-
-    select(c->num_client+1, &readfs, NULL, NULL, NULL);
-
-    if (FD_ISSET((SOCKET)c->num_client, &readfs)) {
-        if((n = recv((SOCKET)c->num_client, buffer, 1024, 0)) < 0)
-        {
-            SDL_Log("[Server] recv()");
-            //return -1;
-        } else {
-            buffer[n] = 0;
-            strcpy(c->name, buffer);
-        }
-    }
-}
 
 // ----- COMMUNICATION -----
 void write_to_client(Client *c, int code)
@@ -204,7 +203,7 @@ void write_to_client(Client *c, int code)
     sprintf(buffer, "%d", code);
     if(sendto((SOCKET)c->num_client, (char*)&g, sizeof(g), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
     {
-        SDL_Log("[Server] sendto()");
+        SDL_Log("[Server (%d)] sendto()", c->num_client);
     }
 }
 
@@ -216,19 +215,7 @@ void write_to_all_clients(int code)
         }
     }
 }
-/*
-player_t *fillPlayerInfo(Client *c, int code)
-{
-    player_t p = {0};
 
-    p.code_reseau = code;
-    p.x_pos = c->p.x_pos;
-    p.y_pos = c->p.y_pos;
-    p.direction = c->p.direction;
-
-    return &p;
-}
-*/
 void s_emission(Client *c, int code)
 {
     char buffer[10] = {'\0'};
@@ -241,11 +228,12 @@ void s_emission(Client *c, int code)
             }
             break;
         case NB_CLIENT_SERV_CODE:
-            sprintf(buffer, "%d", c->p.number);
+            sprintf(buffer, "%d", c->num_client);
             if(sendto((SOCKET)c->num_client, buffer, sizeof(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
             {
-                SDL_Log("[Server] sendto()");
+                SDL_Log("[Server (%d)] NB_CLIENT_SERV_CODE : sendto()", c->num_client);
             }
+            return;
             break;
         default:
             //SDL_Log("[Server] Emission : Case doesnt exist for this code, aborted.\n");
@@ -269,6 +257,7 @@ game_t init_game_server_side()
         g.players[i].x_pos = c.p.x_pos;
         g.players[i].y_pos = c.p.y_pos;
         g.players[i].direction = c.p.direction;
+        g.players[i].number = c.num_client;
     }
 
     return g;
@@ -293,10 +282,6 @@ int s_reception(Client *c, t_client_request *c_request)
             }
             display_clients_co();
             break;
-        case PSEUDO_CODE:
-            set_pseudo(c);
-            display_clients_co();
-            break;
         case UP_CODE:
             //SDL_Log("[Server] Client %d : UP\n", c->num_client);
             break;
@@ -313,25 +298,24 @@ int s_reception(Client *c, t_client_request *c_request)
             //SDL_Log("[Server] Client %d : BOMB\n", c->num_client);
             break;
         case 200:
+            c->is_host = 1;
             ret_thread = pthread_create(&c_thread, NULL, (void *) game_thread, NULL);
             break;
         default:
-            SDL_Log("[Server] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c_request->code_reseau);
+            SDL_Log("[Server (%d)] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c->num_client, c_request->code_reseau);
             break;
     }
-    // Toujours renvoyer OK_CODE au client après réception
-    //s_emission(c, OK_CODE);
     return 1;
 }
 
 // ----- THREAD -----
 int game_thread()
 {
-    SDL_Log("Lancement de game thread\n");
+    SDL_Log("[Server] Lancement de game thread\n");
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
         SDL_Delay(40);
-        // NULL -> tous les clients
+        // NULL -> tous les clients ; 0 Pas de code particulier
         s_emission(NULL, 0);
     }
 }
@@ -349,8 +333,6 @@ int into_thread(void* fd_client)
     s_emission(c, NB_CLIENT_SERV_CODE);
 
     while(run) {
-        char buffer[1024];
-        memset(buffer, '\0', 1024);
         int n = 0;
         FD_ZERO(&readfs);
         FD_SET((SOCKET)c->num_client, &readfs);
@@ -361,12 +343,11 @@ int into_thread(void* fd_client)
         if (FD_ISSET((SOCKET)c->num_client, &readfs)) {
             if((n = recv((SOCKET)c->num_client, (char *)&c_request, sizeof(c_request), 0)) < 0)
             {
-                SDL_Log("[Server] Impossible de joindre le client\n");
+                SDL_Log("[Server (%d)] Impossible de joindre le client\n", c->num_client);
                 close_socket_client(c);
                 delete_client(c);
                 return -1;
             } else {
-                buffer[n] = 0;
                 pthread_mutex_lock(&clients->mutex_client);
                 run = s_reception(c, &c_request);
                 pthread_mutex_unlock(&clients->mutex_client);
@@ -400,10 +381,10 @@ int app_serv(void* serv_port)
             SDL_Log("[Server] Server is full.\n");
             closesocket(client);
         } else {
-            SDL_Log("[Server] Creation du thread client.\n");
+            SDL_Log("[Server (%d)] Creation du thread client.\n", (int)client);
             int ret_thread = pthread_create(&get_client((int)client)->c_thread, NULL, (void *) into_thread, (void *) (uintptr_t) client);
             if (ret_thread != 0) {
-                SDL_Log("[Server] Echec de la création du thread, suppression du client.\n");
+                SDL_Log("[Server (%d)] Echec de la création du thread, suppression du client.\n", (int)client);
                 delete_client(get_client((int)client));
             }
         }

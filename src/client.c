@@ -187,65 +187,16 @@ void listen_server(void* g_param)
 void maj_player(game_t *g, int indice, player_t *p)
 {
     pthread_mutex_lock(&g->players[indice].mutex_player);
-
-    SDL_Log("p->x_pos : %d\n", p->x_pos);
-    SDL_Log("g->players[indice].x_pos : %d\n", g->players[indice].x_pos);
-    SDL_Log("%d\n", (int)fabs((p->x_pos * 100 / g->players[indice].x_pos) - 100));
-    if (fabs((p->x_pos * 100 / g->players[indice].x_pos) - 100) > 5 ) {
+    double x = (p->x_pos * 100 / g->players[indice].x_pos) - 100;
+    if (fabs(x) > 5 ) {
         g->players[indice].x_pos = p->x_pos;
     }
-    if (fabs(((p->y_pos * 100) / g->players[indice].y_pos) - 100) > 5 ) {
+    double y = (p->y_pos * 100 / g->players[indice].y_pos) - 100;
+    if (fabs(y) > 5 ) {
         g->players[indice].y_pos = p->y_pos;
     }
 
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;
     pthread_mutex_unlock(&g->players[indice].mutex_player);
-}
-
-int app_client()
-{
-    //init();
-    char buffer[128];
-    int n = 0;
-    int run = 1;
-    struct timeval timeout;
-
-//    char *pseudo = "test";
-
-    //init_co_from_cli_to_serv(pseudo);
-
-    fd_set readfs;
-//    int tosize = sizeof serv.to;
-
-    while (run) {
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 200;
-        FD_ZERO(&readfs);
-        FD_SET(serv.sock, &readfs);
-        memset(buffer, '\0', 128);
-
-        select((int)serv.sock+1, &readfs, NULL, NULL, &timeout);
-
-        memset(buffer, '\0', 128);
-        if (FD_ISSET(serv.sock, &readfs)) {
-            if((n = recv((SOCKET)serv.sock, buffer, 128, 0)) < 0)
-            {
-                SDL_Log("recv()");
-            } else {
-                buffer[n] = 0;
-                if (strlen(buffer) == 2) {
-                    run = c_reception((int)strtoimax(buffer, NULL, 10), serv.sock);
-                } else {
-                    SDL_Log("Reception d'un autre message : %s\n", buffer);
-                }
-            }
-        }
-    }
-
-    buffer[n] = '\0';
-    closesocket(serv.sock);
-    end();
-    return 0;
-
 }

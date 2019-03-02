@@ -73,10 +73,5 @@ int c_reception(int code, SOCKET serv_sock);
 void write_to_serv(t_client_request c_request);
 void c_emission(player_t *player, int code);
 void listen_server(void* game);
-// ----- MAIN -----
-int app_client();
-
-// Keyboard typing -> 1 else 0
-#define KEYBOARD_TYPING_MODE 0
 
 #endif //BOMBERMAN_CLIENT_H

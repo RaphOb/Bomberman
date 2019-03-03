@@ -46,34 +46,103 @@ sdl_t *initSDL()
         return NULL;
     }
 
+    pSDL->son[0] = initAudio(HOVER_SOUND);
+    pSDL->son[1] = initAudio(EXPLOSION_SOUND);
     initPlayerSDL(pSDL);
     initMap(pSDL);
     initBlock(pSDL);
     initBomb(pSDL);
     initExplosion(pSDL);
     initMenu(pSDL);
+
     return pSDL;
 }
+void closeAudio(son_t* son)
+{
+    SDL_CloseAudioDevice(son->deviceId);
+}
 
+son_t* initAudio(char* path)
+{
+    son_t* son = malloc(sizeof(son_t));
+    if (!son) {
+        return NULL ;
+    }
+    SDL_LoadWAV(path, &son->wavSpec, &son->wavBuffer, &son->wavLength);
+    son->deviceId = SDL_OpenAudioDevice(NULL, 0, &son->wavSpec, NULL, 0);
+    return son;
+}
 /**
  * functin :Play sound
  * @param path
  */
-void playSound(char* path)
+void playSound(son_t* son)
 {
-    SDL_AudioSpec wavSpec;
-    Uint32 wavLength;
-    Uint8 *wavBuffer;
 
-    SDL_LoadWAV(path, &wavSpec, &wavBuffer, &wavLength);
-    SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-    SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-    SDL_PauseAudioDevice(deviceId, 0);
 
-    if (SDL_GetQueuedAudioSize(deviceId) == 0) {
-        SDL_Log("hello");
-       // SDL_CloseAudioDevice(deviceId);
-        SDL_FreeWAV(wavBuffer);
+    SDL_QueueAudio(son->deviceId, son->wavBuffer, son->wavLength);
+    SDL_PauseAudioDevice(son->deviceId, 0);
+
+   if (SDL_GetQueuedAudioSize(son->deviceId) == 0) {
+        SDL_FreeWAV(son->wavBuffer);
+    }
+}
+
+/**
+ * function : play music
+ * @param path
+ * @return
+ */
+int playsound(char* path)
+{
+
+    static Uint32 wav_length = 0;
+    static Uint8 *wav_buffer;
+    static SDL_AudioSpec wav_spec;
+
+//    if (audio_len == 0) {
+//        return 1;
+//    }
+    if (audio_len == 0) {
+        SDL_CloseAudio();
+//        SDL_FreeWAV(wav_buffer);
+        if (SDL_LoadWAV(path, &wav_spec, &wav_buffer, &wav_length) == NULL) {
+            return 1;
+        }
+
+        wav_spec.callback = my_audio_callback;
+        wav_spec.userdata = NULL;
+
+        audio_pos = wav_buffer;
+        audio_len = wav_length;
+
+        if (SDL_OpenAudio(&wav_spec, NULL) < 0) {
+            SDL_Log("Couldn't open audio: %s\n", SDL_GetError());
+            exit(-1);
+        }
+        SDL_PauseAudio(0);
+    }
+
+    return 0;
+}
+
+/**
+ * function : callback function
+ * @param userdata
+ * @param stream
+ * @param len
+ */
+void my_audio_callback(void *userdata, Uint8 *stream, int len) {
+
+//    if (audio_len ==0)
+//        return;
+    if (audio_len != 0) {
+        len = ((Uint32) len > audio_len ? audio_len : (Uint32) len);
+        SDL_memcpy(stream, audio_pos, len);
+        SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME / 3);
+
+        audio_pos += len;
+        audio_len -= len;
     }
 }
 
@@ -157,10 +226,14 @@ void destroySDL(sdl_t *pSDL)
 
     TTF_Quit();
     SDL_Quit();
+    closeAudio(pSDL->son[0]);
+    closeAudio(pSDL->son[1]);
     free(pSDL->buttonPlay);
     free(pSDL->buttonQuit);
     free(pSDL->buttonHost);
     free(pSDL->buttonConnect);
+    free(pSDL->son[0]);
+    free(pSDL->son[1]);
     free(pSDL);
     SDL_Log("Destroy SDL");
 }
@@ -372,6 +445,6 @@ void initMap(sdl_t *pSDL)
         }
     }
     SDL_FreeSurface(map);
-    map = NULL;
+//    map = NULL;
 }
 

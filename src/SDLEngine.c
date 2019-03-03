@@ -46,13 +46,15 @@ sdl_t *initSDL()
         return NULL;
     }
 
+    pSDL->son[0] = initAudio(HOVER_SOUND);
+    pSDL->son[1] = initAudio(EXPLOSION_SOUND);
     initPlayerSDL(pSDL);
     initMap(pSDL);
     initBlock(pSDL);
     initBomb(pSDL);
     initExplosion(pSDL);
     initMenu(pSDL);
-    initAudio(HOVER_SOUND);
+
     return pSDL;
 }
 void closeAudio(son_t* son)
@@ -60,14 +62,15 @@ void closeAudio(son_t* son)
     SDL_CloseAudioDevice(son->deviceId);
 }
 
-void initAudio(char* path)
+son_t* initAudio(char* path)
 {
     son_t* son = malloc(sizeof(son_t));
     if (!son) {
-        return ;
+        return NULL ;
     }
     SDL_LoadWAV(path, &son->wavSpec, &son->wavBuffer, &son->wavLength);
     son->deviceId = SDL_OpenAudioDevice(NULL, 0, &son->wavSpec, NULL, 0);
+    return son;
 }
 /**
  * functin :Play sound
@@ -80,7 +83,7 @@ void playSound(son_t* son)
     SDL_QueueAudio(son->deviceId, son->wavBuffer, son->wavLength);
     SDL_PauseAudioDevice(son->deviceId, 0);
 
-    if (SDL_GetQueuedAudioSize(son->deviceId) == 0) {
+   if (SDL_GetQueuedAudioSize(son->deviceId) == 0) {
         SDL_FreeWAV(son->wavBuffer);
     }
 }
@@ -227,10 +230,14 @@ void destroySDL(sdl_t *pSDL)
 
     TTF_Quit();
     SDL_Quit();
+    closeAudio(pSDL->son[0]);
+    closeAudio(pSDL->son[1]);
     free(pSDL->buttonPlay);
     free(pSDL->buttonQuit);
     free(pSDL->buttonHost);
     free(pSDL->buttonConnect);
+    free(pSDL->son[0]);
+    free(pSDL->son[1]);
     free(pSDL);
     SDL_Log("Destroy SDL");
 }

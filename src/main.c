@@ -31,15 +31,15 @@ int main(int argc, char *argv[])
     // First menu
     while(menu == 0) {
         if (song == 0) {
-          // song =  playsound(TROPSTYLE3_SOUND);
+           song =  playsound(TROPSTYLE3_SOUND);
         }
         drawMenu(game->pSDL);
-        menu = menuEvent(game->pSDL, game->son);
+        menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
 //     Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);
-        network = menuNetworkEvent(game->pSDL);
+        network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 
 //         Input
         SDL_StartTextInput();

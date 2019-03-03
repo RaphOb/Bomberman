@@ -71,12 +71,12 @@ int gameEvent(game_t *game)
     return res;
 }
 
-void makeExplosion(player_t *player)
+void makeExplosion(player_t *player, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
     player->bomb.explosion = 1;
     player->bomb.tickExplosion = SDL_GetTicks();
-  //  playSound(EXPLOSION_SOUND);
+    playSound(son);
 
 }
 

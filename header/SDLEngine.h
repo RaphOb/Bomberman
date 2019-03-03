@@ -36,6 +36,7 @@ typedef struct son_s {
     Uint32 wavLength;
     Uint8 *wavBuffer;
     SDL_AudioDeviceID deviceId;
+
 }son_t;
 
 typedef struct button_s {
@@ -58,6 +59,7 @@ struct sdl_s {
     button_t *buttonConnect;
     button_t *buttonHost;
     SDL_Texture *textureMenuLogo;
+    son_t* son[2];
 };
 typedef struct sdl_s sdl_t;
 
@@ -79,7 +81,7 @@ void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
 void playSound(son_t* son);
-void initAudio(char* path);
+son_t* initAudio(char* path);
 void closeAudio(son_t* son);
 int playsound(char* path);
 

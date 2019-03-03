@@ -31,6 +31,14 @@ static Uint32 audio_len; // remaining length of the music we have to play
 // CENTERFLAME = 0, UPFLAME = 1, ...
 enum Flame { CENTERFLAME, UPFLAME, DOWNFLAME, RIGHTFLAME, LEFTFLAME, HORIZONTALFLAME, VERTICALFLAME};
 
+typedef struct son_s {
+    SDL_AudioSpec wavSpec;
+    Uint32 wavLength;
+    Uint8 *wavBuffer;
+    SDL_AudioDeviceID deviceId;
+
+}son_t;
+
 typedef struct button_s {
     SDL_Texture *textureButton[2];
     int hover;
@@ -51,6 +59,7 @@ struct sdl_s {
     button_t *buttonConnect;
     button_t *buttonHost;
     SDL_Texture *textureMenuLogo;
+    son_t* son[2];
 };
 typedef struct sdl_s sdl_t;
 
@@ -71,7 +80,9 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
-void playSound(char* path);
+void playSound(son_t* son);
+son_t* initAudio(char* path);
+void closeAudio(son_t* son);
 int playsound(char* path);
 
 #endif //BOMBERMAN_SDLENGINE_H

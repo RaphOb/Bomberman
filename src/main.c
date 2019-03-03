@@ -34,12 +34,12 @@ int main(int argc, char *argv[])
            song =  playsound(TROPSTYLE3_SOUND);
         }
         drawMenu(game->pSDL);
-        menu = menuEvent(game->pSDL);
+        menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
 //     Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);
-        network = menuNetworkEvent(game->pSDL);
+        network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 
 //         Input
         SDL_StartTextInput();

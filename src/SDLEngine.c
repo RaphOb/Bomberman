@@ -52,28 +52,36 @@ sdl_t *initSDL()
     initBomb(pSDL);
     initExplosion(pSDL);
     initMenu(pSDL);
+    initAudio(HOVER_SOUND);
     return pSDL;
 }
+void closeAudio(son_t* son)
+{
+    SDL_CloseAudioDevice(son->deviceId);
+}
 
+void initAudio(char* path)
+{
+    son_t* son = malloc(sizeof(son_t));
+    if (!son) {
+        return ;
+    }
+    SDL_LoadWAV(path, &son->wavSpec, &son->wavBuffer, &son->wavLength);
+    son->deviceId = SDL_OpenAudioDevice(NULL, 0, &son->wavSpec, NULL, 0);
+}
 /**
  * functin :Play sound
  * @param path
  */
-void playSound(char* path)
+void playSound(son_t* son)
 {
-    SDL_AudioSpec wavSpec;
-    Uint32 wavLength;
-    Uint8 *wavBuffer;
 
-    SDL_LoadWAV(path, &wavSpec, &wavBuffer, &wavLength);
-    SDL_AudioDeviceID deviceId = SDL_OpenAudioDevice(NULL, 0, &wavSpec, NULL, 0);
-    SDL_QueueAudio(deviceId, wavBuffer, wavLength);
-    SDL_PauseAudioDevice(deviceId, 0);
 
-    if (SDL_GetQueuedAudioSize(deviceId) == 0) {
-        SDL_Log("hello");
-       // SDL_CloseAudioDevice(deviceId);
-        SDL_FreeWAV(wavBuffer);
+    SDL_QueueAudio(son->deviceId, son->wavBuffer, son->wavLength);
+    SDL_PauseAudioDevice(son->deviceId, 0);
+
+    if (SDL_GetQueuedAudioSize(son->deviceId) == 0) {
+        SDL_FreeWAV(son->wavBuffer);
     }
 }
 
@@ -133,7 +141,7 @@ void my_audio_callback(void *userdata, Uint8 *stream, int len) {
 
     len = ((Uint32)len > audio_len ? audio_len :(Uint32)len );
     SDL_memcpy (stream, audio_pos, len);
-    SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME);
+    SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME/3);
 
     audio_pos += len;
     audio_len -= len;

@@ -17,7 +17,7 @@ typedef struct hover_s {
     int hover_off;
     int hover_on;
 } hover_t;
-int menuEvent(sdl_t *pSDL);
+int menuEvent(sdl_t *pSDL, son_t* son);
 int menuNetworkEvent(sdl_t *pSDL);
 
 #endif //BOMBERMAN_MENU_H

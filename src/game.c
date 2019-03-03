@@ -76,7 +76,7 @@ void makeExplosion(player_t *player)
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
     player->bomb.explosion = 1;
     player->bomb.tickExplosion = SDL_GetTicks();
-    playSound(EXPLOSION_SOUND);
+  //  playSound(EXPLOSION_SOUND);
 
 }
 

@@ -21,6 +21,7 @@ typedef struct game_s {
     player_t players[MAX_PLAYER];
     int nb_client_serv;
     sdl_t *pSDL;
+    son_t* son;
 } game_t;
 
 game_t *initGame(sdl_t *sdl);

@@ -15,7 +15,7 @@
      int hover_off = 1;
      int hover_on1 = 0;
      int hover_off1 = 1;
-int menuEvent(sdl_t *pSDL)
+int menuEvent(sdl_t *pSDL, son_t* son)
 {
     int res = 0;
 
@@ -31,14 +31,14 @@ int menuEvent(sdl_t *pSDL)
         hover_on = 1;
         if (hover_on == 1 && hover_off == 1) {
             hover_off = 0;
-            playSound(HOVER_SOUND);
+            playSound(son);
         }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
         hover_on = 1;
         if (hover_on == 1 && hover_off== 1) {
             hover_off = 0;
-            playSound(HOVER_SOUND);
+           // playSound(HOVER_SOUND);
         }
     } else { hover_off = 1;}
 
@@ -93,21 +93,21 @@ int menuNetworkEvent(sdl_t *pSDL)
         hover_on1 = 1;
         if (hover_on1 == 1 && hover_off1 == 1) {
             hover_off1 = 0;
-            playSound(HOVER_SOUND);
+           // playSound(HOVER_SOUND);
         }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
         hover_on1 = 1;
         if (hover_on1 == 1 && hover_off1 == 1) {
             hover_off1 = 0;
-            playSound(HOVER_SOUND);
+         //   playSound(HOVER_SOUND);
         }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonHost->dstRect)) {
         pSDL->buttonHost->hover = 1;
         hover_on1 = 1;
         if (hover_on1 == 1 && hover_off1 == 1) {
             hover_off1 = 0;
-            playSound(HOVER_SOUND);
+           // playSound(HOVER_SOUND);
         }
     } else {hover_off1 = 1;}
 

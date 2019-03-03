@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
     // First menu
     while(menu == 0) {
         if (song == 0) {
-           song =  playsound(TROPSTYLE3_SOUND);
+          // song =  playsound(TROPSTYLE3_SOUND);
         }
         drawMenu(game->pSDL);
-        menu = menuEvent(game->pSDL);
+        menu = menuEvent(game->pSDL, game->son);
     }
 //     Menu Network
     while (menu != -1 && network == 0) {

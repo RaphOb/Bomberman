@@ -47,13 +47,14 @@ int gameEvent(game_t *game)
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE :
-                    c_emission(DISCONNECT_CODE);
+                    c_emission(&game->players[0], DISCONNECT_CODE);
                     res = -1;
                     break;
                 case SDLK_b:
-                    c_emission(BOMB_CODE);
-                        if (game->players[0]->bombPosed == 0 && canPlayerPlaceBomb(game->players[0]))
-                            placeBomb(game->pSDL, game->players[0]);
+                    c_emission(&game->players[0], BOMB_CODE);
+                    if (game->players[0].bombPosed == 0 && canPlayerPlaceBomb(&game->players[0])) {
+                        placeBomb(game->pSDL, &game->players[0]);
+                    }
                     break;
                 default :
                     fprintf(stderr,"touche inconnue %d\n", event.key.keysym.sym);
@@ -61,11 +62,12 @@ int gameEvent(game_t *game)
             }
         }
     }
-    if (game->players[0]->bomb.explosion == 1) {
-        checkBombDamage(game->map, game->players[0]->bomb);
-        checkBombPlayer(game->players[0], game->players[0]->bomb);
+        
+    if (game->players[0].bomb.explosion == 1) {
+        checkBombDamage(game->map, game->players[0].bomb);
+        checkBombPlayer(&game->players[0], game->players[0].bomb);
     }
-    doMove(keystates, game->players[0], game->map);
+    doMove(keystates, &game->players[0], game->map);
     return res;
 }
 
@@ -109,19 +111,19 @@ void checkBombPlayer(player_t *player, bomb_t b) {
 
     //left
     if ((bpos_x - 1 == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
-        SDL_Log("leffft");
+        //SDL_Log("leffft");
     }
     //right
-    if ((bpos_x + 1 == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y) {
-        SDL_Log("right");
+    if ((bpos_x + 1 == ppos_x) && bpos_y == ppos_y) {
+        //SDL_Log("right");
     }
     //top
-    if ((bpos_y - 1 == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
-        SDL_Log("top");
+    if ((bpos_y - 1 == ppos_y) && bpos_x == ppos_x) {
+        //SDL_Log("top");
     }
     //bottom
     if ((bpos_y + 1 == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
-        SDL_Log("bottom");
+        //SDL_Log("bottom");
     }
 }
 /**

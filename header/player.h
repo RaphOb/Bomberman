@@ -5,6 +5,7 @@
 #ifndef BOMBERMAN_PLAYER_H
 #define BOMBERMAN_PLAYER_H
 
+#include <pthread.h>
 #include "../header/map.h"
 
 #define TEXTURE_WIDTH 78
@@ -25,7 +26,8 @@ typedef struct bombs_s {
 
 typedef struct player_s {
     char alive;
-    unsigned int number;
+    int code_reseau;
+    int number;
     int map_x[2];
     int map_y[2];
     int x_pos;
@@ -38,10 +40,11 @@ typedef struct player_s {
     int frame_time;
     int direction;
     int still;
+    pthread_mutex_t mutex_player;
     bomb_t bomb;
 } player_t;
 
-player_t *initPlayer();
+player_t initPlayer();
 void updatePlayerCell(player_t *player);
 int collideWith(map_t map, player_t *player, int x, int y);
 int canPlayerPlaceBomb(player_t *player);

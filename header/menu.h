@@ -12,12 +12,7 @@
 #define IMG_MENU_W 601
 #define IMG_MENU_H 478
 
-typedef struct hover_s {
-
-    int hover_off;
-    int hover_on;
-} hover_t;
-int menuEvent(sdl_t *pSDL);
-int menuNetworkEvent(sdl_t *pSDL);
+int menuEvent(sdl_t *pSDL, son_t* son);
+int menuNetworkEvent(sdl_t *pSDL, son_t* son);
 
 #endif //BOMBERMAN_MENU_H

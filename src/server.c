@@ -33,23 +33,23 @@ int init_co(char *port)
     SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
     if(sock == INVALID_SOCKET)
     {
-        SDL_Log("[Server] socket()");
+//        SDL_Log("[Server] socket()");
         exit(errno);
     }
-    SDL_Log("[Server] Ecoute sur le port : %s\n", port);
+//    SDL_Log("[Server] Ecoute sur le port : %s\n", port);
     sin.sin_addr.s_addr = htonl(INADDR_ANY);
     sin.sin_family = AF_INET;
     sin.sin_port = htons((u_short) atoi(port));
 
     if(bind(sock,(SOCKADDR *) &sin, sizeof sin) == SOCKET_ERROR)
     {
-        SDL_Log("[Server] bind()");
+//        SDL_Log("[Server] bind()");
         exit(errno);
     }
 
     if(listen(sock, MAX_CLIENT) == SOCKET_ERROR)
     {
-        SDL_Log("[Server] listen()");
+//        SDL_Log("[Server] listen()");
         exit(errno);
     }
 
@@ -138,6 +138,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].csin = csin;
             clients[i].p.number = i;
             clients[i].is_host = 0;
+            clients[i].alive = 'Y';
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;
@@ -258,6 +259,8 @@ game_t init_game_server_side()
         g.players[i].y_pos = c.p.y_pos;
         g.players[i].direction = c.p.direction;
         g.players[i].number = c.num_client;
+        g.players[i].alive = c.alive;
+        g.players[i].speed = 1;
     }
 
     return g;
@@ -314,7 +317,7 @@ int game_thread()
     SDL_Log("[Server] Lancement de game thread\n");
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
-        SDL_Delay(40);
+        SDL_Delay(35);
         // NULL -> tous les clients ; 0 Pas de code particulier
         s_emission(NULL, 0);
     }
@@ -370,15 +373,15 @@ int app_serv(void* serv_port)
     while (1) {
         SOCKADDR_IN csin = { 0 };
         int sinsize = sizeof(csin);
-        SDL_Log("[Server] Attente d'un client...\n");
+//        SDL_Log("[Server] Attente d'un client...\n");
         SOCKET client = accept(sock, (struct sockaddr *)&csin, &sinsize);
         if (client == INVALID_SOCKET) {
-            SDL_Log("[Server] accept()");
+//            SDL_Log("[Server] accept()");
             return -1;
         }
 
         if (add_client((int)client, csin) == 0) {
-            SDL_Log("[Server] Server is full.\n");
+//            SDL_Log("[Server] Server is full.\n");
             closesocket(client);
         } else {
             SDL_Log("[Server (%d)] Creation du thread client.\n", (int)client);

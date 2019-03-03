@@ -31,7 +31,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     SOCKET sock;
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == INVALID_SOCKET) {
-        SDL_Log("socket()");
+//        SDL_Log("socket()");
         exit(errno);
     }
 
@@ -48,7 +48,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
         pseudo = strdup("Host");
     }
 
-    SDL_Log("[Client] Connexion sur le port : %s\n", port);
+//    SDL_Log("[Client] Connexion sur le port : %s\n", port);
 
     to.sin_addr.s_addr = inet_addr(ip);
     to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
@@ -56,7 +56,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
     {
-        SDL_Log("connect()");
+//        SDL_Log("connect()");
         exit(errno);
     } else {
         serv.sock = sock;
@@ -83,7 +83,7 @@ int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
-            SDL_Log("Disconnected by the server.\n");
+//            SDL_Log("Disconnected by the server.\n");
             closesocket(serv_sock);
             return 0;
         default:
@@ -95,7 +95,7 @@ void write_to_serv(t_client_request c_request)
 {
     if(send(serv.sock, (char*)&c_request, sizeof(c_request), 0) < 0)
     {
-        SDL_Log("send()");
+//        SDL_Log("send()");
     }
 }
 
@@ -154,6 +154,7 @@ void listen_server(void* g_param)
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number > 0) {
+                        //SDL_Log("g.players[i].number : %d", g.players[i].number);
                         if (game->nb_client_serv == g.players[i].number) {
                             maj_player(game, 0, &g.players[i]);
                         } else {
@@ -170,11 +171,13 @@ void listen_server(void* g_param)
 void maj_player(game_t *g, int indice, player_t *p)
 {
     pthread_mutex_lock(&g->players[indice].mutex_player);
+    //SDL_Log("g->players[indice].x_pos : %d", g->players[indice].x_pos);
+    //SDL_Log("p->x_pos : %d", p->x_pos);
     if (g->players[indice].x_pos == 0) {
         g->players[indice].x_pos = p->x_pos;
     } else {
         double x = (p->x_pos * 100 / g->players[indice].x_pos) - 100;
-        if (fabs(x) > 5 ) {
+        if (fabs(x) > 3 ) {
             g->players[indice].x_pos = p->x_pos;
         }
     }
@@ -182,11 +185,13 @@ void maj_player(game_t *g, int indice, player_t *p)
         g->players[indice].y_pos = p->y_pos;
     } else {
         double y = (p->y_pos * 100 / g->players[indice].y_pos) - 100;
-        if (fabs(y) > 5 ) {
+        if (fabs(y) > 3 ) {
             g->players[indice].y_pos = p->y_pos;
         }
     }
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;
+    g->players[indice].speed = p->speed;
+    g->players[indice].number = p->number;
     pthread_mutex_unlock(&g->players[indice].mutex_player);
 }

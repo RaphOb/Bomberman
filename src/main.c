@@ -23,21 +23,25 @@ int main(int argc, char *argv[])
     int quit = 0;
     int menu = 0;
     int network = 0;
-    int play = 0;
+    int play = 1;
+    int song = 0;
     fd_set readfs;
     struct timeval timeout;
     int host = 0;
     // First menu
     while(menu == 0) {
+        if (song == 0) {
+           song =  playsound(TROPSTYLE3_SOUND);
+        }
         drawMenu(game->pSDL);
-        menu = menuEvent(game->pSDL);
+        menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
-    // Menu Network
+//     Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);
-        network = menuNetworkEvent(game->pSDL);
+        network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 
-        // Input
+//         Input
         SDL_StartTextInput();
         if (network == 1) {
             play = loopInputConnect(game->pSDL);

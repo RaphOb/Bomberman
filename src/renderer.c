@@ -24,11 +24,11 @@ void drawGame(game_t *game)
         if (game->players[i]->bomb.explosion == 1) {
             int frame = 0;
             int currentTick = SDL_GetTicks();
-            if (currentTick - game->players[i]->bomb.tickExplosion > 200) frame = 1;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 400) frame = 2;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 600) frame = 3;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 800) frame = 4;
-            if (currentTick - game->players[i]->bomb.tickExplosion > 1000) {
+            if (currentTick - game->players[i]->bomb.tickExplosion > 100) frame = 1;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 200) frame = 2;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 300) frame = 3;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 400) frame = 4;
+            if (currentTick - game->players[i]->bomb.tickExplosion > 500) {
                 game->players[i]->bomb.explosion = 0;
             }
             renderExplosion(game->pSDL, frame, game->map, game->players[i]->bomb.range);
@@ -118,6 +118,7 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
     int isLeftBlocked = 0;
     int isUpBlocked = 0;
     int isDownBlocked = 0;
+
     const int cell_x = (pSDL->dst_bomb.x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
     const int cell_y = (pSDL->dst_bomb.y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
     SDL_Rect dst_mid = {pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - REAL_BLOCK_SIZE) / 2), pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - REAL_BLOCK_SIZE) / 2), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};

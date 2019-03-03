@@ -33,12 +33,13 @@ int main(int argc, char *argv[])
     struct timeval timeout;
 //     First menu
     while(menu == 0) {
-        if (song == 0) {
-           song =  playsound(TROPSTYLE3_SOUND);
-        }
+//        if (song == 0) {
+           song = playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
+//        }
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL);
     }
+    SDL_CloseAudio();
 //     Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);

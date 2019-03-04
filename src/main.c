@@ -30,12 +30,13 @@ int main(int argc, char *argv[])
     int host = 0;
     // First menu
     while(menu == 0) {
-        if (song == 0) {
-           song =  playsound(TROPSTYLE3_SOUND);
-        }
+//        if (song == 0) {
+           song = playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
+//        }
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
+    SDL_CloseAudio();
 //     Menu Network
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);

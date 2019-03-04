@@ -121,6 +121,7 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
     int isLeftBlocked = 0;
     int isUpBlocked = 0;
     int isDownBlocked = 0;
+
     const int cell_x = (pSDL->dst_bomb.x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
     const int cell_y = (pSDL->dst_bomb.y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
     SDL_Rect dst_mid = {pSDL->dst_bomb.x + ((pSDL->dst_bomb.w - REAL_BLOCK_SIZE) / 2), pSDL->dst_bomb.y + ((pSDL->dst_bomb.h - REAL_BLOCK_SIZE) / 2), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};

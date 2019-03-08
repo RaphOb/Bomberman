@@ -42,6 +42,7 @@ typedef struct player_s {
     int still;
     pthread_mutex_t mutex_player;
     bomb_t bomb;
+    char *name;
 } player_t;
 
 player_t initPlayer();

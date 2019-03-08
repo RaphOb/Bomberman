@@ -130,6 +130,14 @@ void delete_client(Client *c)
     strcpy(c->name, "\0");
 }
 
+void init_all_clients()
+{
+    for (int i=0 ; i<MAX_CLIENT ; i++) {
+        clients[i].num_client = -1;
+        clients[i].p.number = -1;
+    }
+}
+
 int add_client(int s, SOCKADDR_IN csin)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -138,7 +146,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].csin = csin;
             clients[i].p.number = i;
             clients[i].is_host = 0;
-            clients[i].alive = 'Y';
+            clients[i].p.alive = 'Y';
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;

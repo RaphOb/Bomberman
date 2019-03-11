@@ -127,7 +127,7 @@ void delete_client(Client *c)
 {
     SDL_Log("[Server (%d)] Client supprime pour %d\n", c->num_client, c->num_client);
     c->num_client = 0;
-    strcpy(c->name, "\0");
+    strcpy(c->p.name, "\0");
 }
 
 void init_all_clients()
@@ -141,7 +141,7 @@ void init_all_clients()
 int add_client(int s, SOCKADDR_IN csin)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
-        if (clients[i].num_client == 0) {
+        if (clients[i].num_client == -1) {
             clients[i].num_client = s;
             clients[i].csin = csin;
             clients[i].p.number = i;
@@ -193,8 +193,8 @@ Client* get_client(int c)
 void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
-        if (clients[i].name[0] != '\0') {
-            SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].name, i, clients[i].num_client);
+        if (clients[i].p.name != NULL) {
+            SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].p.name, i, clients[i].num_client);
         } else {
             SDL_Log("[Server (%d)] client %d : %d\t", i, clients[i].num_client, clients[i].num_client);
         }
@@ -219,7 +219,7 @@ void write_to_client(Client *c, int code)
 void write_to_all_clients(int code)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
-        if (clients[i].num_client != 0) {
+        if (clients[i].num_client != -1) {
             write_to_client(&clients[i], code);
         }
     }
@@ -237,7 +237,8 @@ void s_emission(Client *c, int code)
             }
             break;
         case NB_CLIENT_SERV_CODE:
-            sprintf(buffer, "%d", c->num_client);
+            // On envoi sa place dans le tableau - ce sera le numero commun entre le client et le serveur
+            sprintf(buffer, "%d", c->p.number);
             if(sendto((SOCKET)c->num_client, buffer, sizeof(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
             {
                 SDL_Log("[Server (%d)] NB_CLIENT_SERV_CODE : sendto()", c->num_client);
@@ -266,8 +267,8 @@ game_t init_game_server_side()
         g.players[i].x_pos = c.p.x_pos;
         g.players[i].y_pos = c.p.y_pos;
         g.players[i].direction = c.p.direction;
-        g.players[i].number = c.num_client;
-        g.players[i].alive = c.alive;
+        g.players[i].number = c.p.number;
+        g.players[i].alive = c.p.alive;
         g.players[i].speed = 1;
     }
 
@@ -373,6 +374,7 @@ int into_thread(void* fd_client)
 int app_serv(void* serv_port)
 {
     init();
+    init_all_clients();
 
     char *port = strdup((char *)serv_port);
 
@@ -389,7 +391,7 @@ int app_serv(void* serv_port)
         }
 
         if (add_client((int)client, csin) == 0) {
-//            SDL_Log("[Server] Server is full.\n");
+            SDL_Log("[Server] Server is full.\n");
             closesocket(client);
         } else {
             SDL_Log("[Server (%d)] Creation du thread client.\n", (int)client);

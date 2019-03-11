@@ -27,6 +27,9 @@ game_t *initGame(sdl_t *pSDL)
         return (NULL);
     }
     game->pSDL = pSDL;
+    for (int i = 0; i < MAX_PLAYER ; i++) {
+        game->players[i].number = -1;
+    }
     return game;
 }
 

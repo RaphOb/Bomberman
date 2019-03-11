@@ -153,9 +153,9 @@ void listen_server(void* g_param)
                 SDL_Log("[Client] Reception de données serveur...\n");
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
-                    if (g.players[i].number > 0) {
-                        SDL_Log("g.players[%d].number : %d", i, g.players[i].number);
-                        SDL_Log("game->nb_client_serv : %d", game->nb_client_serv);
+                    if (g.players[i].number >= 0) {
+                        //SDL_Log("g.players[%d].number : %d", i, g.players[i].number);
+                        //SDL_Log("game->nb_client_serv : %d", game->nb_client_serv);
                         if (game->nb_client_serv == g.players[i].number) {
                             maj_player(game, 0, &g.players[i]);
                         } else {

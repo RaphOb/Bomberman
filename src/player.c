@@ -23,7 +23,7 @@ player_t initPlayer()
     p.map_y[1] = 0;
     p.x_pos = START_X_MAP;
     p.y_pos = START_Y_MAP;
-    p.number = 0;
+    p.number = -1;
     p.current_frame = 1;
     p.frame_time = 0;
     p.direction = 2;

@@ -18,7 +18,7 @@ void drawGame(game_t *game)
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
-        if (game->players[i].number > 0) {
+        if (game->players[i].number >= 0) {
             //SDL_Log("player : %d\n", game->players[i].number);
             if (game->players[i].bombPosed == 1) {
                 renderBomb(game->pSDL, &game->players[i]);

@@ -13,8 +13,8 @@ int main(int argc, char *argv[])
     SDL_Log("argc: %d, argv : %s", argc, argv[0]);
     Uint32 start;
     sdl_t *pSDL = initSDL();
-    player_t player = initPlayer();
     game_t *game = initGame(pSDL);
+    player_t player = initPlayer();
     if (!pSDL /*|| !player */|| !game) {
         return (-1);
     }

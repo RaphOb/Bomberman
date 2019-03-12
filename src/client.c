@@ -66,14 +66,22 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 }
 
 // ----- DIVERS -----
-int getNbClientServer()
+int getNbClientServer(player_t *p)
 {
-    char buffer[128] = {'\0'};
+    char *buffer;
+    int n;
+    buffer = malloc(sizeof(char) * 2);
     SDL_Log("[Client] NB_CLIENT_SERVER_CODE from server...\n");
-    if (recv(serv.sock, buffer, 10, MSG_WAITALL) == -1) {
+    if ((n = recv(serv.sock, buffer, sizeof(buffer), MSG_WAITALL)) == -1) {
         SDL_Log("recv()");
     } else {
-        SDL_Log("[Client] nb_client_server set to : %d\n", atoi(buffer));
+        if (buffer != NULL) {
+            p->co_is_ok = 1;
+            c_emission(p, 201);
+        }
+        //SDL_Log("taille = %d\n", n);
+        //SDL_Log("[Client] nb_client_server set to : %s\n", buffer);
+        //SDL_Log("[Client] nb_client_server set to : %d\n", atoi(buffer));
         return atoi(buffer);
     }
 }
@@ -121,6 +129,9 @@ void c_emission(player_t *player, int code)
         case RIGHT_CODE:
             c_request.code_reseau = RIGHT_CODE;
             break;
+        case CO_IS_OK:
+            c_request.code_reseau = CO_IS_OK;
+            break;
         case 200:
             c_request.code_reseau = 200;
             break;
@@ -136,6 +147,7 @@ void listen_server(void* g_param)
     SDL_Log("[Client] Listen server is ON");
     int n = 0;
     game_t *game = (game_t*)(uintptr_t)g_param;
+    player_t *p = getMyPlayer(game);
 
     while(1) {
         FD_ZERO(&serv.readfs);
@@ -150,20 +162,16 @@ void listen_server(void* g_param)
             {
                 SDL_Log("recv()");
             } else {
-                SDL_Log("[Client] Reception de données serveur...\n");
+                //SDL_Log("[Client] Reception de données serveur...\n");
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
-                    if (g.players[i].number >= 0) {
+                    if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
+                        maj_player(game, g.players[i].number, &g.players[i]);
                         //SDL_Log("g.players[%d].number : %d", i, g.players[i].number);
                         //SDL_Log("game->nb_client_serv : %d", game->nb_client_serv);
-                        if (game->nb_client_serv == g.players[i].number) {
-                            maj_player(game, 0, &g.players[i]);
-                        } else {
-                            maj_player(game, i + 1, &g.players[i]);
-                        }
                     }
                 }
-                c_reception(game->players[0].code_reseau, serv.sock);
+                c_reception(p->code_reseau, serv.sock);
             }
         }
     }
@@ -172,24 +180,8 @@ void listen_server(void* g_param)
 void maj_player(game_t *g, int indice, player_t *p)
 {
     pthread_mutex_lock(&g->players[indice].mutex_player);
-    //SDL_Log("g->players[indice].x_pos : %d", g->players[indice].x_pos);
-    //SDL_Log("p->x_pos : %d", p->x_pos);
-    if (g->players[indice].x_pos == 0) {
-        g->players[indice].x_pos = p->x_pos;
-    } else {
-        double x = (p->x_pos * 100 / g->players[indice].x_pos) - 100;
-        if (fabs(x) > 3 ) {
-            g->players[indice].x_pos = p->x_pos;
-        }
-    }
-    if (g->players[indice].y_pos == 0) {
-        g->players[indice].y_pos = p->y_pos;
-    } else {
-        double y = (p->y_pos * 100 / g->players[indice].y_pos) - 100;
-        if (fabs(y) > 3 ) {
-            g->players[indice].y_pos = p->y_pos;
-        }
-    }
+    g->players[indice].x_pos = p->x_pos;
+    g->players[indice].y_pos = p->y_pos;
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;
     g->players[indice].speed = p->speed;

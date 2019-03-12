@@ -18,7 +18,7 @@ int main(int argc, char *argv[])
     if (!pSDL /*|| !player */|| !game) {
         return (-1);
     }
-    game->players[0] = player;
+    //game->players[0] = player;
 
     int quit = 0;
     int menu = 0;
@@ -45,7 +45,7 @@ int main(int argc, char *argv[])
         SDL_StartTextInput();
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
-            game->nb_client_serv = getNbClientServer();
+            game->nb_client_serv = getNbClientServer(&player);
         } else if (network == 2) {
             host = 1;
             char *port = malloc(sizeof(char) * 10);
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
                     SDL_Delay(500);
                     init();
                     init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
-                    game->nb_client_serv = getNbClientServer();
+                    game->nb_client_serv = getNbClientServer(&player);
                 }
             }
         }
@@ -74,7 +74,7 @@ int main(int argc, char *argv[])
     if (host == 1) {
         // Lancer la partie cote serveur
         SDL_Log("[Client] Signal debut de partie au serveur");
-        c_emission(&game->players[0], 200);
+        c_emission(&player, 200);
     }
     pthread_t listen_server_thread;
     int ret_thread = pthread_create(&listen_server_thread, NULL, (void *) listen_server, (void *)(uintptr_t) game);
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
 
     // On libère la mémoire
     destroySDL(pSDL);
-    //free(game->players[0]);
+    //free(player);
     free(game);
 
     return EXIT_SUCCESS;

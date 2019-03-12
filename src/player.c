@@ -8,12 +8,14 @@
 #include "../header/player.h"
 #include "../header/map.h"
 #include "../header/bit.h"
+#include "../header/game.h"
 
 player_t initPlayer()
 {
     player_t p;
 
     p.alive = 'Y';
+    p.co_is_ok = 0;
     p.bombPosed = 0;
     p.bombs_left = 20;
     p.frags = 0;

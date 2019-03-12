@@ -33,6 +33,12 @@ game_t *initGame(sdl_t *pSDL)
     return game;
 }
 
+
+player_t *getMyPlayer(game_t *g)
+{
+    return &g->players[g->nb_client_serv];
+}
+
 /**
  * function : key press event
  * @param game
@@ -43,6 +49,7 @@ int gameEvent(game_t *game)
     int res = 0;
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     SDL_Event event;
+    player_t *p = getMyPlayer(game);
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -50,13 +57,13 @@ int gameEvent(game_t *game)
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE :
-                    c_emission(&game->players[0], DISCONNECT_CODE);
+                    c_emission(p, DISCONNECT_CODE);
                     res = -1;
                     break;
                 case SDLK_b:
-                    c_emission(&game->players[0], BOMB_CODE);
-                    if (game->players[0].bombPosed == 0 && canPlayerPlaceBomb(&game->players[0])) {
-                        placeBomb(game->pSDL, &game->players[0]);
+                    c_emission(p, BOMB_CODE);
+                    if (p->bombPosed == 0 && canPlayerPlaceBomb(p)) {
+                        placeBomb(game->pSDL, p);
                     }
                     break;
                 default :
@@ -66,11 +73,11 @@ int gameEvent(game_t *game)
         }
     }
         
-    if (game->players[0].bomb.explosion == 1) {
-        checkBombDamage(game->map, game->players[0].bomb);
-        checkBombPlayer(&game->players[0], game->players[0].bomb);
+    if (p->bomb.explosion == 1) {
+        checkBombDamage(game->map, p->bomb);
+        checkBombPlayer(p, p->bomb);
     }
-    doMove(keystates, &game->players[0], game->map);
+    doMove(keystates, p, game->map);
     return res;
 }
 

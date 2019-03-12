@@ -219,6 +219,14 @@ void destroySDL(sdl_t *pSDL)
         SDL_DestroyTexture(pSDL->texturePlayers[1]);
         pSDL->texturePlayers[1] = NULL;
     }
+    if (pSDL->texturePlayers[2]) {
+        SDL_DestroyTexture(pSDL->texturePlayers[2]);
+        pSDL->texturePlayers[2] = NULL;
+    }
+    if (pSDL->texturePlayers[3]) {
+        SDL_DestroyTexture(pSDL->texturePlayers[3]);
+        pSDL->texturePlayers[3] = NULL;
+    }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
         pSDL->pRenderer = NULL;
@@ -331,6 +339,8 @@ void initPlayerSDL(sdl_t *pSDL)
 {
     SDL_Surface *surfacePlayer = IMG_Load("../resources/sprite/perso1.png");
     SDL_Surface *surfacePlayer2 = IMG_Load("../resources/sprite/perso2.png");
+    SDL_Surface *surfacePlayer3 = IMG_Load("../resources/sprite/perso3.png");
+    SDL_Surface *surfacePlayer4 = IMG_Load("../resources/sprite/perso4.png");
     if (!surfacePlayer || !surfacePlayer2) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -338,7 +348,9 @@ void initPlayerSDL(sdl_t *pSDL)
     } else {
         pSDL->texturePlayers[0] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer);
         pSDL->texturePlayers[1] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer2);
-        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1]) {
+        pSDL->texturePlayers[2] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer3);
+        pSDL->texturePlayers[3] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer4);
+        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1] || !pSDL->texturePlayers[2] || !pSDL->texturePlayers[3]) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
             destroySDL(pSDL);
             return;

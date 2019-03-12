@@ -147,6 +147,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].p.number = i;
             clients[i].is_host = 0;
             clients[i].p.alive = 'Y';
+            clients[i].p.co_is_ok = 0;
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;
@@ -219,7 +220,7 @@ void write_to_client(Client *c, int code)
 void write_to_all_clients(int code)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
-        if (clients[i].num_client != -1) {
+        if (clients[i].num_client != -1 && clients[i].p.co_is_ok == 1) {
             write_to_client(&clients[i], code);
         }
     }
@@ -227,7 +228,7 @@ void write_to_all_clients(int code)
 
 void s_emission(Client *c, int code)
 {
-    char buffer[10] = {'\0'};
+    char *buffer;
     switch (code) {
         case DISCONNECT_CODE:
             if (c == NULL) {
@@ -238,7 +239,11 @@ void s_emission(Client *c, int code)
             break;
         case NB_CLIENT_SERV_CODE:
             // On envoi sa place dans le tableau - ce sera le numero commun entre le client et le serveur
+            buffer = malloc(sizeof(char) * 2);
             sprintf(buffer, "%d", c->p.number);
+            buffer[1]= '\0';
+            SDL_Log("OULAH = %s\n", buffer);
+            //SDL_Log("c->num_client = %d\n", c->num_client);
             if(sendto((SOCKET)c->num_client, buffer, sizeof(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
             {
                 SDL_Log("[Server (%d)] NB_CLIENT_SERV_CODE : sendto()", c->num_client);
@@ -270,6 +275,7 @@ game_t init_game_server_side()
         g.players[i].number = c.p.number;
         g.players[i].alive = c.p.alive;
         g.players[i].speed = 1;
+        g.players[i].checksum = sizeof(g.players[i]);
     }
 
     return g;
@@ -309,6 +315,9 @@ int s_reception(Client *c, t_client_request *c_request)
         case BOMB_CODE:
             //SDL_Log("[Server] Client %d : BOMB\n", c->num_client);
             break;
+        case CO_IS_OK:
+            c->p.co_is_ok = 1;
+            break;
         case 200:
             c->is_host = 1;
             ret_thread = pthread_create(&c_thread, NULL, (void *) game_thread, NULL);
@@ -326,8 +335,8 @@ int game_thread()
     SDL_Log("[Server] Lancement de game thread\n");
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
-        SDL_Delay(35);
         // NULL -> tous les clients ; 0 Pas de code particulier
+        SDL_Delay(1);
         s_emission(NULL, 0);
     }
 }
@@ -341,7 +350,6 @@ int into_thread(void* fd_client)
     pthread_mutex_lock(&clients->mutex_client);
     Client *c = get_client(fd_client_int);
     pthread_mutex_unlock(&clients->mutex_client);
-
     s_emission(c, NB_CLIENT_SERV_CODE);
 
     while(run) {

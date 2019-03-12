@@ -27,7 +27,9 @@ typedef struct bombs_s {
 typedef struct player_s {
     char alive;
     int code_reseau;
+    int co_is_ok;
     int number;
+    int checksum;
     int map_x[2];
     int map_y[2];
     int x_pos;

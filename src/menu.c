@@ -10,12 +10,18 @@
 #include "../header/map.h"
 #include "../header/SDLEngine.h"
 
+int hover_on = 0;
+int hover_off = 1;
+int hover_on1 = 0;
+int hover_off1 = 1;
 
-     int hover_on = 0;
-     int hover_off = 1;
-     int hover_on1 = 0;
-     int hover_off1 = 1;
-int menuEvent(sdl_t *pSDL)
+/**
+ * Function : Manage the events from the player in the first menu
+ * @param pSDL
+ * @param son
+ * @return 1 if the player wants to play, 0 if he wants ot quit
+ */
+int menuEvent(sdl_t *pSDL, son_t* son)
 {
     int res = 0;
 
@@ -31,14 +37,14 @@ int menuEvent(sdl_t *pSDL)
         hover_on = 1;
         if (hover_on == 1 && hover_off == 1) {
             hover_off = 0;
-            playSound(HOVER_SOUND);
+            playSound(son);
         }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
         hover_on = 1;
         if (hover_on == 1 && hover_off== 1) {
             hover_off = 0;
-            playSound(HOVER_SOUND);
+            playSound(son);
         }
     } else { hover_off = 1;}
 
@@ -76,7 +82,13 @@ int menuEvent(sdl_t *pSDL)
     return res;
 }
 
-int menuNetworkEvent(sdl_t *pSDL)
+/**
+ * Function : Manage the events from the player in the network menu
+ * @param pSDL
+ * @param son
+ * @return 1 if the player wants to host the game, 2 if he wants to connect to an host and - 1 if he wants to quit
+ */
+int menuNetworkEvent(sdl_t *pSDL, son_t* son)
 {
     int res = 0;
     SDL_Event event;
@@ -93,21 +105,21 @@ int menuNetworkEvent(sdl_t *pSDL)
         hover_on1 = 1;
         if (hover_on1 == 1 && hover_off1 == 1) {
             hover_off1 = 0;
-            playSound(HOVER_SOUND);
+            playSound(son);
         }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
         pSDL->buttonQuit->hover = 1;
         hover_on1 = 1;
         if (hover_on1 == 1 && hover_off1 == 1) {
             hover_off1 = 0;
-            playSound(HOVER_SOUND);
+           playSound(son);
         }
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonHost->dstRect)) {
         pSDL->buttonHost->hover = 1;
         hover_on1 = 1;
         if (hover_on1 == 1 && hover_off1 == 1) {
             hover_off1 = 0;
-            playSound(HOVER_SOUND);
+            playSound(son);
         }
     } else {hover_off1 = 1;}
 

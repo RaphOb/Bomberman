@@ -8,10 +8,10 @@
 #include "../header/map.h"
 #include "../header/bit.h"
 
-/** TODO
- * function : comment plz!
+/**
+ * function : Build the map from the file "map.txt"
  * @param map
- * @return
+ * @return 1 if all went good, 0 if not
  */
 int extractArrayFromFile(map_t map)
 {
@@ -35,8 +35,8 @@ int extractArrayFromFile(map_t map)
     return (1);
 }
 
-/** TODO
- * function : comment plz!
+/**
+ * function : Fill the map with 0.
  * @param map
  */
 void fillArray(map_t map)
@@ -48,8 +48,8 @@ void fillArray(map_t map)
     }
 }
 
-/** TODO
- * function : comment pl
+/**
+ * function : Toggle bit(s) in the map depending on the character when reading through the line from the file
  * @param map
  * @param index
  * @param line
@@ -75,8 +75,8 @@ void insertLineIntoArray(map_t map, int index, char *line)
     }
 }
 
-/** TODO
- * function : comment plz
+/**
+ * function : Dev function to see the bits in the map
  * @param map
  */
 void displayArray(map_t map)

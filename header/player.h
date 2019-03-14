@@ -10,8 +10,8 @@
 
 #define TEXTURE_WIDTH 78
 #define TEXTURE_HEIGHT 128
-#define FRAME_WIDTH TEXTURE_WIDTH / 3
-#define FRAME_HEIGHT TEXTURE_HEIGHT / 4
+#define FRAME_WIDTH (TEXTURE_WIDTH / 3)
+#define FRAME_HEIGHT (TEXTURE_HEIGHT / 4)
 #define PLAYER_WIDTH (int) (FRAME_WIDTH + (FRAME_WIDTH / 2))
 #define PLAYER_HEIGHT (int) (FRAME_HEIGHT + (FRAME_HEIGHT / 2))
 
@@ -27,7 +27,9 @@ typedef struct bombs_s {
 typedef struct player_s {
     char alive;
     int code_reseau;
+    int co_is_ok;
     int number;
+    int checksum;
     int map_x[2];
     int map_y[2];
     int x_pos;
@@ -42,6 +44,7 @@ typedef struct player_s {
     int still;
     pthread_mutex_t mutex_player;
     bomb_t bomb;
+    char *name;
 } player_t;
 
 player_t initPlayer();

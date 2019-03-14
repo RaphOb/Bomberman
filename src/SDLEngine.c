@@ -57,6 +57,8 @@ sdl_t *initSDL()
 
     return pSDL;
 }
+
+
 void closeAudio(son_t* son)
 {
     SDL_CloseAudioDevice(son->deviceId);
@@ -96,39 +98,34 @@ void playSound(son_t* son)
 int playsound(char* path)
 {
 
-    if (SDL_Init(SDL_INIT_AUDIO) < 0)
-        return 1;
-
-    static Uint32 wav_length;
+    static Uint32 wav_length = 0;
     static Uint8 *wav_buffer;
     static SDL_AudioSpec wav_spec;
 
+//    if (audio_len == 0) {
+//        return 1;
+//    }
+    if (audio_len == 0) {
+        SDL_CloseAudio();
+//        SDL_FreeWAV(wav_buffer);
+        if (SDL_LoadWAV(path, &wav_spec, &wav_buffer, &wav_length) == NULL) {
+            return 1;
+        }
 
+        wav_spec.callback = my_audio_callback;
+        wav_spec.userdata = NULL;
 
-    if( SDL_LoadWAV(path, &wav_spec, &wav_buffer, &wav_length) == NULL ){
-        return 1;
+        audio_pos = wav_buffer;
+        audio_len = wav_length;
+
+        if (SDL_OpenAudio(&wav_spec, NULL) < 0) {
+            SDL_Log("Couldn't open audio: %s\n", SDL_GetError());
+            exit(-1);
+        }
+        SDL_PauseAudio(0);
     }
 
-    wav_spec.callback = my_audio_callback;
-    wav_spec.userdata = NULL;
-
-    audio_pos = wav_buffer;
-    audio_len = wav_length;
-
-
-    if ( SDL_OpenAudio(&wav_spec, NULL) < 0 ){
-        fprintf(stderr, "Couldn't open audio: %s\n", SDL_GetError());
-        exit(-1);
-    }
-
-
-    SDL_PauseAudio(0);
-
-
-    if ( audio_len == 0 ) {
-    SDL_CloseAudio();
-    SDL_FreeWAV(wav_buffer);
-    }
+    return 0;
 }
 
 /**
@@ -139,15 +136,16 @@ int playsound(char* path)
  */
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {
 
-    if (audio_len ==0)
-        return;
+//    if (audio_len ==0)
+//        return;
+    if (audio_len != 0) {
+        len = ((Uint32) len > audio_len ? audio_len : (Uint32) len);
+        SDL_memcpy(stream, audio_pos, (Uint32) len);
+        SDL_MixAudio(stream, audio_pos, (Uint32) len, SDL_MIX_MAXVOLUME / 3);
 
-    len = ((Uint32)len > audio_len ? audio_len :(Uint32)len );
-    SDL_memcpy (stream, audio_pos, len);
-    SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME/3);
-
-    audio_pos += len;
-    audio_len -= len;
+        audio_pos += len;
+        audio_len -= len;
+    }
 }
 
 /**
@@ -312,8 +310,14 @@ void initMenu(sdl_t *pSDL)
     SDL_FreeSurface(menuLogo);
 
 }
-
-
+/**
+ * function : Create a struct button_t
+ * @param rect
+ * @param textureOn
+ * @param textureOff
+ * @return a struct button_t which contains the normal texture and the hover one, a boolean to know if the button is hovered and
+ * a SDL_Rect for the position in the window.
+ */
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff)
 {
     button_t *b = malloc(sizeof(button_t));

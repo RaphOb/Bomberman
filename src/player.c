@@ -10,6 +10,10 @@
 #include "../header/bit.h"
 #include "../header/game.h"
 
+/**
+ * function : init the player
+ * @return a player initialised with default variables
+ */
 player_t initPlayer()
 {
     player_t p;
@@ -26,6 +30,7 @@ player_t initPlayer()
     p.x_pos = START_X_MAP;
     p.y_pos = START_Y_MAP;
     p.number = -1;
+    p.speed = 1;
     p.current_frame = 1;
     p.frame_time = 0;
     p.direction = 2;
@@ -39,6 +44,10 @@ player_t initPlayer()
     return p;
 }
 
+/**
+ * function : Update the player's cells. A player can be on two different cells.
+ * @param player
+ */
 void updatePlayerCell(player_t *player)
 {
     const int pos_x = player->x_pos - 80;
@@ -55,6 +64,14 @@ void updatePlayerCell(player_t *player)
 
 }
 
+/**
+ * Function : Check if the player is colliding with something like walls
+ * @param map
+ * @param player
+ * @param x
+ * @param y
+ * @return 1 if the player is colling with something, 0 if not
+ */
 int collideWith(map_t map, player_t *player, int x, int y)
 {
     const int pos_x = x - 80;
@@ -82,9 +99,16 @@ int collideWith(map_t map, player_t *player, int x, int y)
 //    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
 //    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));
 
-    return (getBit(map[cell_y], cell_x, 1) == 1 || getBit(map[cell_y2], cell_x2, 1) == 1);
+    return (getBit(map[cell_y], cell_x, 1) || getBit(map[cell_y2], cell_x2, 1));
+//            || getBit(map[cell_y], cell_x, 3) || getBit(map[cell_y2], cell_x2, 3));
 }
 
+/**
+ * function : Check if the player can placed a bomb at his current position.
+ * If he is more than 60% inside a cell then he can place the bomb.
+ * @param player
+ * @return 1 if the player can place a bomb, 0 if not
+ */
 int canPlayerPlaceBomb(player_t *player)
 {
     const float percentage = 0.6f;
@@ -119,6 +143,11 @@ int canPlayerPlaceBomb(player_t *player)
     }
 }
 
+/**
+ * Function : Check if the player is only in one cell
+ * @param player
+ * @return 1 if he is in one cell, 0 if not
+ */
 int isPlayerOnOneCell(player_t *player)
 {
     return (player->map_x[0] == player->map_x[1] && player->map_y[0] == player->map_y[1]);

@@ -17,8 +17,8 @@
 #define MAP_SIZE_W          (BASE_MAP_W * SIZE_M)
 #define MAP_SIZE_H          (BASE_MAP_H * SIZE_M)
 #define MAP_SIZE            MAP_X * MAP_Y
-#define START_X_MAP         START_X_BACKGROUND + (BLOCK_SIZE_PNG * SIZE_M)
-#define START_Y_MAP         START_Y_BACKGROUND + (BLOCK_SIZE_PNG / 2 * SIZE_M)
+#define START_X_MAP         (START_X_BACKGROUND + (BLOCK_SIZE_PNG * SIZE_M))
+#define START_Y_MAP         (START_Y_BACKGROUND + (BLOCK_SIZE_PNG / 2 * SIZE_M))
 #define FILENAME            "../resources/map.txt"
 
 typedef char map_t[MAP_X][MAP_Y];

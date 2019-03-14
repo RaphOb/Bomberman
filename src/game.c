@@ -63,24 +63,35 @@ int gameEvent(game_t *game)
                 case SDLK_b:
                     c_emission(p, BOMB_CODE);
                     if (p->bombPosed == 0 && canPlayerPlaceBomb(p)) {
-                        placeBomb(game->pSDL, p);
+                        placeBomb(game->pSDL, p, game->map);
                     }
                     break;
                 default :
-                    fprintf(stderr,"touche inconnue %d\n", event.key.keysym.sym);
+//                    SDL_Log("touche inconnue %d\n", event.key.keysym.sym);
                     break;
             }
         }
     }
         
     if (p->bomb.explosion == 1) {
+        toggleBit(game->map[p->bomb.y_pos], p->bomb.x_pos , 3);
         checkBombDamage(game->map, p->bomb);
-        checkBombPlayer(p, p->bomb);
+        for (int i = 0; i < MAX_PLAYER; i++) {
+            if (game->players[i].alive == 'Y') {
+                checkBombPlayer(&game->players[i], game->players[i].bomb);
+            }
+        }
     }
     doMove(keystates, p, game->map);
     return res;
 }
 
+/**
+ * function : When a bomb explode, this function is called and it updates some variables to trigger the animation
+ * and play the sound.
+ * @param player
+ * @param son
+ */
 void makeExplosion(player_t *player, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
@@ -90,7 +101,13 @@ void makeExplosion(player_t *player, son_t* son)
 
 }
 
-void placeBomb(sdl_t *pSDL, player_t *player)
+/**
+ * function : Update the position of the bomb to place it in the middle of the cell where the player is and update some variables to trigger the animation
+ * @param pSDL
+ * @param player
+ * @param map
+ */
+void placeBomb(sdl_t *pSDL, player_t *player, map_t map)
 {
     int cell_x = START_X_MAP + (player->bomb.x_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
     int cell_y = START_Y_MAP + (player->bomb.y_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
@@ -99,6 +116,7 @@ void placeBomb(sdl_t *pSDL, player_t *player)
     pSDL->dst_bomb.w = BOMB_PNG_W;
     pSDL->dst_bomb.x = cell_x;
     pSDL->dst_bomb.y = cell_y;
+    toggleBit(map[player->bomb.x_pos], player->bomb.y_pos, 3);
 //    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
 
     player->bombPosed = 1;
@@ -106,7 +124,7 @@ void placeBomb(sdl_t *pSDL, player_t *player)
 
 }
 /**
- * function : check  if player within bombrange
+ * function : check if player is within a bomb's range
  * @param player
  * @param b
  * @param pSDL
@@ -120,19 +138,23 @@ void checkBombPlayer(player_t *player, bomb_t b) {
 //    SDL_Log("%d", b.y_pos);
 
     //left
-    if ((bpos_x - 1 == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
+    if ((bpos_x - b.range == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
+        player->alive = 'N';
         //SDL_Log("leffft");
     }
     //right
-    if ((bpos_x + 1 == ppos_x) && bpos_y == ppos_y) {
+    else if ((bpos_x + b.range == ppos_x) && bpos_y == ppos_y) {
+        player->alive = 'N';
         //SDL_Log("right");
     }
     //top
-    if ((bpos_y - 1 == ppos_y) && bpos_x == ppos_x) {
+    else if ((bpos_y - b.range == ppos_y) && bpos_x == ppos_x) {
+        player->alive = 'N';
         //SDL_Log("top");
     }
     //bottom
-    if ((bpos_y + 1 == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
+    else if ((bpos_y + b.range == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
+        player->alive = 'N';
         //SDL_Log("bottom");
     }
 }
@@ -164,6 +186,12 @@ void checkBombDamage(map_t map, bomb_t b)
     }
 }
 
+/**
+ * function : Toggle bit to destroy block
+ * @param map
+ * @param pos_x
+ * @param pos_y
+ */
 void destroyBlock(map_t map, int pos_x, int pos_y)
 {
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {

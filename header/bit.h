@@ -6,7 +6,7 @@
 #define BOMBERMAN_BIT_H
 
 void toggleBit(char *line, int indexCol, int indexBit);
-void printBits(const char c);
+void printBits(char c);
 int getBit(const char line[], int indexCol, int indexBit);
 
 #endif //BOMBERMAN_BIT_H

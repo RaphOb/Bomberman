@@ -22,7 +22,6 @@
 #define TROPSTYLE2_SOUND    "../resources/sound/lastman-tv-series-original-soundtrack-preview.wav"
 #define TROPSTYLE3_SOUND    "../resources/sound/M.O.O.N.-_Hydrogen_-_Hotline-Miami-Soundtrack_.wav"
 #define POURLESRELOUXAUXGOUTSDEME_SOUND    "../resources/sound/Waterflame - Glorious morning.wav"
-void my_audio_callback(void *userdata, Uint8 *stream, int len);
 
 // variable declarations
 static Uint8 *audio_pos; // global pointer to the audio buffer to be played
@@ -84,5 +83,7 @@ void playSound(son_t* son);
 son_t* initAudio(char* path);
 void closeAudio(son_t* son);
 int playsound(char* path);
+void my_audio_callback(void *userdata, Uint8 *stream, int len);
+
 
 #endif //BOMBERMAN_SDLENGINE_H

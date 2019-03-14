@@ -37,6 +37,7 @@ int doMove(const Uint8 *keystates, player_t *player, map_t map)
         i++;
     }
     player->still = 1;
+    c_emission(player, 0);
     return (0);
 }
 /**
@@ -47,10 +48,10 @@ int doMove(const Uint8 *keystates, player_t *player, map_t map)
 void moveUp(player_t *player, map_t map)
 {
     player->direction = 3;
-    c_emission(player, UP_CODE);
     if (player->y_pos > START_Y_MAP && collideWith(map, player, player->x_pos, player->y_pos - 3) == 0) {
         player->y_pos -= 3 * player->speed;
     }
+    c_emission(player, UP_CODE);
 }
 /**
  * function : Move the player right
@@ -60,11 +61,11 @@ void moveUp(player_t *player, map_t map)
 void moveRight(player_t *player, map_t map)
 {
     player->direction = 2;
-    c_emission(player, RIGHT_CODE);
     if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (REAL_BLOCK_SIZE)))
         && collideWith(map, player, player->x_pos + 3, player->y_pos) == 0) {
         player->x_pos += 3 * player->speed;
     }
+    c_emission(player, RIGHT_CODE);
 }
 
 /**
@@ -74,12 +75,12 @@ void moveRight(player_t *player, map_t map)
  */
 void moveDown(player_t *player, map_t map)
 {
-    c_emission(player, DOWN_CODE);
     player->direction = 0;
     if (player->y_pos < ((START_Y_BACKGROUND + MAP_SIZE_H) - (PLAYER_HEIGHT + (REAL_BLOCK_SIZE / 2)))
         && collideWith(map, player, player->x_pos, player->y_pos + 3) == 0) {
         player->y_pos += 3 * player->speed;
     }
+    c_emission(player, DOWN_CODE);
 }
 
 /**
@@ -89,9 +90,9 @@ void moveDown(player_t *player, map_t map)
  */
 void moveLeft(player_t *player, map_t map)
 {
-    c_emission(player, LEFT_CODE);
     player->direction = 1;
     if (player->x_pos > START_X_MAP && collideWith(map, player, player->x_pos - 3, player->y_pos) == 0) {
         player->x_pos -= 3 * player->speed;
     }
+    c_emission(player, LEFT_CODE);
 }

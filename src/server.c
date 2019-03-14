@@ -127,18 +127,29 @@ void delete_client(Client *c)
 {
     SDL_Log("[Server (%d)] Client supprime pour %d\n", c->num_client, c->num_client);
     c->num_client = 0;
-    strcpy(c->name, "\0");
+    strcpy(c->p.name, "\0");
+}
+
+void init_all_clients()
+{
+    for (int i=0 ; i<MAX_CLIENT ; i++) {
+        clients[i].num_client = -1;
+        clients[i].p.number = -1;
+    }
 }
 
 int add_client(int s, SOCKADDR_IN csin)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
-        if (clients[i].num_client == 0) {
+        if (clients[i].num_client == -1) {
             clients[i].num_client = s;
             clients[i].csin = csin;
             clients[i].p.number = i;
             clients[i].is_host = 0;
-            clients[i].alive = 'Y';
+            clients[i].p.alive = 'Y';
+            clients[i].p.co_is_ok = 0;
+            clients[i].p.still = 1;
+            clients[i].p.bomb.range = 1;
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;
@@ -185,8 +196,8 @@ Client* get_client(int c)
 void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
-        if (clients[i].name[0] != '\0') {
-            SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].name, i, clients[i].num_client);
+        if (clients[i].p.name != NULL) {
+            SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].p.name, i, clients[i].num_client);
         } else {
             SDL_Log("[Server (%d)] client %d : %d\t", i, clients[i].num_client, clients[i].num_client);
         }
@@ -211,7 +222,7 @@ void write_to_client(Client *c, int code)
 void write_to_all_clients(int code)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
-        if (clients[i].num_client != 0) {
+        if (clients[i].num_client != -1 && clients[i].p.co_is_ok == 1) {
             write_to_client(&clients[i], code);
         }
     }
@@ -219,7 +230,7 @@ void write_to_all_clients(int code)
 
 void s_emission(Client *c, int code)
 {
-    char buffer[10] = {'\0'};
+    char *buffer;
     switch (code) {
         case DISCONNECT_CODE:
             if (c == NULL) {
@@ -229,7 +240,12 @@ void s_emission(Client *c, int code)
             }
             break;
         case NB_CLIENT_SERV_CODE:
-            sprintf(buffer, "%d", c->num_client);
+            // On envoi sa place dans le tableau - ce sera le numero commun entre le client et le serveur
+            buffer = malloc(sizeof(char) * 2);
+            sprintf(buffer, "%d", c->p.number);
+            buffer[1]= '\0';
+            SDL_Log("OULAH = %s\n", buffer);
+            //SDL_Log("c->num_client = %d\n", c->num_client);
             if(sendto((SOCKET)c->num_client, buffer, sizeof(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
             {
                 SDL_Log("[Server (%d)] NB_CLIENT_SERV_CODE : sendto()", c->num_client);
@@ -258,10 +274,12 @@ game_t init_game_server_side()
         g.players[i].x_pos = c.p.x_pos;
         g.players[i].y_pos = c.p.y_pos;
         g.players[i].direction = c.p.direction;
-        g.players[i].number = c.num_client;
-        g.players[i].alive = c.alive;
+        g.players[i].number = c.p.number;
+        g.players[i].alive = c.p.alive;
         g.players[i].speed = 1;
-        g.players[i].still = 1;
+        g.players[i].checksum = sizeof(g.players[i]);
+        g.players[i].still = c.p.still;
+        g.players[i].bomb.range = c.p.bomb.range;
     }
 
     return g;
@@ -276,6 +294,7 @@ int s_reception(Client *c, t_client_request *c_request)
     c->p.x_pos = c_request->x_pos;
     c->p.y_pos = c_request->y_pos;
     c->p.direction = c_request->dir;
+    c->p.still = c_request->still;
     switch (c_request->code_reseau) {
         case DISCONNECT_CODE:
             if (c == NULL) {
@@ -301,12 +320,15 @@ int s_reception(Client *c, t_client_request *c_request)
         case BOMB_CODE:
             //SDL_Log("[Server] Client %d : BOMB\n", c->num_client);
             break;
+        case CO_IS_OK:
+            c->p.co_is_ok = 1;
+            break;
         case 200:
             c->is_host = 1;
             ret_thread = pthread_create(&c_thread, NULL, (void *) game_thread, NULL);
             break;
         default:
-            SDL_Log("[Server (%d)] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c->num_client, c_request->code_reseau);
+            //SDL_Log("[Server (%d)] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c->num_client, c_request->code_reseau);
             break;
     }
     return 1;
@@ -318,8 +340,8 @@ int game_thread()
     SDL_Log("[Server] Lancement de game thread\n");
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
-        SDL_Delay(35);
         // NULL -> tous les clients ; 0 Pas de code particulier
+        SDL_Delay(1);
         s_emission(NULL, 0);
     }
 }
@@ -333,7 +355,6 @@ int into_thread(void* fd_client)
     pthread_mutex_lock(&clients->mutex_client);
     Client *c = get_client(fd_client_int);
     pthread_mutex_unlock(&clients->mutex_client);
-
     s_emission(c, NB_CLIENT_SERV_CODE);
 
     while(run) {
@@ -366,6 +387,7 @@ int into_thread(void* fd_client)
 int app_serv(void* serv_port)
 {
     init();
+    init_all_clients();
 
     char *port = strdup((char *)serv_port);
 
@@ -382,7 +404,7 @@ int app_serv(void* serv_port)
         }
 
         if (add_client((int)client, csin) == 0) {
-//            SDL_Log("[Server] Server is full.\n");
+            SDL_Log("[Server] Server is full.\n");
             closesocket(client);
         } else {
             SDL_Log("[Server (%d)] Creation du thread client.\n", (int)client);

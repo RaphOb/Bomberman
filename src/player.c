@@ -8,6 +8,7 @@
 #include "../header/player.h"
 #include "../header/map.h"
 #include "../header/bit.h"
+#include "../header/game.h"
 
 /**
  * function : init the player
@@ -18,6 +19,7 @@ player_t initPlayer()
     player_t p;
 
     p.alive = 'Y';
+    p.co_is_ok = 0;
     p.bombPosed = 0;
     p.bombs_left = 20;
     p.frags = 0;
@@ -27,7 +29,7 @@ player_t initPlayer()
     p.map_y[1] = 0;
     p.x_pos = START_X_MAP;
     p.y_pos = START_Y_MAP;
-    p.number = 1;
+    p.number = -1;
     p.speed = 1;
     p.current_frame = 1;
     p.frame_time = 0;

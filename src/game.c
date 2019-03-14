@@ -27,7 +27,16 @@ game_t *initGame(sdl_t *pSDL)
         return (NULL);
     }
     game->pSDL = pSDL;
+    for (int i = 0; i < MAX_PLAYER ; i++) {
+        game->players[i].number = -1;
+    }
     return game;
+}
+
+
+player_t *getMyPlayer(game_t *g)
+{
+    return &g->players[g->nb_client_serv];
 }
 
 /**
@@ -40,6 +49,7 @@ int gameEvent(game_t *game)
     int res = 0;
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     SDL_Event event;
+    player_t *p = getMyPlayer(game);
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -47,13 +57,13 @@ int gameEvent(game_t *game)
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
                 case SDLK_ESCAPE :
-                    c_emission(&game->players[0], DISCONNECT_CODE);
+                    c_emission(p, DISCONNECT_CODE);
                     res = -1;
                     break;
                 case SDLK_b:
-                    c_emission(&game->players[0], BOMB_CODE);
-                    if (game->players[0].bombPosed == 0 && canPlayerPlaceBomb(&game->players[0])) {
-                        placeBomb(game->pSDL, &game->players[0], game->map);
+                    c_emission(p, BOMB_CODE);
+                    if (p->bombPosed == 0 && canPlayerPlaceBomb(p)) {
+                        placeBomb(game->pSDL, p, game->map);
                     }
                     break;
                 default :
@@ -63,16 +73,16 @@ int gameEvent(game_t *game)
         }
     }
         
-    if (game->players[0].bomb.explosion == 1) {
-        toggleBit(game->map[game->players[0].bomb.y_pos], game->players[0].bomb.x_pos , 3);
-        checkBombDamage(game->map, game->players[0].bomb);
+    if (p->bomb.explosion == 1) {
+        toggleBit(game->map[p->bomb.y_pos], p->bomb.x_pos , 3);
+        checkBombDamage(game->map, p->bomb);
         for (int i = 0; i < MAX_PLAYER; i++) {
             if (game->players[i].alive == 'Y') {
                 checkBombPlayer(&game->players[i], game->players[i].bomb);
             }
         }
     }
-    doMove(keystates, &game->players[0], game->map);
+    doMove(keystates, p, game->map);
     return res;
 }
 

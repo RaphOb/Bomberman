@@ -19,7 +19,7 @@ void drawGame(game_t *game)
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number > 0) {
-            //SDL_Log("player : %d\n", game->players[i].number);
+//            SDL_Log("player : %d\n", game->players[i].number);
             if (game->players[i].bombPosed == 1) {
                 renderBomb(game->pSDL, &game->players[i]);
             }
@@ -35,7 +35,9 @@ void drawGame(game_t *game)
                 }
                 renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb.range);
             }
-            renderPlayer(game->pSDL, &game->players[i]);
+//            if (game->players[i].alive == 'Y') {
+                renderPlayer(game->pSDL, &game->players[i]);
+//            }
         }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);

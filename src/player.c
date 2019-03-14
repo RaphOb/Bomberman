@@ -23,7 +23,8 @@ player_t initPlayer()
     p.map_y[1] = 0;
     p.x_pos = START_X_MAP;
     p.y_pos = START_Y_MAP;
-    p.number = 0;
+    p.number = 1;
+    p.speed = 1;
     p.current_frame = 1;
     p.frame_time = 0;
     p.direction = 2;
@@ -80,7 +81,8 @@ int collideWith(map_t map, player_t *player, int x, int y)
 //    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
 //    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));
 
-    return (getBit(map[cell_y], cell_x, 1) == 1 || getBit(map[cell_y2], cell_x2, 1) == 1);
+    return (getBit(map[cell_y], cell_x, 1) || getBit(map[cell_y2], cell_x2, 1));
+//            || getBit(map[cell_y], cell_x, 3) || getBit(map[cell_y2], cell_x2, 3));
 }
 
 int canPlayerPlaceBomb(player_t *player)

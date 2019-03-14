@@ -261,6 +261,7 @@ game_t init_game_server_side()
         g.players[i].number = c.num_client;
         g.players[i].alive = c.alive;
         g.players[i].speed = 1;
+        g.players[i].still = 1;
     }
 
     return g;

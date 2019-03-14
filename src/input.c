@@ -13,7 +13,11 @@
 #include "../header/menu.h"
 #define LEN_MAX 80
 
-
+/**
+ *
+ * @param pSDL
+ * @return
+ */
 int loopInputConnect(sdl_t *pSDL)
 {
     SDL_Rect textRectPseudo = {440, 500, 0, 0};
@@ -62,6 +66,12 @@ int loopInputConnect(sdl_t *pSDL)
     return (quit == -1) ? 0 : 1;
 }
 
+/**
+ *
+ * @param pSDL
+ * @param p
+ * @return
+ */
 int loopInputHost(sdl_t *pSDL, char **p)
 {
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
@@ -104,6 +114,11 @@ int loopInputHost(sdl_t *pSDL, char **p)
 
 }
 
+/**
+ * function : Manage the events from the player on an input.
+ * @param input
+ * @return
+ */
 int manageInput(input_t *input)
 {
     SDL_Event event;
@@ -122,19 +137,31 @@ int manageInput(input_t *input)
             quit = -1;
         }
     } else if (event.type == SDL_TEXTINPUT) {
-        input->len += strlen(event.text.text);;
+        input->len += strlen(event.text.text);
         strcat(input->str, event.text.text);
     }
 
     return quit;
 }
 
+/**
+ * function : Render a text
+ * @param pRenderer
+ * @param textureText
+ * @param dst
+ */
 void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rect dst)
 {
     SDL_QueryTexture(textureText, NULL, NULL, &dst.w, &dst.h);
     SDL_RenderCopy(pRenderer, textureText, NULL, &dst);
 }
 
+/**
+ * function : Render an input
+ * @param textRect
+ * @param pSDL
+ * @param input
+ */
 void renderInput(SDL_Rect textRect, sdl_t *pSDL, input_t *input)
 {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
@@ -146,6 +173,14 @@ void renderInput(SDL_Rect textRect, sdl_t *pSDL, input_t *input)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
 }
 
+/**
+ * function : Create a texture for a text
+ * @param pRenderer
+ * @param font
+ * @param color
+ * @param str
+ * @return
+ */
 SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color, char *str)
 {
     SDL_Surface *surfaceText = TTF_RenderText_Solid(font, str, color);
@@ -154,6 +189,13 @@ SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Colo
     return textureText;
 }
 
+/**
+ * function : Create a input_t variable
+ * @param font
+ * @param color
+ * @param msgDisplayed
+ * @return
+ */
 input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed)
 {
     input_t *input = malloc(sizeof(input_t));
@@ -170,6 +212,10 @@ input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed)
     return input;
 }
 
+/**
+ * function : Free all the resources used for the input
+ * @param input
+ */
 void destroyInput(input_t *input)
 {
     SDL_FreeSurface(input->inputSurface);

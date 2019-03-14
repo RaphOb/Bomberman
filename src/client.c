@@ -150,7 +150,7 @@ void listen_server(void* g_param)
             {
                 SDL_Log("recv()");
             } else {
-                //SDL_Log("[Client] Reception de données serveur...\n");
+//                SDL_Log("[Client] Reception de données serveur...\n");
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number > 0) {
@@ -189,6 +189,8 @@ void maj_player(game_t *g, int indice, player_t *p)
             g->players[indice].y_pos = p->y_pos;
         }
     }
+    g->players[indice].still = p->still;
+    g->players[indice].alive = p->alive;
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;
     g->players[indice].speed = p->speed;

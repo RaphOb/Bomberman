@@ -8,7 +8,7 @@
 
 
 /**
- * function : affiche les textures
+ * function : Display all the textures concerning the game
  * @param game
  */
 void drawGame(game_t *game)
@@ -19,7 +19,7 @@ void drawGame(game_t *game)
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number > 0) {
-            //SDL_Log("player : %d\n", game->players[i].number);
+//            SDL_Log("player : %d\n", game->players[i].number);
             if (game->players[i].bombPosed == 1) {
                 renderBomb(game->pSDL, &game->players[i]);
             }
@@ -35,15 +35,17 @@ void drawGame(game_t *game)
                 }
                 renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb.range);
             }
-            renderPlayer(game->pSDL, &game->players[i]);
+//            if (game->players[i].alive == 'Y') {
+                renderPlayer(game->pSDL, &game->players[i]);
+//            }
         }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
 /**
- * Function : speakthemSelf... // TODO : TT
- * @param game
+ * function : Draw the first menu in the game
+ * @param pSDL
  */
 void drawMenu(sdl_t *pSDL)
 {
@@ -55,7 +57,7 @@ void drawMenu(sdl_t *pSDL)
 }
 
 /**
- * Function : set les positions des sprites
+ * Function : set the sprites's positions
  * @param pSDL
  */
 void renderMenu(sdl_t *pSDL)
@@ -68,6 +70,10 @@ void renderMenu(sdl_t *pSDL)
 
 }
 
+/**
+ * function : Draw the second menu concerning the network
+ * @param pSDL
+ */
 void drawMenuNetwork(sdl_t *pSDL)
 {
     SDL_RenderClear(pSDL->pRenderer);
@@ -77,7 +83,7 @@ void drawMenuNetwork(sdl_t *pSDL)
 }
 
 /**
- *
+ * function : Render the buttons in the network menu
  * @param pSDL
  */
 void renderMenuNetwork(sdl_t *pSDL)
@@ -93,7 +99,7 @@ void renderMenuNetwork(sdl_t *pSDL)
 /**
  * function : render de la bomb/ avec effet d'agrandissement/ timing de la bomb
  * @param pSDL
- * @param game
+ * @param player
  */
 void renderBomb(sdl_t *pSDL, player_t *player)
 {
@@ -115,6 +121,15 @@ void renderBomb(sdl_t *pSDL, player_t *player)
         n = 0;
     }
 }
+
+/**
+ * function : Render the explosion with an animation cell per cell until the range is reached.
+ * If a wall is on the way, the explosion's spread stops in that direction
+ * @param pSDL
+ * @param frame
+ * @param map
+ * @param range
+ */
 void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
 {
     int isRightBlocked = 0;
@@ -156,6 +171,10 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
     }
 }
 
+/**
+ * function : Render the background
+ * @param pSDL
+ */
 void renderBackground(sdl_t *pSDL)
 {
     SDL_Rect src_map = {0, 0, 722 / 3, 482 / 3};
@@ -163,6 +182,11 @@ void renderBackground(sdl_t *pSDL)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMap, &src_map, &dst_map);
 }
 
+/**
+ * function : Render the player with an animation
+ * @param pSDL
+ * @param player
+ */
 void renderPlayer(sdl_t *pSDL, player_t *player)
 {
     if (player->current_frame > 2) {
@@ -202,7 +226,7 @@ void renderBlock(sdl_t *pSDL, int x, int y)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBlock, &src_block, &dst_block);
 }
 
-/** TODO
+/**
  * function: Render the map with the blocks
  * @param game
  * @param pSdl

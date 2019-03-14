@@ -63,7 +63,7 @@ int gameEvent(game_t *game)
                 case SDLK_b:
                     c_emission(p, BOMB_CODE);
                     if (p->bombPosed == 0 && canPlayerPlaceBomb(p)) {
-                        placeBomb(game->pSDL, p);
+                        placeBomb(game->pSDL, p, game->map);
                     }
                     break;
                 default :
@@ -74,7 +74,7 @@ int gameEvent(game_t *game)
     }
         
     if (p->bomb.explosion == 1) {
-        toggleBit(game->map[p.bomb.y_pos], p.bomb.x_pos , 3);
+        toggleBit(game->map[p->bomb.y_pos], p->bomb.x_pos , 3);
         checkBombDamage(game->map, p->bomb);
         for (int i = 0; i < MAX_PLAYER; i++) {
             if (game->players[i].alive == 'Y') {

@@ -148,6 +148,8 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].is_host = 0;
             clients[i].p.alive = 'Y';
             clients[i].p.co_is_ok = 0;
+            clients[i].p.still = 1;
+            clients[i].p.bomb.range = 1;
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;
@@ -276,7 +278,8 @@ game_t init_game_server_side()
         g.players[i].alive = c.p.alive;
         g.players[i].speed = 1;
         g.players[i].checksum = sizeof(g.players[i]);
-        g.players[i].still = 1;
+        g.players[i].still = c.p.still;
+        g.players[i].bomb.range = c.p.bomb.range;
     }
 
     return g;
@@ -291,6 +294,7 @@ int s_reception(Client *c, t_client_request *c_request)
     c->p.x_pos = c_request->x_pos;
     c->p.y_pos = c_request->y_pos;
     c->p.direction = c_request->dir;
+    c->p.still = c_request->still;
     switch (c_request->code_reseau) {
         case DISCONNECT_CODE:
             if (c == NULL) {
@@ -324,7 +328,7 @@ int s_reception(Client *c, t_client_request *c_request)
             ret_thread = pthread_create(&c_thread, NULL, (void *) game_thread, NULL);
             break;
         default:
-            SDL_Log("[Server (%d)] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c->num_client, c_request->code_reseau);
+            //SDL_Log("[Server (%d)] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c->num_client, c_request->code_reseau);
             break;
     }
     return 1;

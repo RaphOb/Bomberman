@@ -113,6 +113,7 @@ void c_emission(player_t *player, int code)
     c_request.x_pos = player->x_pos;
     c_request.y_pos = player->y_pos;
     c_request.dir = player->direction;
+    c_request.still = player->still;
     switch (code) {
         case DISCONNECT_CODE:
             c_request.code_reseau = DISCONNECT_CODE;
@@ -187,5 +188,6 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].direction = p->direction;
     g->players[indice].speed = p->speed;
     g->players[indice].number = p->number;
+    g->players[indice].bomb.range = p->bomb.range;
     pthread_mutex_unlock(&g->players[indice].mutex_player);
 }

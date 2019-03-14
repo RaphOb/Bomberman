@@ -37,6 +37,7 @@ int doMove(const Uint8 *keystates, player_t *player, map_t map)
         i++;
     }
     player->still = 1;
+    c_emission(player, 0);
     return (0);
 }
 /**

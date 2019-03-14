@@ -134,14 +134,14 @@ int playsound(char* path)
  * @param stream
  * @param len
  */
-void my_audio_callback(void *userdata, Uint8 *stream, unsigned int len) {
+void my_audio_callback(void *userdata, Uint8 *stream, int len) {
 
 //    if (audio_len ==0)
 //        return;
     if (audio_len != 0) {
         len = ((Uint32) len > audio_len ? audio_len : (Uint32) len);
-        SDL_memcpy(stream, audio_pos, len);
-        SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME / 3);
+        SDL_memcpy(stream, audio_pos, (Uint32) len);
+        SDL_MixAudio(stream, audio_pos, (Uint32) len, SDL_MIX_MAXVOLUME / 3);
 
         audio_pos += len;
         audio_len -= len;

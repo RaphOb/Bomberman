@@ -83,7 +83,7 @@ void playSound(son_t* son);
 son_t* initAudio(char* path);
 void closeAudio(son_t* son);
 int playsound(char* path);
-void my_audio_callback(void *userdata, Uint8 *stream, unsigned int len);
+void my_audio_callback(void *userdata, Uint8 *stream, int len);
 
 
 #endif //BOMBERMAN_SDLENGINE_H

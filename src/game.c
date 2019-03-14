@@ -76,6 +76,12 @@ int gameEvent(game_t *game)
     return res;
 }
 
+/**
+ * function : When a bomb explode, this function is called and it updates some variables to trigger the animation
+ * and play the sound.
+ * @param player
+ * @param son
+ */
 void makeExplosion(player_t *player, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
@@ -85,6 +91,12 @@ void makeExplosion(player_t *player, son_t* son)
 
 }
 
+/**
+ * function : Update the position of the bomb to place it in the middle of the cell where the player is and update some variables to trigger the animation
+ * @param pSDL
+ * @param player
+ * @param map
+ */
 void placeBomb(sdl_t *pSDL, player_t *player, map_t map)
 {
     int cell_x = START_X_MAP + (player->bomb.x_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
@@ -102,7 +114,7 @@ void placeBomb(sdl_t *pSDL, player_t *player, map_t map)
 
 }
 /**
- * function : check  if player within bombrange
+ * function : check if player is within a bomb's range
  * @param player
  * @param b
  * @param pSDL
@@ -164,6 +176,12 @@ void checkBombDamage(map_t map, bomb_t b)
     }
 }
 
+/**
+ * function : Toggle bit to destroy block
+ * @param map
+ * @param pos_x
+ * @param pos_y
+ */
 void destroyBlock(map_t map, int pos_x, int pos_y)
 {
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {

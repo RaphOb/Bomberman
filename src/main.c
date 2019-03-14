@@ -22,28 +22,25 @@ int main(int argc, char *argv[]) {
     int quit = 0;
     int menu = 0;
     int network = 0;
-    int play = 1;
-    int song = 0;
+    int play = 0;
     fd_set readfs;
     struct timeval timeout;
     int host = 0;
     // First menu
-/*    while (menu == 0) {
+    while (menu == 0) {
 //        if (song == 0) {
-        song = playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
+//        playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
 //        }
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
-    SDL_CloseAudio();
+//    SDL_CloseAudio();
 //     Menu Network
+    SDL_StartTextInput();
     while (menu != -1 && network == 0) {
-        SDL_Log("test");
         drawMenuNetwork(game->pSDL);
         network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
-
 //         Input
-        SDL_StartTextInput();
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
             game->nb_client_serv = getNbClientServer();
@@ -68,8 +65,8 @@ int main(int argc, char *argv[]) {
                 }
             }
         }
-        SDL_StopTextInput();
     }
+    SDL_StopTextInput();
 
     // Game
     if (host == 1) {
@@ -80,7 +77,7 @@ int main(int argc, char *argv[]) {
     if (play == 1) {
         pthread_t listen_server_thread;
         int ret_thread = pthread_create(&listen_server_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
-    }*/
+    }
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);

@@ -5,14 +5,24 @@
 #include "../header/move.h"
 #include "../header/reseau.h"
 
+/**
+ * An array of the structure "move_t" containing a function pointer and the key corresponding
+ */
 const move_t move[] = {
         {moveUp, SDL_SCANCODE_UP},
         {moveDown, SDL_SCANCODE_DOWN},
         {moveLeft, SDL_SCANCODE_LEFT},
         {moveRight, SDL_SCANCODE_RIGHT},
-        {NULL, 0}
+        {NULL, SDL_SCANCODE_UNKNOWN}
 };
 
+/**
+ * function : Main function to move the player on the map depending on the key he pressed
+ * @param keystates
+ * @param player
+ * @param map
+ * @return
+ */
 int doMove(const Uint8 *keystates, player_t *player, map_t map)
 {
     int i = 0;
@@ -29,7 +39,11 @@ int doMove(const Uint8 *keystates, player_t *player, map_t map)
     player->still = 1;
     return (0);
 }
-
+/**
+ * function : Move the player up
+ * @param player
+ * @param map
+ */
 void moveUp(player_t *player, map_t map)
 {
     player->direction = 3;
@@ -38,7 +52,11 @@ void moveUp(player_t *player, map_t map)
         player->y_pos -= 3 * player->speed;
     }
 }
-
+/**
+ * function : Move the player right
+ * @param player
+ * @param map
+ */
 void moveRight(player_t *player, map_t map)
 {
     player->direction = 2;
@@ -49,6 +67,11 @@ void moveRight(player_t *player, map_t map)
     }
 }
 
+/**
+ * function : Move the player down
+ * @param player
+ * @param map
+ */
 void moveDown(player_t *player, map_t map)
 {
     c_emission(player, DOWN_CODE);
@@ -59,6 +82,11 @@ void moveDown(player_t *player, map_t map)
     }
 }
 
+/**
+ * function : Move the player left
+ * @param player
+ * @param map
+ */
 void moveLeft(player_t *player, map_t map)
 {
     c_emission(player, LEFT_CODE);

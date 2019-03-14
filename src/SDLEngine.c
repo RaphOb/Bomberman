@@ -57,6 +57,8 @@ sdl_t *initSDL()
 
     return pSDL;
 }
+
+
 void closeAudio(son_t* son)
 {
     SDL_CloseAudioDevice(son->deviceId);
@@ -132,7 +134,7 @@ int playsound(char* path)
  * @param stream
  * @param len
  */
-void my_audio_callback(void *userdata, Uint8 *stream, int len) {
+void my_audio_callback(void *userdata, Uint8 *stream, unsigned int len) {
 
 //    if (audio_len ==0)
 //        return;
@@ -300,8 +302,14 @@ void initMenu(sdl_t *pSDL)
     SDL_FreeSurface(menuLogo);
 
 }
-
-
+/**
+ * function : Create a struct button_t
+ * @param rect
+ * @param textureOn
+ * @param textureOff
+ * @return a struct button_t which contains the normal texture and the hover one, a boolean to know if the button is hovered and
+ * a SDL_Rect for the position in the window.
+ */
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff)
 {
     button_t *b = malloc(sizeof(button_t));

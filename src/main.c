@@ -1,15 +1,18 @@
 #include <stdbool.h>
+#include <time.h>
 #include "../header/game.h"
 #include "../header/renderer.h"
 #include "../header/menu.h"
 #include "../header/input.h"
 #include "../header/reseau.h"
 
+
 static Server serv = { 0 };
 
 int main(int argc, char *argv[]) {
     // Initialisation du jeu
     SDL_Log("argc: %d, argv : %s", argc, argv[0]);
+    srand(time(NULL));
     Uint32 start;
     sdl_t *pSDL = initSDL();
     game_t *game = initGame(pSDL);

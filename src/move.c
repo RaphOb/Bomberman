@@ -4,6 +4,8 @@
 
 #include "../header/move.h"
 #include "../header/reseau.h"
+#include "../header/bonus.h"
+#include "../header/bit.h"
 
 /**
  * An array of the structure "move_t" containing a function pointer and the key corresponding
@@ -32,6 +34,11 @@ int doMove(const Uint8 *keystates, player_t *player, map_t map)
         if (keystates[move[i].key]) {
             move[i].func_move(player, map);
             updatePlayerCell(player);
+            if (isPlayerOnOneCell(player) && isBonusOnCell(map, player->map_x[0], player->map_y[0])) {
+                typeBonus_e type = getBonus(map, player->map_x[0], player->map_y[0]);
+                doBonus(type, player);
+                toggleBit(map[player->map_y[0]], player->map_x[0], 4);
+            }
             return (1);
         }
         i++;

@@ -58,6 +58,7 @@ typedef struct s_client_request
     int ckecksum; /* Un checksum simple */
     int code_reseau;
     int still;
+    int range;
 } t_client_request;
 
 // ----- INITIALISATION -----

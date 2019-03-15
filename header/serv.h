@@ -43,10 +43,8 @@ typedef struct
 {
     int num_client;
     int is_host;
-    char alive;
     pthread_t c_thread;
     pthread_mutex_t mutex_client;
-    char name[1024];
     SOCKADDR_IN csin;
     player_t p;
 }Client;

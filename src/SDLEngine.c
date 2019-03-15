@@ -57,6 +57,8 @@ sdl_t *initSDL()
 
     return pSDL;
 }
+
+
 void closeAudio(son_t* son)
 {
     SDL_CloseAudioDevice(son->deviceId);
@@ -138,8 +140,8 @@ void my_audio_callback(void *userdata, Uint8 *stream, int len) {
 //        return;
     if (audio_len != 0) {
         len = ((Uint32) len > audio_len ? audio_len : (Uint32) len);
-        SDL_memcpy(stream, audio_pos, len);
-        SDL_MixAudio(stream, audio_pos, len, SDL_MIX_MAXVOLUME / 3);
+        SDL_memcpy(stream, audio_pos, (Uint32) len);
+        SDL_MixAudio(stream, audio_pos, (Uint32) len, SDL_MIX_MAXVOLUME / 3);
 
         audio_pos += len;
         audio_len -= len;
@@ -214,6 +216,14 @@ void destroySDL(sdl_t *pSDL)
     if (pSDL->texturePlayers[1]) {
         SDL_DestroyTexture(pSDL->texturePlayers[1]);
         pSDL->texturePlayers[1] = NULL;
+    }
+    if (pSDL->texturePlayers[2]) {
+        SDL_DestroyTexture(pSDL->texturePlayers[2]);
+        pSDL->texturePlayers[2] = NULL;
+    }
+    if (pSDL->texturePlayers[3]) {
+        SDL_DestroyTexture(pSDL->texturePlayers[3]);
+        pSDL->texturePlayers[3] = NULL;
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
@@ -300,8 +310,14 @@ void initMenu(sdl_t *pSDL)
     SDL_FreeSurface(menuLogo);
 
 }
-
-
+/**
+ * function : Create a struct button_t
+ * @param rect
+ * @param textureOn
+ * @param textureOff
+ * @return a struct button_t which contains the normal texture and the hover one, a boolean to know if the button is hovered and
+ * a SDL_Rect for the position in the window.
+ */
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff)
 {
     button_t *b = malloc(sizeof(button_t));
@@ -327,6 +343,8 @@ void initPlayerSDL(sdl_t *pSDL)
 {
     SDL_Surface *surfacePlayer = IMG_Load("../resources/sprite/perso1.png");
     SDL_Surface *surfacePlayer2 = IMG_Load("../resources/sprite/perso2.png");
+    SDL_Surface *surfacePlayer3 = IMG_Load("../resources/sprite/perso3.png");
+    SDL_Surface *surfacePlayer4 = IMG_Load("../resources/sprite/perso4.png");
     if (!surfacePlayer || !surfacePlayer2) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -334,7 +352,9 @@ void initPlayerSDL(sdl_t *pSDL)
     } else {
         pSDL->texturePlayers[0] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer);
         pSDL->texturePlayers[1] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer2);
-        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1]) {
+        pSDL->texturePlayers[2] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer3);
+        pSDL->texturePlayers[3] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer4);
+        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1] || !pSDL->texturePlayers[2] || !pSDL->texturePlayers[3]) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
             destroySDL(pSDL);
             return;

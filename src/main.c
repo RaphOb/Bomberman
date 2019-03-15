@@ -7,46 +7,43 @@
 
 static Server serv = { 0 };
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
     // Initialisation du jeu
     SDL_Log("argc: %d, argv : %s", argc, argv[0]);
     Uint32 start;
     sdl_t *pSDL = initSDL();
-    player_t player = initPlayer();
     game_t *game = initGame(pSDL);
+    player_t player = initPlayer();
     if (!pSDL /*|| !player */|| !game) {
         return (-1);
     }
-    game->players[0] = player;
+    //game->players[0] = player;
 
     int quit = 0;
     int menu = 0;
     int network = 0;
-    int play = 1;
-    int song = 0;
+    int play = 0;
     fd_set readfs;
     struct timeval timeout;
     int host = 0;
     // First menu
-    while(menu == 0) {
+    while (menu == 0) {
 //        if (song == 0) {
-           song = playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
+//        playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
 //        }
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
-    SDL_CloseAudio();
+//    SDL_CloseAudio();
 //     Menu Network
+    SDL_StartTextInput();
     while (menu != -1 && network == 0) {
         drawMenuNetwork(game->pSDL);
         network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
-
 //         Input
-        SDL_StartTextInput();
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
-            game->nb_client_serv = getNbClientServer();
+            game->nb_client_serv = getNbClientServer(&player);
         } else if (network == 2) {
             host = 1;
             char *port = malloc(sizeof(char) * 10);
@@ -64,22 +61,25 @@ int main(int argc, char *argv[])
                     SDL_Delay(500);
                     init();
                     init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
-                    game->nb_client_serv = getNbClientServer();
+                    game->nb_client_serv = getNbClientServer(&player);
                 }
             }
         }
-        SDL_StopTextInput();
     }
+    SDL_StopTextInput();
 
     // Game
     if (host == 1) {
         // Lancer la partie cote serveur
         SDL_Log("[Client] Signal debut de partie au serveur");
-        c_emission(&game->players[0], 200);
+        c_emission(&player, 200);
     }
-    pthread_t listen_server_thread;
-    int ret_thread = pthread_create(&listen_server_thread, NULL, (void *) listen_server, (void *)(uintptr_t) game);
+    if (play == 1) {
+        pthread_t listen_server_thread;
+        int ret_thread = pthread_create(&listen_server_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
+    }
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
+        playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();
         quit = gameEvent(game);
@@ -89,9 +89,11 @@ int main(int argc, char *argv[])
         }
     }
 
+    SDL_CloseAudio();
+
     // On libère la mémoire
     destroySDL(pSDL);
-    //free(game->players[0]);
+    //free(player);
     free(game);
 
     return EXIT_SUCCESS;

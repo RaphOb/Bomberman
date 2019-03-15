@@ -295,6 +295,7 @@ int s_reception(Client *c, t_client_request *c_request)
     c->p.y_pos = c_request->y_pos;
     c->p.direction = c_request->dir;
     c->p.still = c_request->still;
+    c->p.bomb.range = c_request->range;
     switch (c_request->code_reseau) {
         case DISCONNECT_CODE:
             if (c == NULL) {

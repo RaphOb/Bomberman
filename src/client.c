@@ -114,6 +114,7 @@ void c_emission(player_t *player, int code)
     c_request.y_pos = player->y_pos;
     c_request.dir = player->direction;
     c_request.still = player->still;
+    c_request.range= player->bomb.range;
     switch (code) {
         case DISCONNECT_CODE:
             c_request.code_reseau = DISCONNECT_CODE;

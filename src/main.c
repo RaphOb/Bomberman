@@ -43,7 +43,7 @@ int main(int argc, char *argv[]) {
 //         Input
         if (network == 1) {
             play = loopInputConnect(game->pSDL);
-            game->nb_client_serv = getNbClientServer(&player);
+            getNbClientServer(game, &player);
         } else if (network == 2) {
             host = 1;
             char *port = malloc(sizeof(char) * 10);
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]) {
                     SDL_Delay(500);
                     init();
                     init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
-                    game->nb_client_serv = getNbClientServer(&player);
+                    getNbClientServer(game, &player);
                 }
             }
         }

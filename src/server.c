@@ -90,6 +90,7 @@ void close_all_socket_clients()
 
 void close_socket_client(Client *c)
 {
+    c->p.co_is_ok = 0;
     if (closesocket((SOCKET)c->num_client) != 0) {
         SDL_Log("[Server (%d)] closesocket()", c->num_client);
     } else {
@@ -108,8 +109,10 @@ void disconnect_all_clients()
 
 void disconnect_client(Client *c)
 {
+    SDL_Log("c->num_client = %d && c->p.co_is_ok = %d\n", c->num_client, c->p.co_is_ok);
     write_to_client(c, DISCONNECT_CODE);
     close_socket_client(c);
+    delete_one_thread(c);
     delete_client(c);
 }
 
@@ -126,7 +129,7 @@ void delete_all_clients()
 void delete_client(Client *c)
 {
     SDL_Log("[Server (%d)] Client supprime pour %d\n", c->num_client, c->num_client);
-    c->num_client = 0;
+    c->num_client = -1;
     strcpy(c->p.name, "\0");
 }
 
@@ -209,13 +212,14 @@ void display_clients_co()
 // ----- COMMUNICATION -----
 void write_to_client(Client *c, int code)
 {
-    game_t g = init_game_server_side();
+    if (c->num_client != -1 && c->p.co_is_ok == 1) {
+        game_t g = init_game_server_side();
 
-    char buffer[CODE_SIZE] = {'\0'};
-    sprintf(buffer, "%d", code);
-    if(sendto((SOCKET)c->num_client, (char*)&g, sizeof(g), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
-    {
-        SDL_Log("[Server (%d)] sendto()", c->num_client);
+        char buffer[CODE_SIZE] = {'\0'};
+        sprintf(buffer, "%d", code);
+        if (sendto((SOCKET) c->num_client, (char *) &g, sizeof(g), 0, (SOCKADDR *) &c->csin, sizeof(c->csin)) < 0) {
+            SDL_Log("[Server (%d)] sendto()", c->num_client);
+        }
     }
 }
 
@@ -244,7 +248,6 @@ void s_emission(Client *c, int code)
             buffer = malloc(sizeof(char) * 2);
             sprintf(buffer, "%d", c->p.number);
             buffer[1]= '\0';
-            SDL_Log("OULAH = %s\n", buffer);
             //SDL_Log("c->num_client = %d\n", c->num_client);
             if(sendto((SOCKET)c->num_client, buffer, sizeof(buffer), 0, (SOCKADDR *) & c->csin, sizeof(c->csin)) < 0)
             {
@@ -301,7 +304,7 @@ int s_reception(Client *c, t_client_request *c_request)
                 disconnect_all_clients();
             } else {
                 disconnect_client(c);
-                return 0;
+                return 1;
             }
             display_clients_co();
             break;

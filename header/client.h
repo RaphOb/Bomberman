@@ -65,7 +65,7 @@ typedef struct s_client_request
 //void end(void);
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
-int getNbClientServer(player_t *p);
+void getNbClientServer(game_t *g, player_t *p);
 void maj_player(game_t *g, int indice, player_t *p);
 // ----- COMMUNICATION -----
 int c_reception(int code, SOCKET serv_sock);

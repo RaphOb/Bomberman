@@ -21,7 +21,7 @@ player_t initPlayer()
     p.alive = 'Y';
     p.co_is_ok = 0;
     p.bombPosed = 0;
-    p.bombs_left = 20;
+    p.nbBombe = 20;
     p.frags = 0;
     p.map_x[0] = 0;
     p.map_x[1] = 0;

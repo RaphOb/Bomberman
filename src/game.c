@@ -11,6 +11,7 @@
 #include "../header/bit.h"
 #include "../header/renderer.h"
 #include "../header/reseau.h"
+#include "../header/bonus.h"
 
 /**
  * function : init game
@@ -75,7 +76,6 @@ int gameEvent(game_t *game)
         
     if (p->bomb.explosion == 1) {
         toggleBit(game->map[p->bomb.y_pos], p->bomb.x_pos , 3);
-        checkBombDamage(game->map, p->bomb);
         for (int i = 0; i < MAX_PLAYER; i++) {
             if (game->players[i].alive == 'Y') {
                 checkBombPlayer(&game->players[i], game->players[i].bomb);
@@ -167,22 +167,27 @@ void checkBombDamage(map_t map, bomb_t b)
 {
     const int pos_x = b.x_pos;
     const int pos_y = b.y_pos;
-
-    // Left
-    if (pos_x - 1 >= 0) {
-        destroyBlock(map, pos_x - 1, pos_y);
-    }
-    // Right
-    if (pos_x + 1 <= 12) {
-        destroyBlock(map, pos_x + 1, pos_y);
-    }
-    // Up
-    if (pos_y - 1 >= 0) {
-        destroyBlock(map, pos_x, pos_y - 1);
-    }
-    // Down
-    if (pos_y + 1 <= 8) {
-        destroyBlock(map, pos_x, pos_y + 1);
+    int destroyedUp = 0;
+    int destroyedDown = 0;
+    int destroyedLeft = 0;
+    int destroyedRight = 0;
+    for (int i = 1; i <= b.range; i++) {
+        // Left
+        if (pos_x - i >= 0 && destroyedLeft == 0) {
+            destroyedLeft = destroyBlock(map, pos_x - i, pos_y);
+        }
+        // Right
+        if (pos_x + i <= 12 && destroyedRight == 0) {
+            destroyedRight = destroyBlock(map, pos_x + i, pos_y);
+        }
+        // Up
+        if (pos_y - i >= 0 && destroyedUp == 0) {
+            destroyedUp = destroyBlock(map, pos_x, pos_y - i);
+        }
+        // Down
+        if (pos_y + i <= 8 && destroyedDown == 0) {
+            destroyedDown = destroyBlock(map, pos_x, pos_y + i);
+        }
     }
 }
 
@@ -192,11 +197,16 @@ void checkBombDamage(map_t map, bomb_t b)
  * @param pos_x
  * @param pos_y
  */
-void destroyBlock(map_t map, int pos_x, int pos_y)
+int destroyBlock(map_t map, int pos_x, int pos_y)
 {
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {
         toggleBit(map[pos_y], pos_x, 1);
         toggleBit(map[pos_y], pos_x, 2);
-
+        if ((rand() % 4) == 1) {
+            SDL_Log("random");
+            spawnBonus(map, pos_x, pos_y);
+        }
+        return 1;
     }
+    return 0;
 }

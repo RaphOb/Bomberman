@@ -26,14 +26,15 @@ void drawGame(game_t *game)
             if (game->players[i].bomb.explosion == 1) {
                 int frame = 0;
                 int currentTick = SDL_GetTicks();
-                if (currentTick - game->players[i].bomb.tickExplosion > 200) frame = 1;
-                if (currentTick - game->players[i].bomb.tickExplosion > 400) frame = 2;
-                if (currentTick - game->players[i].bomb.tickExplosion > 600) frame = 3;
-                if (currentTick - game->players[i].bomb.tickExplosion > 800) frame = 4;
+                for (int j = 1; j <= 4; j++) {
+                    if (currentTick - game->players[i].bomb.tickExplosion > j * 200) frame = j;
+                }
                 if (currentTick - game->players[i].bomb.tickExplosion > 1000) {
                     game->players[i].bomb.explosion = 0;
+                    checkBombDamage(game->map, game->players[i].bomb);
+                } else {
+                    renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb.range);
                 }
-                renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb.range);
             }
 //            if (game->players[i].alive == 'Y') {
                 renderPlayer(game->pSDL, &game->players[i]);
@@ -163,7 +164,7 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
             if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[UPFLAME], &src, &dst_up);
             else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_up);
         } else isUpBlocked = 1;
-        if (!getBit(map[cell_y + 1 + i], cell_x, 1) && cell_y + 1 + i <= 12 && !isDownBlocked) {
+        if (!getBit(map[cell_y + 1 + i], cell_x, 1) && cell_y + 1 + i <= 8 && !isDownBlocked) {
             if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[DOWNFLAME], &src, &dst_down);
             else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_down);
         } else isDownBlocked = 1;

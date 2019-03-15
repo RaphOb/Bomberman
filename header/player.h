@@ -36,7 +36,7 @@ typedef struct player_s {
     int y_pos;
     int speed;
     int bombPosed;
-    int bombs_left;
+    int nbBombe;
     int frags;
     int current_frame;
     int frame_time;

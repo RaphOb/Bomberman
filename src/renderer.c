@@ -134,10 +134,7 @@ void renderBomb(sdl_t *pSDL, player_t *player)
  */
 void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
 {
-    int isRightBlocked = 0;
-    int isLeftBlocked = 0;
-    int isUpBlocked = 0;
-    int isDownBlocked = 0;
+    int blocked[4] = {0};
 
     const int cell_x = (pSDL->dst_bomb.x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
     const int cell_y = (pSDL->dst_bomb.y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
@@ -151,24 +148,23 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, int range)
         SDL_Rect dst_up = {dst_mid.x, dst_mid.y - ((i + 1) * REAL_BLOCK_SIZE), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
         SDL_Rect dst_down = {dst_mid.x, dst_mid.y + ((i + 1) * REAL_BLOCK_SIZE), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
         SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], &src, &dst_mid);
-        // passe à travers bloc destructible car détruit avant le render
 
-        if (!getBit(map[cell_y], cell_x + 1 + i, 1) && cell_x + 1 + i <= 12 && !isRightBlocked) {
+        if (!getBit(map[cell_y], cell_x + 1 + i, 1) && cell_x + 1 + i <= 12 && !blocked[0]) {
             if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], &src, &dst_right);
             else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[HORIZONTALFLAME], &src, &dst_right);
-        } else isRightBlocked = 1;
-        if (!getBit(map[cell_y], cell_x - 1 - i, 1) && cell_x - 1 - i >= 0 && !isLeftBlocked) {
+        } else blocked[0] = 1;
+        if (!getBit(map[cell_y], cell_x - 1 - i, 1) && cell_x - 1 - i >= 0 && !blocked[1]) {
             if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[LEFTFLAME], &src, &dst_left);
             else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[HORIZONTALFLAME], &src, &dst_left);
-        } else isLeftBlocked = 1;
-        if (!getBit(map[cell_y - 1 - i], cell_x, 1) && cell_y - 1 - i >= 0 && !isUpBlocked) {
+        } else blocked[1] = 1;
+        if (!getBit(map[cell_y - 1 - i], cell_x, 1) && cell_y - 1 - i >= 0 && !blocked[2]) {
             if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[UPFLAME], &src, &dst_up);
             else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_up);
-        } else isUpBlocked = 1;
-        if (!getBit(map[cell_y + 1 + i], cell_x, 1) && cell_y + 1 + i <= 8 && !isDownBlocked) {
+        } else blocked[2] = 1;
+        if (!getBit(map[cell_y + 1 + i], cell_x, 1) && cell_y + 1 + i <= 8 && !blocked[3]) {
             if (i >= range - 1) SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[DOWNFLAME], &src, &dst_down);
             else SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_down);
-        } else isDownBlocked = 1;
+        } else blocked[3] = 1;
 
     }
 }
@@ -247,10 +243,8 @@ void renderMap(map_t map, sdl_t *pSdl)
 {
     for (int i = 0; i < MAP_X; i++) {
         for (int j = 0; j < MAP_Y; j++) {
-            if (getBit(map[i], j, 1)) {
-                if (getBit(map[i], j, 2)) {
+            if (getBit(map[i], j, 1) && (getBit(map[i], j, 2))) {
                     renderBlock(pSdl, j, i);
-                }
             }
             if (getBit(map[i], j, 4)) {
                 renderBonus(pSdl, getBonus(map, j, i), j, i);

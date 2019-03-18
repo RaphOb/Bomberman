@@ -472,7 +472,7 @@ void initBonus(sdl_t *pSDL)
     SDL_Surface *bNbBomb = IMG_Load("../resources/img/bNbBombe.png");
     SDL_Surface *mNbBomb = IMG_Load("../resources/img/mNbBombe.png");
     SDL_Surface *bSpeed = IMG_Load("../resources/img/bVitesse.png");
-    SDL_Surface *mSpeed = IMG_Load("../resources/img/mVitesse1.png");
+    SDL_Surface *mSpeed = IMG_Load("../resources/img/mVitesse.png");
     if (!bRangeBomb || !mRangeBomb || !bNbBomb || !mNbBomb || !bSpeed || !mSpeed) {
         SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);

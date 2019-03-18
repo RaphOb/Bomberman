@@ -77,6 +77,7 @@ int gameEvent(game_t *game)
     if (p->bomb.explosion == 1) {
         toggleBit(game->map[p->bomb.y_pos], p->bomb.x_pos , 3);
         for (int i = 0; i < MAX_PLAYER; i++) {
+//            SDL_Log("alive: %c", game->players[i].alive);
             if (game->players[i].alive == 'Y') {
                 checkBombPlayer(&game->players[i], game->players[i].bomb);
             }
@@ -135,27 +136,27 @@ void checkBombPlayer(player_t *player, bomb_t b) {
     const int ppos_x = player->map_x[0];
     const int ppos_y = player->map_y[0];
 //    SDL_Log("%d", player->map_x[0]);
-//    SDL_Log("%d", b.y_pos);
+//    SDL_Log("%d", b.x_pos);
 
     //left
     if ((bpos_x - b.range == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
         player->alive = 'N';
-        //SDL_Log("leffft");
+//        SDL_Log("leffft");
     }
     //right
     else if ((bpos_x + b.range == ppos_x) && bpos_y == ppos_y) {
         player->alive = 'N';
-        //SDL_Log("right");
+//        SDL_Log("right");
     }
     //top
     else if ((bpos_y - b.range == ppos_y) && bpos_x == ppos_x) {
         player->alive = 'N';
-        //SDL_Log("top");
+//        SDL_Log("top");
     }
     //bottom
     else if ((bpos_y + b.range == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
         player->alive = 'N';
-        //SDL_Log("bottom");
+//        SDL_Log("bottom");
     }
 }
 /**
@@ -167,26 +168,28 @@ void checkBombDamage(map_t map, bomb_t b)
 {
     const int pos_x = b.x_pos;
     const int pos_y = b.y_pos;
-    int destroyedUp = 0;
-    int destroyedDown = 0;
-    int destroyedLeft = 0;
-    int destroyedRight = 0;
+    int destroyed[4] = {0};
+    int block[4] = {0};
     for (int i = 1; i <= b.range; i++) {
         // Left
-        if (pos_x - i >= 0 && destroyedLeft == 0) {
-            destroyedLeft = destroyBlock(map, pos_x - i, pos_y);
+        if (pos_x - i >= 0 && destroyed[0] == 0 && block[0] == 0) {
+            destroyed[0] = destroyBlock(map, pos_x - i, pos_y);
+            block[0] = (getBit(map[pos_y], pos_x - i, 1) && !getBit(map[pos_y], pos_x - i, 2));
         }
         // Right
-        if (pos_x + i <= 12 && destroyedRight == 0) {
-            destroyedRight = destroyBlock(map, pos_x + i, pos_y);
+        if (pos_x + i <= 12 && destroyed[1] == 0 && block[1] == 0) {
+            destroyed[1] = destroyBlock(map, pos_x + i, pos_y);
+            block[1] = (getBit(map[pos_y], pos_x + i, 1) && !getBit(map[pos_y], pos_x + i, 2));
         }
         // Up
-        if (pos_y - i >= 0 && destroyedUp == 0) {
-            destroyedUp = destroyBlock(map, pos_x, pos_y - i);
+        if (pos_y - i >= 0 && destroyed[2] == 0 && block[2] == 0) {
+            destroyed[2] = destroyBlock(map, pos_x, pos_y - i);
+            block[2] = (getBit(map[pos_y - i], pos_x, 1) && !getBit(map[pos_y - i], pos_x, 2));
         }
         // Down
-        if (pos_y + i <= 8 && destroyedDown == 0) {
-            destroyedDown = destroyBlock(map, pos_x, pos_y + i);
+        if (pos_y + i <= 8 && destroyed[3] == 0 && block[3] == 0) {
+            destroyed[3] = destroyBlock(map, pos_x, pos_y + i);
+            block[3] = (getBit(map[pos_y + i], pos_x, 1) && !getBit(map[pos_y + i], pos_x, 2));
         }
     }
 }

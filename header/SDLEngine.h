@@ -59,6 +59,7 @@ struct sdl_s {
     button_t *buttonHost;
     SDL_Texture *textureMenuLogo;
     son_t* son[2];
+    SDL_Texture *textureBonus[6];
 };
 typedef struct sdl_s sdl_t;
 
@@ -78,6 +79,7 @@ void initBlock(sdl_t *pSDL);
 void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
+void initBonus(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
 void playSound(son_t* son);
 son_t* initAudio(char* path);

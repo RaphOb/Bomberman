@@ -203,7 +203,6 @@ int destroyBlock(map_t map, int pos_x, int pos_y)
         toggleBit(map[pos_y], pos_x, 1);
         toggleBit(map[pos_y], pos_x, 2);
         if ((rand() % 4) == 1) {
-            SDL_Log("random");
             spawnBonus(map, pos_x, pos_y);
         }
         return 1;

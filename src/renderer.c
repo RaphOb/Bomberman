@@ -5,6 +5,7 @@
 #include "../header/renderer.h"
 #include "../header/bit.h"
 #include "../header/menu.h"
+#include "../header/bonus.h"
 
 
 /**
@@ -211,6 +212,16 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
     }
 }
 
+void renderBonus(sdl_t *pSDL, typeBonus_e type, int x, int y)
+{
+    SDL_Rect src = {0, 0, 24, 24};
+    SDL_Rect dst = {START_X_MAP + (x * REAL_BLOCK_SIZE),
+                    START_Y_MAP + (y * REAL_BLOCK_SIZE),
+                    REAL_BLOCK_SIZE,
+                    REAL_BLOCK_SIZE};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBonus[type], &src, &dst);
+}
+
 /**
  * function : Render the block at the coordinates x,y
  * @param pSDL
@@ -236,10 +247,13 @@ void renderMap(map_t map, sdl_t *pSdl)
 {
     for (int i = 0; i < MAP_X; i++) {
         for (int j = 0; j < MAP_Y; j++) {
-            if (getBit(map[i], j, 1) == 1) {
-                if (getBit(map[i], j, 2) == 1) {
+            if (getBit(map[i], j, 1)) {
+                if (getBit(map[i], j, 2)) {
                     renderBlock(pSdl, j, i);
                 }
+            }
+            if (getBit(map[i], j, 4)) {
+                renderBonus(pSdl, getBonus(map, j, i), j, i);
             }
         }
     }

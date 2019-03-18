@@ -12,7 +12,7 @@ static Server serv = { 0 };
 int main(int argc, char *argv[]) {
     // Initialisation du jeu
     SDL_Log("argc: %d, argv : %s", argc, argv[0]);
-    srand(time(NULL));
+    srand((unsigned) time(NULL));
     Uint32 start;
     sdl_t *pSDL = initSDL();
     game_t *game = initGame(pSDL);
@@ -26,8 +26,6 @@ int main(int argc, char *argv[]) {
     int menu = 0;
     int network = 0;
     int play = 0;
-    fd_set readfs;
-    struct timeval timeout;
     int host = 0;
     // First menu
     while (menu == 0) {
@@ -96,7 +94,6 @@ int main(int argc, char *argv[]) {
 
     // On libère la mémoire
     destroySDL(pSDL);
-    //free(player);
     free(game);
 
     return EXIT_SUCCESS;

@@ -66,7 +66,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 }
 
 // ----- DIVERS -----
-int getNbClientServer(player_t *p)
+void getNbClientServer(game_t *g, player_t *p)
 {
     char *buffer;
     int n;
@@ -76,13 +76,11 @@ int getNbClientServer(player_t *p)
         SDL_Log("recv()");
     } else {
         if (buffer != NULL) {
-            p->co_is_ok = 1;
+            g->nb_client_serv = atoi(buffer);
+            player_t *myPlayer = getMyPlayer(g);
+            myPlayer->co_is_ok = 1;
             c_emission(p, 201);
         }
-        //SDL_Log("taille = %d\n", n);
-        //SDL_Log("[Client] nb_client_server set to : %s\n", buffer);
-        //SDL_Log("[Client] nb_client_server set to : %d\n", atoi(buffer));
-        return atoi(buffer);
     }
 }
 
@@ -91,11 +89,11 @@ int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
         case DISCONNECT_CODE:
-//            SDL_Log("Disconnected by the server.\n");
+            SDL_Log("Disconnected by the server.\n");
             closesocket(serv_sock);
             return 0;
         default:
-            return -1;
+            return 1;
     }
 }
 
@@ -115,8 +113,11 @@ void c_emission(player_t *player, int code)
     c_request.dir = player->direction;
     c_request.still = player->still;
     c_request.range= player->bomb.range;
+    c_request.alive = player->alive;
+    c_request.co_is_ok = player->co_is_ok;
     switch (code) {
         case DISCONNECT_CODE:
+            player->co_is_ok = 0;
             c_request.code_reseau = DISCONNECT_CODE;
             break;
         case UP_CODE:
@@ -150,8 +151,9 @@ void listen_server(void* g_param)
     int n = 0;
     game_t *game = (game_t*)(uintptr_t)g_param;
     player_t *p = getMyPlayer(game);
+    int run = 1;
 
-    while(1) {
+    while(run) {
         FD_ZERO(&serv.readfs);
         FD_SET(serv.sock, &serv.readfs);
 
@@ -162,21 +164,20 @@ void listen_server(void* g_param)
         if (FD_ISSET(serv.sock, &serv.readfs)) {
             if((n = recv((SOCKET)serv.sock, (char *)&g, sizeof(g), 0)) < 0)
             {
-                SDL_Log("recv()");
+                SDL_Log("[Client] recv()");
+                run =  c_reception(DISCONNECT_CODE, serv.sock);
             } else {
-//                SDL_Log("[Client] Reception de données serveur...\n");
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
                         maj_player(game, g.players[i].number, &g.players[i]);
-                        //SDL_Log("g.players[%d].number : %d", i, g.players[i].number);
-                        //SDL_Log("game->nb_client_serv : %d", game->nb_client_serv);
                     }
                 }
-                c_reception(p->code_reseau, serv.sock);
+                run =  c_reception(p->code_reseau, serv.sock);
             }
         }
     }
+    pthread_cancel(game->listen_serv_thread);
 }
 
 void maj_player(game_t *g, int indice, player_t *p)
@@ -190,5 +191,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].speed = p->speed;
     g->players[indice].number = p->number;
     g->players[indice].bomb.range = p->bomb.range;
+    g->players[indice].alive = p->alive;
+    g->players[indice].co_is_ok = p->co_is_ok;
     pthread_mutex_unlock(&g->players[indice].mutex_player);
 }

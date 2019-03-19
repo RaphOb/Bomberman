@@ -110,10 +110,19 @@ void close_game_thread()
 
 void disconnect_all_clients()
 {
-    write_to_all_clients(DISCONNECT_CODE);
-    close_all_socket_clients();
-    delete_all_threads();
-    delete_all_clients();
+    close_game_thread();
+    for (int i=MAX_CLIENT-1 ; i>=0 ; i--) {
+        if (clients[i].num_client != -1) {
+            write_to_client(&clients[i], DISCONNECT_CODE);
+            close_socket_client(&clients[i]);
+            delete_one_thread(&clients[i]);
+            delete_client(&clients[i]);
+        }
+    }
+    //write_to_all_clients(DISCONNECT_CODE);
+    //close_all_socket_clients();
+    //delete_all_threads();
+    //delete_all_clients();
 }
 
 void disconnect_client(Client *c)

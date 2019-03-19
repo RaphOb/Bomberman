@@ -23,9 +23,8 @@ int main(int argc, char *argv[]) {
     int menu = 0;
     int network = 0;
     int play = 0;
-    fd_set readfs;
-    struct timeval timeout;
     int host = 0;
+    pthread_t hebergement_thread;
     // First menu
     while (menu == 0) {
 //        if (song == 0) {
@@ -51,7 +50,6 @@ int main(int argc, char *argv[]) {
             serv.s_port = strdup(port);
             SDL_Log("set port : %s\n", port);
             if (play == 1) {
-                pthread_t hebergement_thread;
                 int ret_thread = pthread_create(&hebergement_thread, NULL, (void *) app_serv, (void *) serv.s_port);
                 if (ret_thread != 0) {
                     SDL_Log("Thread server fail");
@@ -75,8 +73,7 @@ int main(int argc, char *argv[]) {
         c_emission(&player, 200);
     }
     if (play == 1) {
-        pthread_t listen_server_thread;
-        int ret_thread = pthread_create(&listen_server_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
+        int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
     }
     while (menu != -1 && quit != -1 && play == 1 && network != -1) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
@@ -87,6 +84,15 @@ int main(int argc, char *argv[]) {
         if(1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
         }
+    }
+
+    SDL_Log("Waiting for listen server thread\n");
+    pthread_join(game->listen_serv_thread, NULL);
+    SDL_Log("Listen server thread is closed\n");
+    if (host == 1) {
+        SDL_Log("Waiting for server thread\n");
+        pthread_cancel(hebergement_thread);
+        SDL_Log("Server thread is closed\n");
     }
 
     SDL_CloseAudio();

@@ -58,6 +58,8 @@ typedef struct s_client_request
     int ckecksum; /* Un checksum simple */
     int code_reseau;
     int still;
+    char alive;
+    int co_is_ok;
 } t_client_request;
 
 // ----- INITIALISATION -----

@@ -35,9 +35,9 @@ void drawGame(game_t *game)
                 }
                 renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb.range);
             }
-//            if (game->players[i].alive == 'Y') {
+            if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
-//            }
+            }
         }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);

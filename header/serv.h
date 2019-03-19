@@ -38,6 +38,8 @@ typedef struct in_addr IN_ADDR;
 #include <stdlib.h>
 #include "game.h"
 
+#define MAX_CLIENT MAX_PLAYER
+
 // Structure concernant un client (spécifique au serveur)
 typedef struct
 {
@@ -48,6 +50,12 @@ typedef struct
     SOCKADDR_IN csin;
     player_t p;
 }Client;
+
+typedef struct {
+    map_t map;
+    Client *client[MAX_CLIENT];
+    pthread_t g_thread;
+}game_serv_side;
 
 // ----- INITIALISATION -----
 void init(void);
@@ -79,8 +87,6 @@ int s_reception(Client *c, t_client_request *c_request);
 // ----- MAIN -----
 int app_serv(void* struct_serv);
 
-game_t init_game_server_side();
-
-#define MAX_CLIENT 4
+game_t init_game_server_side(int code);
 
 #endif //BOMBERMAN_SERV_H

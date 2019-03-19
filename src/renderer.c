@@ -117,7 +117,7 @@ void renderBomb(sdl_t *pSDL, player_t *player)
         n = 1;
     }
     if (currentTick - player->bomb.tickBombDropped > 2000) {
-        player->bombPosed = 0;
+        player->bombPosed--;
         player->bomb.tickBombDropped = 0;
         makeExplosion(player, pSDL->son[1]);
         n = 0;

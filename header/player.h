@@ -14,6 +14,7 @@
 #define FRAME_HEIGHT (TEXTURE_HEIGHT / 4)
 #define PLAYER_WIDTH (int) (FRAME_WIDTH + (FRAME_WIDTH / 2))
 #define PLAYER_HEIGHT (int) (FRAME_HEIGHT + (FRAME_HEIGHT / 2))
+#define MAX_BOMBE 5
 
 typedef struct bombs_s {
     int x_pos;
@@ -48,6 +49,7 @@ typedef struct player_s {
 } player_t;
 
 player_t initPlayer();
+bomb_t createBomb();
 void updatePlayerCell(player_t *player);
 int collideWith(map_t map, player_t *player, int x, int y);
 int canPlayerPlaceBomb(player_t *player);

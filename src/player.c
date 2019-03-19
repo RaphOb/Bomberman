@@ -21,7 +21,7 @@ player_t initPlayer()
     p.alive = 'Y';
     p.co_is_ok = 0;
     p.bombPosed = 0;
-    p.nbBombe = 20;
+    p.nbBombe = 0;
     p.frags = 0;
     p.map_x[0] = 0;
     p.map_x[1] = 0;
@@ -36,12 +36,24 @@ player_t initPlayer()
     p.direction = 2;
     p.still = 1;
     pthread_mutex_init(&p.mutex_player, NULL);
+//    for (int i = 0; i < MAX_BOMBE; i++) {
+//        p.bomb[i] = initBomb();
+//    }
+    p.bomb = createBomb();
+    return p;
+}
+
+bomb_t createBomb()
+{
     bomb_t b;
+
     b.range = 1;
     b.explosion = 0;
-    p.bomb = b;
-
-    return p;
+    b.tickExplosion = 0;
+    b.tickBombDropped = 0;
+    b.x_pos = -1;
+    b.y_pos = -1;
+    return b;
 }
 
 /**

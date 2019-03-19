@@ -63,7 +63,7 @@ int gameEvent(game_t *game)
                     break;
                 case SDLK_b:
                     c_emission(p, BOMB_CODE);
-                    if (p->bombPosed == 0 && canPlayerPlaceBomb(p)) {
+                    if (p->bombPosed <= MAX_BOMBE && canPlayerPlaceBomb(p)) {
                         placeBomb(game->pSDL, p, game->map);
                     }
                     break;
@@ -120,7 +120,7 @@ void placeBomb(sdl_t *pSDL, player_t *player, map_t map)
     toggleBit(map[player->bomb.x_pos], player->bomb.y_pos, 3);
 //    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
 
-    player->bombPosed = 1;
+    player->bombPosed++;
     player->bomb.tickBombDropped = SDL_GetTicks();
 
 }

@@ -59,6 +59,8 @@ typedef struct s_client_request
     int code_reseau;
     int still;
     int range;
+    char alive;
+    int co_is_ok;
 } t_client_request;
 
 // ----- INITIALISATION -----
@@ -66,7 +68,7 @@ typedef struct s_client_request
 //void end(void);
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo);
 // ----- DIVERS -----
-int getNbClientServer(player_t *p);
+void getNbClientServer(game_t *g, player_t *p);
 void maj_player(game_t *g, int indice, player_t *p);
 // ----- COMMUNICATION -----
 int c_reception(int code, SOCKET serv_sock);

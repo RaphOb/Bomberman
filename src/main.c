@@ -33,6 +33,40 @@ int main(int argc, char *argv[]) {
 //        if (song == 0) {
 //        playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
 //        }
+        int number =  rand() % 100;
+        if ( number < 3) {
+            playSound(pSDL->son[1]);
+            int frame = 0;
+            int dst_x = rand()% 700;
+            int dst_y = rand()% 700;
+            int currentTick = SDL_GetTicks();
+            for (int j = 1; j <= 4; j++) {
+                if (currentTick - game->players[0].bomb.tickExplosion > j * 200) frame = j;
+
+                SDL_Rect dst_mid = {dst_x + ((dst_y - REAL_BLOCK_SIZE) / 2),
+                                    dst_y + ((pSDL->dst_bomb.h - REAL_BLOCK_SIZE) / 2), REAL_BLOCK_SIZE,
+                                    REAL_BLOCK_SIZE};
+                SDL_Rect src = {0, 64 - frame * 16, 16, 16};
+                for (int i = 0; i < 7; i++) {
+
+                    SDL_Rect dst_right = {dst_mid.x + (  REAL_BLOCK_SIZE), dst_mid.y, REAL_BLOCK_SIZE,
+                                          REAL_BLOCK_SIZE};
+                    SDL_Rect dst_left = {dst_mid.x - (REAL_BLOCK_SIZE), dst_mid.y, REAL_BLOCK_SIZE,
+                                         REAL_BLOCK_SIZE};
+                    SDL_Rect dst_up = {dst_mid.x, dst_mid.y - (REAL_BLOCK_SIZE), REAL_BLOCK_SIZE,
+                                       REAL_BLOCK_SIZE};
+                    SDL_Rect dst_down = {dst_mid.x, dst_mid.y + (REAL_BLOCK_SIZE), REAL_BLOCK_SIZE,
+                                         REAL_BLOCK_SIZE};
+                    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[CENTERFLAME], &src, &dst_mid);
+                    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[RIGHTFLAME], &src, &dst_right);
+                    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[HORIZONTALFLAME], &src, &dst_right);
+                    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[VERTICALFLAME], &src, &dst_up);
+                    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[DOWNFLAME], &src, &dst_down);
+                    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureExplosion2[LEFTFLAME], &src, &dst_left);
+    SDL_RenderPresent(game->pSDL->pRenderer);
+                }
+            }
+        }
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL, pSDL->son[0]);
     }

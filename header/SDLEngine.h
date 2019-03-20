@@ -58,6 +58,7 @@ struct sdl_s {
     button_t *buttonConnect;
     button_t *buttonHost;
     SDL_Texture *textureMenuLogo;
+    SDL_Texture *textureMenuRetour;
     son_t* son[2];
 };
 typedef struct sdl_s sdl_t;

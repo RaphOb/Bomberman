@@ -89,8 +89,10 @@ void drawMenuNetwork(sdl_t *pSDL)
  */
 void renderMenuNetwork(sdl_t *pSDL)
 {
+    SDL_Rect dst_menu_retour = {20, 550, 350, 350};
     SDL_Rect dst_menuLogo =     {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
     SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6), 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonHost->textureButton[pSDL->buttonHost->hover], NULL, &pSDL->buttonHost->dstRect);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonConnect->textureButton[pSDL->buttonConnect->hover], NULL, &pSDL->buttonConnect->dstRect);

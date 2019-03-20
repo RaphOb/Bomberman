@@ -151,6 +151,9 @@ int menuNetworkEvent(sdl_t *pSDL, son_t* son)
         if ( event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 450 &&  event.button.y < 450 + 150) {
             res = 1;
         }
+        if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350)
+            SDL_Log("retour menu");
+        //Todo :retour menu à faire
     }
     return res;
 }

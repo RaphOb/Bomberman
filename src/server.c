@@ -166,7 +166,12 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].p.alive = 'Y';
             clients[i].p.co_is_ok = 0;
             clients[i].p.still = 1;
-            clients[i].p.bomb.range = 1;
+            clients[i].p.speed = 1;
+            clients[i].p.nbBombe = 1;
+            for (int j = 0; j < MAX_BOMBE; j++) {
+//                SDL_Log("aaa");
+                clients[i].p.bomb[j].range = 1;
+            }
             switch (i) {
                 case 0:
                     clients[i].p.x_pos = START_X_MAP;
@@ -295,11 +300,15 @@ game_t init_game_server_side(int code)
         g.players[i].number = c.p.number;
         g.players[i].alive = c.p.alive;
         g.players[i].co_is_ok = c.p.co_is_ok;
-        g.players[i].speed = 1;
+        g.players[i].speed = c.p.speed;
+        g.players[i].nbBombe = c.p.nbBombe;
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
-        g.players[i].bomb.range = c.p.bomb.range;
+        for (int j = 0; j < MAX_BOMBE; j++) {
+//            SDL_Log("bbb");
+            g.players[i].bomb[j].range = c.p.bomb[j].range;
+        }
     }
 
     return g;
@@ -315,7 +324,12 @@ int s_reception(Client *c, t_client_request *c_request)
     c->p.direction = c_request->dir;
     c->p.still = c_request->still;
     c->p.alive = c_request->alive;
-    c->p.bomb.range = c_request->range;
+    c->p.speed = c_request->speed;
+    c->p.nbBombe = c_request->nbBombe;
+    for (int i = 0; i < MAX_BOMBE; i++) {
+//        SDL_Log("ccc");
+        c->p.bomb[i].range = c_request->range;
+    }
     switch (c_request->code_reseau) {
         case DISCONNECT_CODE:
             if (c == NULL) {

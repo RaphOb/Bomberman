@@ -199,9 +199,9 @@ void destroySDL(sdl_t *pSDL)
         pSDL->buttonHost->textureButton[1] = NULL;
     }
     for (int i = 0; i < 7; i++) {
-        if (pSDL->textureExplosion2[i]) {
-            SDL_DestroyTexture(pSDL->textureExplosion2[i]);
-            pSDL->textureExplosion2[i] = NULL;
+        if (pSDL->textureExplosion[i]) {
+            SDL_DestroyTexture(pSDL->textureExplosion[i]);
+            pSDL->textureExplosion[i] = NULL;
         }
     }
     if (pSDL->textureBomb) {
@@ -403,15 +403,15 @@ void initExplosion(sdl_t *pSDL)
         destroySDL(pSDL);
         return;
     } else {
-        pSDL->textureExplosion2[CENTERFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, center);
-        pSDL->textureExplosion2[DOWNFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, down);
-        pSDL->textureExplosion2[HORIZONTALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, horizontal);
-        pSDL->textureExplosion2[LEFTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, left);
-        pSDL->textureExplosion2[RIGHTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, right);
-        pSDL->textureExplosion2[UPFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, up);
-        pSDL->textureExplosion2[VERTICALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, vertical);
-        if (!pSDL->textureExplosion2[CENTERFLAME] || !pSDL->textureExplosion2[DOWNFLAME] || !pSDL->textureExplosion2[HORIZONTALFLAME] ||
-            !pSDL->textureExplosion2[LEFTFLAME] || !pSDL->textureExplosion2[RIGHTFLAME] || !pSDL->textureExplosion2[UPFLAME] || !pSDL->textureExplosion2[VERTICALFLAME]) {
+        pSDL->textureExplosion[CENTERFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, center);
+        pSDL->textureExplosion[DOWNFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, down);
+        pSDL->textureExplosion[HORIZONTALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, horizontal);
+        pSDL->textureExplosion[LEFTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, left);
+        pSDL->textureExplosion[RIGHTFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, right);
+        pSDL->textureExplosion[UPFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, up);
+        pSDL->textureExplosion[VERTICALFLAME] = SDL_CreateTextureFromSurface(pSDL->pRenderer, vertical);
+        if (!pSDL->textureExplosion[CENTERFLAME] || !pSDL->textureExplosion[DOWNFLAME] || !pSDL->textureExplosion[HORIZONTALFLAME] ||
+            !pSDL->textureExplosion[LEFTFLAME] || !pSDL->textureExplosion[RIGHTFLAME] || !pSDL->textureExplosion[UPFLAME] || !pSDL->textureExplosion[VERTICALFLAME]) {
             fprintf(stderr, "impossible d'initialiser la texture : %s\n", SDL_GetError());
             destroySDL(pSDL);
             return;

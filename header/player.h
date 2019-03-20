@@ -17,8 +17,8 @@
 #define MAX_BOMBE 5
 
 typedef struct bombs_s {
-    int x_pos;
-    int y_pos;
+    int cell_x;
+    int cell_y;
     int range;
     int explosion;
     int tickBombDropped;
@@ -44,7 +44,7 @@ typedef struct player_s {
     int direction;
     int still;
     pthread_mutex_t mutex_player;
-    bomb_t bomb;
+    bomb_t bomb[MAX_BOMBE];
     char *name;
 } player_t;
 
@@ -52,7 +52,7 @@ player_t initPlayer();
 bomb_t createBomb();
 void updatePlayerCell(player_t *player);
 int collideWith(map_t map, player_t *player, int x, int y);
-int canPlayerPlaceBomb(player_t *player);
+int canPlayerPlaceBomb(player_t *player, bomb_t *bomb);
 int isPlayerOnOneCell(player_t *player);
 
 #endif //BOMBERMAN_PLAYER_H

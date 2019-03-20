@@ -21,7 +21,7 @@ player_t initPlayer()
     p.alive = 'Y';
     p.co_is_ok = 0;
     p.bombPosed = 0;
-    p.nbBombe = 0;
+    p.nbBombe = 1;
     p.frags = 0;
     p.map_x[0] = 0;
     p.map_x[1] = 0;
@@ -36,10 +36,10 @@ player_t initPlayer()
     p.direction = 2;
     p.still = 1;
     pthread_mutex_init(&p.mutex_player, NULL);
-//    for (int i = 0; i < MAX_BOMBE; i++) {
-//        p.bomb[i] = initBomb();
-//    }
-    p.bomb = createBomb();
+    for (int i = 0; i < MAX_BOMBE; i++) {
+        p.bomb[i] = createBomb();
+    }
+//    p.bomb = createBomb();
     return p;
 }
 
@@ -51,8 +51,8 @@ bomb_t createBomb()
     b.explosion = 0;
     b.tickExplosion = 0;
     b.tickBombDropped = 0;
-    b.x_pos = -1;
-    b.y_pos = -1;
+    b.cell_x = -1;
+    b.cell_y = -1;
     return b;
 }
 
@@ -121,12 +121,12 @@ int collideWith(map_t map, player_t *player, int x, int y)
  * @param player
  * @return 1 if the player can place a bomb, 0 if not
  */
-int canPlayerPlaceBomb(player_t *player)
+int canPlayerPlaceBomb(player_t *player, bomb_t *bomb)
 {
     const float percentage = 0.6f;
     if (isPlayerOnOneCell(player)) {
-        player->bomb.x_pos = player->map_x[0];
-        player->bomb.y_pos = player->map_y[0];
+        bomb->cell_x = player->map_x[0];
+        bomb->cell_y = player->map_y[0];
         return 1;
     } else {
         if (player->map_x[0] != player->map_x[1]) {
@@ -135,8 +135,8 @@ int canPlayerPlaceBomb(player_t *player)
             const int abs_x2 = abs(middle_x - (player->x_pos - REAL_BLOCK_SIZE + PLAYER_WIDTH));
 
             if (abs_x >= percentage * PLAYER_WIDTH || abs_x2 >= percentage * PLAYER_WIDTH) {
-                player->bomb.x_pos = (abs_x >= percentage * PLAYER_WIDTH) ? player->map_x[0] : player->map_x[1];
-                player->bomb.y_pos = player->map_y[0];
+                bomb->cell_x = (abs_x >= percentage * PLAYER_WIDTH) ? player->map_x[0] : player->map_x[1];
+                bomb->cell_y = player->map_y[0];
                 return 1;
             } else
                 return 0;
@@ -146,8 +146,8 @@ int canPlayerPlaceBomb(player_t *player)
             const int abs_y2 = abs(middle_y - (player->y_pos - (REAL_BLOCK_SIZE / 2) + PLAYER_HEIGHT));
 
             if (abs_y >= percentage * PLAYER_HEIGHT || abs_y2 >= percentage * PLAYER_HEIGHT) {
-                player->bomb.x_pos = player->map_x[0];
-                player->bomb.y_pos = (abs_y >= percentage * PLAYER_HEIGHT) ? player->map_y[0] : player->map_y[1];
+                bomb->cell_x = player->map_x[0];
+                bomb->cell_y = (abs_y >= percentage * PLAYER_HEIGHT) ? player->map_y[0] : player->map_y[1];
                 return 1;
             } else
                 return 0;

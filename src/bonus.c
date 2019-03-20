@@ -97,21 +97,25 @@ void doBonus(typeBonus_e type, player_t *player)
 
 void applyBonusRangeBomb(player_t *player)
 {
-    if (player->bomb.range <= 8) {
-        player->bomb.range += 1;
+    for (int i = 0; i < MAX_BOMBE; i++) {
+        if (player->bomb[i].range <= 8) {
+            player->bomb[i].range += 1;
+        }
     }
 }
 
 void applyMalusRangeBomb(player_t *player)
 {
-    if (player->bomb.range > 1) {
-        player->bomb.range -= 1;
+    for (int i = 0; i < MAX_BOMBE; i++) {
+        if (player->bomb[i].range > 1) {
+            player->bomb[i].range -= 1;
+        }
     }
 }
 
 void applyBonusNbBombe(player_t *player)
 {
-    if (player->nbBombe <= 10) {
+    if (player->nbBombe <= MAX_BOMBE) {
         player->nbBombe += 1;
     }
 }

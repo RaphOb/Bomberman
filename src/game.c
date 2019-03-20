@@ -54,6 +54,7 @@ int gameEvent(game_t *game)
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
+            c_emission(p, DISCONNECT_CODE);
             res = -1;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {

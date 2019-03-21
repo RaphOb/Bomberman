@@ -37,7 +37,7 @@ typeBonus_e getBonus(map_t map, int cell_x, int cell_y)
         strcat(type, tmp);
 //        free(tmp);
     }
-    SDL_Log("type: %s", type);
+//    SDL_Log("type: %s", type);
     if (strcmp(type, "000") == 0) {
         return bRangeBombe;
     } else if (strcmp(type, "001") == 0) {
@@ -57,31 +57,29 @@ typeBonus_e getBonus(map_t map, int cell_x, int cell_y)
 void spawnBonus(map_t map, int cell_x, int cell_y)
 {
     SDL_Log("spanw");
-    typeBonus_e type = getRandomType();
+    typeBonus_e type = rand() % 6;
     SDL_Log("cell_x : %d, cell_y: %d", cell_x, cell_y);
     toggleBit(map[cell_y], cell_x, 4);
     SDL_Log("type: %d, mRangeBOmbe: %d", type, mRangeBombe);
     if (type == mRangeBombe) {
-        SDL_Log("range bombe");
+        SDL_Log("malus range bombe");
         toggleBit(map[cell_y], cell_x, 7);
     } else if (type == bNbBombe) {
+        SDL_Log("bonus nb bombe");
         toggleBit(map[cell_y], cell_x, 6);
     } else if (type == mNbBombe) {
+        SDL_Log("malus nb bombe");
         toggleBit(map[cell_y], cell_x, 6);
         toggleBit(map[cell_y], cell_x, 7);
     } else if (type == bVitesse) {
+        SDL_Log("bonus vitesse");
         toggleBit(map[cell_y], cell_x, 5);
     } else if (type == mVitesse) {
+        SDL_Log("malus vitesse");
         toggleBit(map[cell_y], cell_x, 5);
         toggleBit(map[cell_y], cell_x, 7);
     }
 }
-
-typeBonus_e getRandomType()
-{
-    return bRangeBombe;
-}
-
 
 void doBonus(typeBonus_e type, player_t *player)
 {
@@ -99,21 +97,25 @@ void doBonus(typeBonus_e type, player_t *player)
 
 void applyBonusRangeBomb(player_t *player)
 {
-    if (player->bomb.range <= 8) {
-        player->bomb.range += 1;
+    for (int i = 0; i < MAX_BOMBE; i++) {
+        if (player->bomb[i].range <= 8) {
+            player->bomb[i].range += 1;
+        }
     }
 }
 
 void applyMalusRangeBomb(player_t *player)
 {
-    if (player->bomb.range > 1) {
-        player->bomb.range -= 1;
+    for (int i = 0; i < MAX_BOMBE; i++) {
+        if (player->bomb[i].range > 1) {
+            player->bomb[i].range -= 1;
+        }
     }
 }
 
 void applyBonusNbBombe(player_t *player)
 {
-    if (player->nbBombe <= 10) {
+    if (player->nbBombe <= MAX_BOMBE) {
         player->nbBombe += 1;
     }
 }
@@ -127,14 +129,14 @@ void applyMalusNbBombe(player_t *player)
 
 void applyBonusSpeed(player_t *player)
 {
-    if (player->speed <= 4) {
+    if (player->speed <= 6) {
         player->speed += 1;
     }
 }
 
 void applyMalusSpeed(player_t *player)
 {
-    if (player->speed > 1)
+    if (player->speed > 3)
         player->speed -= 1;
 }
 

@@ -8,7 +8,7 @@
 #include "map.h"
 #include "player.h"
 
-enum typeBonus {bRangeBombe, mRangeBombe, bNbBombe, mNbBombe, bVitesse, mVitesse, typeUnknown };
+enum typeBonus {bRangeBombe, mRangeBombe, bNbBombe, mNbBombe, bVitesse, mVitesse, typeUnknown};
 typedef enum typeBonus typeBonus_e;
 
 typedef struct bonus_s {
@@ -19,7 +19,6 @@ typedef struct bonus_s {
 int isBonusOnCell(map_t map, int cell_x, int cell_y);
 typeBonus_e getBonus(map_t map, int cell_x, int cell_y);
 void spawnBonus(map_t map, int cell_x, int cell_y);
-typeBonus_e getRandomType();
 void doBonus(typeBonus_e type, player_t *player);
 void applyBonusRangeBomb(player_t *player);
 void applyMalusRangeBomb(player_t *player);

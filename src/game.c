@@ -95,11 +95,13 @@ int gameEvent(game_t *game)
  * @param player
  * @param son
  */
-void makeExplosion(player_t *player, son_t* son)
+void makeExplosion(bomb_t *bomb, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-//    player->bomb.explosion = 1;
-//    player->bomb.tickExplosion = SDL_GetTicks();
+    bomb->tickBombDropped = 0;
+    bomb->isPosed = 0;
+    bomb->explosion = 1;
+    bomb->tickExplosion = SDL_GetTicks();
     playSound(son);
 
 }

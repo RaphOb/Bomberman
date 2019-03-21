@@ -6,6 +6,7 @@
 #include "../header/bit.h"
 #include "../header/menu.h"
 #include "../header/bonus.h"
+#include "../header/bomb.h"
 
 
 /**

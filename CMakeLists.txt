@@ -15,7 +15,7 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_Image REQUIRED)
 find_package(SDL2TTF REQUIRED)
 
-set(SOURCES src/main.c src/SDLEngine.c header/SDLEngine.h src/game.c header/game.h src/map.c header/map.h src/player.c header/player.h src/bit.c header/bit.h src/move.c header/move.h src/renderer.c header/renderer.h src/menu.c header/menu.h src/input.c header/input.h header/serv.h header/client.h src/client.c src/server.c header/reseau.h src/bonus.c header/bonus.h)
+set(SOURCES src/main.c src/SDLEngine.c header/SDLEngine.h src/game.c header/game.h src/map.c header/map.h src/player.c header/player.h src/bit.c header/bit.h src/move.c header/move.h src/renderer.c header/renderer.h src/menu.c header/menu.h src/input.c header/input.h header/serv.h header/client.h src/client.c src/server.c header/reseau.h src/bonus.c header/bonus.h src/bomb.c header/bomb.h)
 
 add_executable(Bomberman ${SOURCES})
 

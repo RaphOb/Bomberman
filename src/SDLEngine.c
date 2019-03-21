@@ -260,10 +260,11 @@ void initMenu(sdl_t *pSDL)
     SDL_Surface *menuSeconnecter =IMG_Load("../resources/img/Menu_seconnecterOff.png");
     SDL_Surface *menuSeconnecterOn =IMG_Load("../resources/img/Menu_seconnecterOn.png");
     SDL_Surface *menuLogo =IMG_Load("../resources/img/B_Logo.png");
+    SDL_Surface *menu_retour = IMG_Load("../resources/img/Retour_menu.png");
 
     if (!(menuSelectionJouerOff || menuSelectionJouerOn || menuSeconnecter
     || menuSelectionQuitOff || menuSelectionQuitOn || menuLogo || menuHeberger
-    || menuSeconnecterOn || menuHebergerOn)) {
+    || menuSeconnecterOn || menuHebergerOn || menu_retour)) {
         fprintf(stderr, "impossible d'initialiser l'image :%s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
@@ -277,9 +278,10 @@ void initMenu(sdl_t *pSDL)
         SDL_Texture *textureSeconnecterOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuSeconnecterOn);
         SDL_Texture *textureHeberger = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHeberger);
         SDL_Texture *textureHebergerOn = SDL_CreateTextureFromSurface(pSDL->pRenderer, menuHebergerOn);
+        pSDL->textureMenuRetour = SDL_CreateTextureFromSurface(pSDL->pRenderer, menu_retour);
         if (!(textureMenuJouerOff || textureMenuJouerOn || textureSeconnecter ||
         textureMenuQuitOff || textureMenuQuitOn || pSDL->textureMenuLogo ||
-         textureHeberger || textureHebergerOn || textureSeconnecterOn)) {
+         textureHeberger || textureHebergerOn || textureSeconnecterOn || pSDL->textureMenuRetour)) {
             fprintf(stderr, "impossible d'initialiser la texture :%s\n", IMG_GetError());
             return;
         }
@@ -305,6 +307,7 @@ void initMenu(sdl_t *pSDL)
     SDL_FreeSurface(menuSeconnecter);
     SDL_FreeSurface(menuSeconnecterOn);
     SDL_FreeSurface(menuLogo);
+    SDL_FreeSurface(menu_retour);
 
 }
 /**

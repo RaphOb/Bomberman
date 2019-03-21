@@ -53,6 +53,7 @@ int gameEvent(game_t *game)
     player_t *p = getMyPlayer(game);
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
+            c_emission(p, DISCONNECT_CODE);
             res = -1;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
@@ -94,11 +95,13 @@ int gameEvent(game_t *game)
  * @param player
  * @param son
  */
-void makeExplosion(player_t *player, son_t* son)
+void makeExplosion(bomb_t *bomb, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-//    player->bomb.explosion = 1;
-//    player->bomb.tickExplosion = SDL_GetTicks();
+    bomb->tickBombDropped = 0;
+    bomb->isPosed = 0;
+    bomb->explosion = 1;
+    bomb->tickExplosion = SDL_GetTicks();
     playSound(son);
 
 }

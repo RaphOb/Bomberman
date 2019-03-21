@@ -30,7 +30,7 @@ player_t initPlayer()
     p.x_pos = START_X_MAP;
     p.y_pos = START_Y_MAP;
     p.number = -1;
-    p.speed = 1;
+    p.speed = 3;
     p.current_frame = 1;
     p.frame_time = 0;
     p.direction = 2;
@@ -48,11 +48,16 @@ bomb_t createBomb()
     bomb_t b;
 
     b.range = 1;
+    b.isPosed = 0;
     b.explosion = 0;
     b.tickExplosion = 0;
     b.tickBombDropped = 0;
     b.cell_x = -1;
     b.cell_y = -1;
+    b.pos_x = -1;
+    b.pos_y = -1;
+    b.width = BOMB_PNG_W;
+    b.height = BOMB_PNG_H;
     return b;
 }
 
@@ -138,8 +143,9 @@ int canPlayerPlaceBomb(player_t *player, bomb_t *bomb)
                 bomb->cell_x = (abs_x >= percentage * PLAYER_WIDTH) ? player->map_x[0] : player->map_x[1];
                 bomb->cell_y = player->map_y[0];
                 return 1;
-            } else
+            } else {
                 return 0;
+            }
         } else {
             const int middle_y = player->map_y[1] * REAL_BLOCK_SIZE;
             const int abs_y = abs(middle_y - (player->y_pos - (REAL_BLOCK_SIZE / 2)));
@@ -149,9 +155,10 @@ int canPlayerPlaceBomb(player_t *player, bomb_t *bomb)
                 bomb->cell_x = player->map_x[0];
                 bomb->cell_y = (abs_y >= percentage * PLAYER_HEIGHT) ? player->map_y[0] : player->map_y[1];
                 return 1;
-            } else
+            } else {
                 return 0;
             }
+        }
     }
 }
 

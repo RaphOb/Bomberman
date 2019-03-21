@@ -129,14 +129,14 @@ void applyMalusNbBombe(player_t *player)
 
 void applyBonusSpeed(player_t *player)
 {
-    if (player->speed <= 4) {
+    if (player->speed <= 6) {
         player->speed += 1;
     }
 }
 
 void applyMalusSpeed(player_t *player)
 {
-    if (player->speed > 1)
+    if (player->speed > 3)
         player->speed -= 1;
 }
 

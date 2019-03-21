@@ -17,9 +17,14 @@
 #define MAX_BOMBE 5
 
 typedef struct bombs_s {
+    int pos_x;
+    int pos_y;
     int cell_x;
     int cell_y;
+    int width;
+    int height;
     int range;
+    int isPosed;
     int explosion;
     int tickBombDropped;
     int tickExplosion;

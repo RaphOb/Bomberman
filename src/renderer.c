@@ -22,14 +22,16 @@ void drawGame(game_t *game)
         if (game->players[i].number >= 0) {
             //SDL_Log("player : %d\n", game->players[i].number);
 //            if (game->players[i].bombPosed == 1) {
-                renderBomb(game->pSDL, &game->players[i]);
 //            }
 //            SDL_Log("player : %d, bombPosed: %d, ", i, game->players[i].bombPosed);
-            for (int j = 0; j < game->players[i].bombPosed + 1; j++) {
+            int currentTick = SDL_GetTicks();
+            for (int j = 0; j < game->players[i].nbBombe; j++) {
+                if (game->players[i].bomb[j].isPosed) {
+                    renderBomb(game->pSDL, &game->players[i].bomb[j]);
+                }
 //                SDL_Log("explosion: %d",game->players[i].bomb[j].explosion );
                 if (game->players[i].bomb[j].explosion == 1) {
                     int frame = 0;
-                    int currentTick = SDL_GetTicks();
                     for (int k = 1; k <= 4; k++) {
 //                        SDL_Log("tickexplosion: %d", game->players[i].bomb[j].tickExplosion);
                         if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
@@ -37,14 +39,15 @@ void drawGame(game_t *game)
 //                    SDL_Log("currentTick - game->players[i].bomb[j].tickExplosion: %d", currentTick - game->players[i].bomb[j].tickExplosion);
                     if (currentTick - game->players[i].bomb[j].tickExplosion > 1000) {
                         game->players[i].bomb[j].explosion = 0;
+                        game->players[i].bombPosed--;
                         checkBombDamage(game->map, game->players[i].bomb[j]);
                     } else {
                         renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb[j]);
                     }
                 }
             }
-//            if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
-            if (game->players[i].co_is_ok != -1) {
+            if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
+//            if (game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
             }
         }
@@ -110,30 +113,52 @@ void renderMenuNetwork(sdl_t *pSDL)
  * @param pSDL
  * @param player
  */
-void renderBomb(sdl_t *pSDL, player_t *player)
+void renderBomb(sdl_t *pSDL, bomb_t *bomb)
 {
     static int n = 0;
     const int size_m = 2;
     int currentTick = SDL_GetTicks();
-    for (int i = 0; i < player->bombPosed; i++) {
-        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb[i]);
-        if (currentTick - player->bomb[i].tickBombDropped > 1000 && n == 0) {
-            pSDL->dst_bomb[i].x -= BOMB_PNG_W / size_m;
-            pSDL->dst_bomb[i].y -= BOMB_PNG_H / size_m;
-            pSDL->dst_bomb[i].h *= size_m;
-            pSDL->dst_bomb[i].w *= size_m;
-            n = 1;
-        }
-        if (currentTick - player->bomb[i].tickBombDropped > 2000) {
-            player->bombPosed--;
-            player->bomb[i].tickBombDropped = 0;
-            player->bomb[i].explosion = 1;
-            player->bomb[i].tickExplosion = SDL_GetTicks();
-            playSound(pSDL->son[1]);
-//            makeExplosion(player, pSDL->son[1]);
-            n = 0;
-        }
+    SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
+//        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
+    if (currentTick - bomb->tickBombDropped > 1000 && n == 0) {
+        bomb->pos_x -= BOMB_PNG_W / size_m;
+        bomb->pos_y -= BOMB_PNG_H / size_m;
+        bomb->height *= size_m;
+        bomb->width *= size_m;
+        n = 1;
     }
+    if (currentTick - bomb->tickBombDropped > 2000) {
+        bomb->tickBombDropped = 0;
+        bomb->isPosed = 0;
+        bomb->explosion = 1;
+        bomb->tickExplosion = SDL_GetTicks();
+        playSound(pSDL->son[1]);
+        //            makeExplosion(player, pSDL->son[1]);
+        n = 0;
+    }
+
+//    for (int i = 0; i < MAX_BOMBE; i++) {
+//        if (player->bomb[i].isPosed) {
+//            SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb[i]);
+//            if (currentTick - player->bomb[i].tickBombDropped > 1000 && n == 0) {
+//                pSDL->dst_bomb[i].x -= BOMB_PNG_W / size_m;
+//                pSDL->dst_bomb[i].y -= BOMB_PNG_H / size_m;
+//                pSDL->dst_bomb[i].h *= size_m;
+//                pSDL->dst_bomb[i].w *= size_m;
+//                n = 1;
+//            }
+//            if (currentTick - player->bomb[i].tickBombDropped > 2000) {
+//                player->bomb[i].tickBombDropped = 0;
+//                player->bomb[i].isPosed = 0;
+//                player->bomb[i].explosion = 1;
+//                player->bomb[i].tickExplosion = SDL_GetTicks();
+//                playSound(pSDL->son[1]);
+//                //            makeExplosion(player, pSDL->son[1]);
+//                n = 0;
+//            }
+//        }
+//    }
 }
 
 /**
@@ -149,7 +174,7 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, bomb_t bomb)
     int blocked[4] = {0};
     int pos_x = START_X_MAP + (bomb.cell_x * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
     int pos_y = START_Y_MAP + (bomb.cell_y * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
-    SDL_Log("pos_x : %d, pos_y : %d", pos_x, pos_y);
+//    SDL_Log("pos_x : %d, pos_y : %d", pos_x, pos_y);
 
     const int cell_x = (pos_x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
     const int cell_y = (pos_y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
@@ -264,6 +289,23 @@ void renderMap(map_t map, sdl_t *pSdl)
             if (getBit(map[i], j, 4)) {
                 renderBonus(pSdl, getBonus(map, j, i), j, i);
             }
+//            if (getBit(map[i], j, 3)) {
+//                SDL_Log("aled");
+//                renderBomb(pSdl, getBomb(j, i, player));
+//            }
         }
     }
 }
+
+//
+//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER])
+//{
+//    for (int i = 0; i < MAX_PLAYER; i++) {
+//        for (int j = 0; j < player[i].nbBombe; j++) {
+//            if (player[i].bomb[j].cell_x == x && player[i].bomb[j].cell_y == y) {
+//                SDL_Log("yes");
+//                return &player[i].bomb[j];
+//            }
+//        }
+//    }
+//}

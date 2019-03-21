@@ -51,7 +51,6 @@ int gameEvent(game_t *game)
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     SDL_Event event;
     player_t *p = getMyPlayer(game);
-
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
             res = -1;
@@ -62,14 +61,15 @@ int gameEvent(game_t *game)
                     res = -1;
                     break;
                 case SDLK_b:
-                    c_emission(p, BOMB_CODE);
-                    SDL_Log("test");
-                    if (p->bombPosed < 2 && canPlayerPlaceBomb(p, &p->bomb[p->bombPosed])) { // TODO remplacer le 1 par p->nbBombe quand ce sera update par le serveur
-                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
-                        toggleBit(game->map[p->bomb[p->bombPosed].cell_x], p->bomb[p->bombPosed].cell_y, 3);
-                        SDL_Log("test3");
-                        placeBomb(game->pSDL, p, &p->bomb[p->bombPosed]);
-                        SDL_Log("test4");
+                    if (p->alive == 'Y') {
+                        c_emission(p, BOMB_CODE);
+                        int index = getIndexBomb(p);
+                        if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p,
+                                                                             &p->bomb[index])) { // TODO remplacer le 1 par p->nbBombe quand ce sera update par le serveur
+//                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
+                            toggleBit(game->map[p->bomb[index].cell_x], p->bomb[index].cell_y, 3);
+                            placeBomb(game->pSDL, p, &p->bomb[index]);
+                        }
                     }
                     break;
                 default :
@@ -79,11 +79,12 @@ int gameEvent(game_t *game)
         }
     }
 //    SDL_Log("bombposed: %d", p->bombPosed);
-    for (int i = 0; i < p->bombPosed; i++) {
+    for (int i = 0; i < MAX_BOMBE; i++) {
         checkExplosion(game, p->bomb[i]);
     }
-
-    doMove(keystates, p, game->map);
+    if (p->alive == 'Y') {
+        doMove(keystates, p, game->map);
+    }
     return res;
 }
 
@@ -102,6 +103,17 @@ void makeExplosion(player_t *player, son_t* son)
 
 }
 
+int getIndexBomb(player_t *p)
+{
+    for (int i = 0; i < p->nbBombe; i++) {
+//        if (i == 0 && p->bombPosed == 0) return 0;
+        if (p->bomb[i].isPosed == 0 && p->bomb[i].explosion == 0) {
+            return i;
+        }
+    }
+
+}
+
 /**
  * function : Update the position of the bomb to place it in the middle of the cell where the player is and update some variables to trigger the animation
  * @param pSDL
@@ -113,12 +125,16 @@ void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
     int pos_x = START_X_MAP + (bomb->cell_x * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
     int pos_y = START_Y_MAP + (bomb->cell_y * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
 
+    bomb->pos_x = pos_x;
+    bomb->pos_y = pos_y;
+    bomb->width = BOMB_PNG_W;
+    bomb->height = BOMB_PNG_H;
     pSDL->dst_bomb[player->bombPosed].h = BOMB_PNG_H;
     pSDL->dst_bomb[player->bombPosed].w = BOMB_PNG_W;
     pSDL->dst_bomb[player->bombPosed].x = pos_x;
     pSDL->dst_bomb[player->bombPosed].y = pos_y;
-//    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
-
+//    SDL_Log("bombposed: %d, x: %d, y: %d", player->bombPosed, pSDL->dst_bomb[player->bombPosed].x, pSDL->dst_bomb[player->bombPosed].y);
+    bomb->isPosed = 1;
     player->bombPosed++;
     bomb->tickBombDropped = SDL_GetTicks();
 
@@ -138,25 +154,26 @@ void checkBombPlayer(player_t *player, bomb_t b) {
 //    SDL_Log("%d", b.cell_x);
 
     //left
-    if ((bpos_x - b.range == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
+    if ((bpos_x - b.range == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y) {
         player->alive = 'N';
-//        SDL_Log("leffft");
+        SDL_Log("leffft");
     }
     //right
     else if ((bpos_x + b.range == ppos_x) && bpos_y == ppos_y) {
         player->alive = 'N';
-//        SDL_Log("right");
+        SDL_Log("right");
     }
     //top
     else if ((bpos_y - b.range == ppos_y) && bpos_x == ppos_x) {
         player->alive = 'N';
-//        SDL_Log("top");
+        SDL_Log("top");
     }
     //bottom
     else if ((bpos_y + b.range == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
         player->alive = 'N';
-//        SDL_Log("bottom");
+        SDL_Log("bottom");
     }
+//    c_emission(player, 0);
 }
 
 void checkExplosion(game_t *game, bomb_t bomb)

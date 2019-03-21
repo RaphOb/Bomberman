@@ -166,7 +166,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].p.alive = 'Y';
             clients[i].p.co_is_ok = 0;
             clients[i].p.still = 1;
-            clients[i].p.speed = 1;
+            clients[i].p.speed = 3;
             clients[i].p.nbBombe = 1;
             for (int j = 0; j < MAX_BOMBE; j++) {
 //                SDL_Log("aaa");

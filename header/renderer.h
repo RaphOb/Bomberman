@@ -8,7 +8,7 @@
 #include "../header/game.h"
 
 void drawGame(game_t *game);
-void renderBomb(sdl_t *pSDL, player_t *player);
+void renderBomb(sdl_t *pSDL, bomb_t *bomb);
 void renderBackground(sdl_t *pSDL);
 void renderPlayer(sdl_t *pSDL, player_t *player);
 void renderExplosion(sdl_t *pSDL, int frame, map_t map, bomb_t bomb);
@@ -18,6 +18,7 @@ void renderMenu(sdl_t *pSDL);
 void drawMenu(sdl_t *pSDL);
 void drawMenuNetwork(sdl_t *pSDL);
 void renderMenuNetwork(sdl_t *pSDL);
+//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER]);
 
 
 #endif //BOMBERMAN_RENDERER_H

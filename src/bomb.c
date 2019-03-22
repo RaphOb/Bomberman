@@ -162,3 +162,27 @@ int destroyBlock(map_t map, int pos_x, int pos_y)
     }
     return 0;
 }
+
+void chainExplosion(map_t map, int pos_x, int pos_y)
+{
+    // check if there is a bomb
+    if (getBit(map[pos_y], pos_x, 4)) {
+        //retrieve the bomb
+
+        // explode
+
+    }
+}
+
+//
+//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER])
+//{
+//    for (int i = 0; i < MAX_PLAYER; i++) {
+//        for (int j = 0; j < player[i].nbBombe; j++) {
+//            if (player[i].bomb[j].cell_x == x && player[i].bomb[j].cell_y == y) {
+//                SDL_Log("yes");
+//                return &player[i].bomb[j];
+//            }
+//        }
+//    }
+//}

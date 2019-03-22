@@ -294,16 +294,3 @@ void renderMap(map_t map, sdl_t *pSdl)
         }
     }
 }
-
-//
-//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER])
-//{
-//    for (int i = 0; i < MAX_PLAYER; i++) {
-//        for (int j = 0; j < player[i].nbBombe; j++) {
-//            if (player[i].bomb[j].cell_x == x && player[i].bomb[j].cell_y == y) {
-//                SDL_Log("yes");
-//                return &player[i].bomb[j];
-//            }
-//        }
-//    }
-//}

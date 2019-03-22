@@ -1,5 +1,5 @@
 ##
-## ETNA PROJECT, modif 21/02/2019 by bukin_g
+## ETNA PROJECT, modif 21/03/2019 by bukin_g
 ## Bomberman
 ## File description:
 ##      Makefile Bomberman
@@ -23,6 +23,8 @@ SRC = 		\
 		src/renderer.c \
 		src/game.c \
 		src/server.c \
+		src/bomb.c \
+		src/bonus.c \
 		src/main.c \
 
 OBJ = 		$(SRC:.c=.o)

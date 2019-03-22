@@ -18,7 +18,5 @@ void renderMenu(sdl_t *pSDL);
 void drawMenu(sdl_t *pSDL);
 void drawMenuNetwork(sdl_t *pSDL);
 void renderMenuNetwork(sdl_t *pSDL);
-//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER]);
-
 
 #endif //BOMBERMAN_RENDERER_H

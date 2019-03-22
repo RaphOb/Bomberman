@@ -63,37 +63,37 @@ void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
  * function : check if player is within a bomb's range
  * @param player
  * @param b
- * @param pSDL
  */
 void checkBombPlayer(player_t *player, bomb_t b) {
     const int bpos_x = b.cell_x;
     const int bpos_y = b.cell_y;
     const int ppos_x = player->map_x[0];
     const int ppos_y = player->map_y[0];
-//    SDL_Log("%d", player->map_x[0]);
-//    SDL_Log("%d", b.cell_x);
 
     //left
-    if ((bpos_x - b.range == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y) {
-        player->alive = 'N';
-        SDL_Log("leffft");
-    }
-        //right
-    else if ((bpos_x + b.range == ppos_x) && bpos_y == ppos_y) {
-        player->alive = 'N';
-        SDL_Log("right");
-    }
-        //top
-    else if ((bpos_y - b.range == ppos_y) && bpos_x == ppos_x) {
-        player->alive = 'N';
-        SDL_Log("top");
-    }
-        //bottom
-    else if ((bpos_y + b.range == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
-        player->alive = 'N';
-        SDL_Log("bottom");
-    }
+    for (int j = 1; j <= b.range; j++) {
+        if (((bpos_x - j >= ppos_x && ppos_x > bpos_x - (b.range + 1)) || bpos_x == ppos_x) && bpos_y == ppos_y) {
+            player->alive = 'N';
+            SDL_Log("boum");
+
+        }
+            //right
+        else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y) {
+            player->alive = 'N';
+            SDL_Log("boum");
+        }
+            //top
+        else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x) {
+            player->alive = 'N';
+            SDL_Log("boum");
+        }
+            //bottom
+        else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range + 1)) || bpos_y == ppos_y) && bpos_x == ppos_x) {
+            player->alive = 'N';
+            SDL_Log("boum");
+        }
 //    c_emission(player, 0);
+    }
 }
 
 void checkExplosion(game_t *game, bomb_t bomb)

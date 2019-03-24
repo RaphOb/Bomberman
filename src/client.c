@@ -112,6 +112,10 @@ void c_emission(player_t *player, int code)
     c_request.y_pos = player->y_pos;
     c_request.dir = player->direction;
     c_request.still = player->still;
+    c_request.speed = player->speed;
+    c_request.nbBombe = player->nbBombe;
+//    SDL_Log("eee");
+    c_request.range= player->bomb[0].range;
     c_request.alive = player->alive;
     c_request.co_is_ok = player->co_is_ok;
     switch (code) {
@@ -188,8 +192,12 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;
     g->players[indice].speed = p->speed;
+    g->players[indice].nbBombe = p->nbBombe;
     g->players[indice].number = p->number;
-    g->players[indice].bomb.range = p->bomb.range;
+    for (int i = 0; i < MAX_BOMBE; i++) {
+//        SDL_Log("ddd");
+        g->players[indice].bomb[i].range = p->bomb[0].range;
+    }
     g->players[indice].alive = p->alive;
     g->players[indice].co_is_ok = p->co_is_ok;
     pthread_mutex_unlock(&g->players[indice].mutex_player);

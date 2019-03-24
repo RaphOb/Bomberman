@@ -57,7 +57,9 @@ typedef struct s_client_request
     int speed; /* La vitesse du joueur */
     int ckecksum; /* Un checksum simple */
     int code_reseau;
+    int nbBombe;
     int still;
+    int range;
     char alive;
     int co_is_ok;
 } t_client_request;

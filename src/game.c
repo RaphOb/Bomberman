@@ -11,6 +11,7 @@
 #include "../header/bit.h"
 #include "../header/renderer.h"
 #include "../header/reseau.h"
+#include "../header/bonus.h"
 
 /**
  * function : init game
@@ -50,9 +51,9 @@ int gameEvent(game_t *game)
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     SDL_Event event;
     player_t *p = getMyPlayer(game);
-
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
+            c_emission(p, DISCONNECT_CODE);
             res = -1;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
@@ -61,9 +62,15 @@ int gameEvent(game_t *game)
                     res = -1;
                     break;
                 case SDLK_b:
-                    c_emission(p, BOMB_CODE);
-                    if (p->bombPosed == 0 && canPlayerPlaceBomb(p)) {
-                        placeBomb(game->pSDL, p, game->map);
+                    if (p->alive == 'Y') {
+                        c_emission(p, BOMB_CODE);
+                        int index = getIndexBomb(p);
+                        if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p,
+                                                                             &p->bomb[index])) { // TODO remplacer le 1 par p->nbBombe quand ce sera update par le serveur
+//                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
+                            toggleBit(game->map[p->bomb[index].cell_x], p->bomb[index].cell_y, 3);
+                            placeBomb(game->pSDL, p, &p->bomb[index]);
+                        }
                     }
                     break;
                 default :
@@ -72,17 +79,13 @@ int gameEvent(game_t *game)
             }
         }
     }
-        
-    if (p->bomb.explosion == 1) {
-        toggleBit(game->map[p->bomb.y_pos], p->bomb.x_pos , 3);
-        checkBombDamage(game->map, p->bomb);
-        for (int i = 0; i < MAX_PLAYER; i++) {
-            if (game->players[i].alive == 'Y') {
-                checkBombPlayer(&game->players[i], game->players[i].bomb);
-            }
-        }
+//    SDL_Log("bombposed: %d", p->bombPosed);
+    for (int i = 0; i < MAX_BOMBE; i++) {
+        checkExplosion(game, p->bomb[i]);
     }
-    doMove(keystates, p, game->map);
+    if (p->alive == 'Y') {
+        doMove(keystates, p, game->map);
+    }
     return res;
 }
 
@@ -92,12 +95,25 @@ int gameEvent(game_t *game)
  * @param player
  * @param son
  */
-void makeExplosion(player_t *player, son_t* son)
+void makeExplosion(bomb_t *bomb, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    player->bomb.explosion = 1;
-    player->bomb.tickExplosion = SDL_GetTicks();
+    bomb->tickBombDropped = 0;
+    bomb->isPosed = 0;
+    bomb->explosion = 1;
+    bomb->tickExplosion = SDL_GetTicks();
     playSound(son);
+
+}
+
+int getIndexBomb(player_t *p)
+{
+    for (int i = 0; i < p->nbBombe; i++) {
+//        if (i == 0 && p->bombPosed == 0) return 0;
+        if (p->bomb[i].isPosed == 0 && p->bomb[i].explosion == 0) {
+            return i;
+        }
+    }
 
 }
 
@@ -107,20 +123,23 @@ void makeExplosion(player_t *player, son_t* son)
  * @param player
  * @param map
  */
-void placeBomb(sdl_t *pSDL, player_t *player, map_t map)
+void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
 {
-    int cell_x = START_X_MAP + (player->bomb.x_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
-    int cell_y = START_Y_MAP + (player->bomb.y_pos * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
+    int pos_x = START_X_MAP + (bomb->cell_x * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
+    int pos_y = START_Y_MAP + (bomb->cell_y * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
 
-    pSDL->dst_bomb.h = BOMB_PNG_H;
-    pSDL->dst_bomb.w = BOMB_PNG_W;
-    pSDL->dst_bomb.x = cell_x;
-    pSDL->dst_bomb.y = cell_y;
-    toggleBit(map[player->bomb.x_pos], player->bomb.y_pos, 3);
-//    SDL_Log("x: %d, y: %d", game->pSDL->dst_bomb.x, game->pSDL->dst_bomb.y);
-
-    player->bombPosed = 1;
-    player->bomb.tickBombDropped = SDL_GetTicks();
+    bomb->pos_x = pos_x;
+    bomb->pos_y = pos_y;
+    bomb->width = BOMB_PNG_W;
+    bomb->height = BOMB_PNG_H;
+    pSDL->dst_bomb[player->bombPosed].h = BOMB_PNG_H;
+    pSDL->dst_bomb[player->bombPosed].w = BOMB_PNG_W;
+    pSDL->dst_bomb[player->bombPosed].x = pos_x;
+    pSDL->dst_bomb[player->bombPosed].y = pos_y;
+//    SDL_Log("bombposed: %d, x: %d, y: %d", player->bombPosed, pSDL->dst_bomb[player->bombPosed].x, pSDL->dst_bomb[player->bombPosed].y);
+    bomb->isPosed = 1;
+    player->bombPosed++;
+    bomb->tickBombDropped = SDL_GetTicks();
 
 }
 /**
@@ -130,34 +149,51 @@ void placeBomb(sdl_t *pSDL, player_t *player, map_t map)
  * @param pSDL
  */
 void checkBombPlayer(player_t *player, bomb_t b) {
-    const int bpos_x = b.x_pos;
-    const int bpos_y = b.y_pos;
+    const int bpos_x = b.cell_x;
+    const int bpos_y = b.cell_y;
     const int ppos_x = player->map_x[0];
     const int ppos_y = player->map_y[0];
-//    SDL_Log("%d", player->map_x[0]);
-//    SDL_Log("%d", b.y_pos);
 
     //left
-    if ((bpos_x - b.range == ppos_x || bpos_x == ppos_x) && bpos_y == ppos_y ) {
-        player->alive = 'N';
-        //SDL_Log("leffft");
-    }
-    //right
-    else if ((bpos_x + b.range == ppos_x) && bpos_y == ppos_y) {
-        player->alive = 'N';
-        //SDL_Log("right");
-    }
-    //top
-    else if ((bpos_y - b.range == ppos_y) && bpos_x == ppos_x) {
-        player->alive = 'N';
-        //SDL_Log("top");
-    }
-    //bottom
-    else if ((bpos_y + b.range == ppos_y || bpos_y == ppos_y) && bpos_x == ppos_x) {
-        player->alive = 'N';
-        //SDL_Log("bottom");
+    for (int j = 1; j <= b.range; j++) {
+        if (((bpos_x - j >= ppos_x && ppos_x > bpos_x - (b.range + 1))
+        || bpos_x == ppos_x) && bpos_y == ppos_y) {
+            player->alive = 'N';
+            SDL_Log("boum");
+
+        }
+            //right
+        else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y) {
+            player->alive = 'N';
+            SDL_Log("boum");
+        }
+            //top
+        else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x) {
+            player->alive = 'N';
+            SDL_Log("boum");
+        }
+            //bottom
+        else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range +1)) || bpos_y == ppos_y) && bpos_x == ppos_x) {
+            player->alive = 'N';
+            SDL_Log("boum");
+        }
+//    c_emission(player, 0);
     }
 }
+
+void checkExplosion(game_t *game, bomb_t bomb)
+{
+    if (bomb.explosion == 1) {
+        toggleBit(game->map[bomb.cell_y], bomb.cell_x , 3);
+        for (int i = 0; i < MAX_PLAYER; i++) {
+//            SDL_Log("alive: %c", game->players[i].alive);
+            if (game->players[i].alive == 'Y') {
+                checkBombPlayer(&game->players[i], bomb);
+            }
+        }
+    }
+}
+
 /**
  * function : check if block is within a bomb's range
  * @param map
@@ -165,24 +201,31 @@ void checkBombPlayer(player_t *player, bomb_t b) {
  */
 void checkBombDamage(map_t map, bomb_t b)
 {
-    const int pos_x = b.x_pos;
-    const int pos_y = b.y_pos;
-
-    // Left
-    if (pos_x - 1 >= 0) {
-        destroyBlock(map, pos_x - 1, pos_y);
-    }
-    // Right
-    if (pos_x + 1 <= 12) {
-        destroyBlock(map, pos_x + 1, pos_y);
-    }
-    // Up
-    if (pos_y - 1 >= 0) {
-        destroyBlock(map, pos_x, pos_y - 1);
-    }
-    // Down
-    if (pos_y + 1 <= 8) {
-        destroyBlock(map, pos_x, pos_y + 1);
+    const int pos_x = b.cell_x;
+    const int pos_y = b.cell_y;
+    int destroyed[4] = {0};
+    int block[4] = {0};
+    for (int i = 1; i <= b.range; i++) {
+        // Left
+        if (pos_x - i >= 0 && destroyed[0] == 0 && block[0] == 0) {
+            destroyed[0] = destroyBlock(map, pos_x - i, pos_y);
+            block[0] = (getBit(map[pos_y], pos_x - i, 1) && !getBit(map[pos_y], pos_x - i, 2));
+        }
+        // Right
+        if (pos_x + i <= 12 && destroyed[1] == 0 && block[1] == 0) {
+            destroyed[1] = destroyBlock(map, pos_x + i, pos_y);
+            block[1] = (getBit(map[pos_y], pos_x + i, 1) && !getBit(map[pos_y], pos_x + i, 2));
+        }
+        // Up
+        if (pos_y - i >= 0 && destroyed[2] == 0 && block[2] == 0) {
+            destroyed[2] = destroyBlock(map, pos_x, pos_y - i);
+            block[2] = (getBit(map[pos_y - i], pos_x, 1) && !getBit(map[pos_y - i], pos_x, 2));
+        }
+        // Down
+        if (pos_y + i <= 8 && destroyed[3] == 0 && block[3] == 0) {
+            destroyed[3] = destroyBlock(map, pos_x, pos_y + i);
+            block[3] = (getBit(map[pos_y + i], pos_x, 1) && !getBit(map[pos_y + i], pos_x, 2));
+        }
     }
 }
 
@@ -192,11 +235,15 @@ void checkBombDamage(map_t map, bomb_t b)
  * @param pos_x
  * @param pos_y
  */
-void destroyBlock(map_t map, int pos_x, int pos_y)
+int destroyBlock(map_t map, int pos_x, int pos_y)
 {
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {
         toggleBit(map[pos_y], pos_x, 1);
         toggleBit(map[pos_y], pos_x, 2);
-
+        if ((rand() % 4) == 1) {
+            spawnBonus(map, pos_x, pos_y);
+        }
+        return 1;
     }
+    return 0;
 }

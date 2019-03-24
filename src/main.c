@@ -1,15 +1,18 @@
 #include <stdbool.h>
+#include <time.h>
 #include "../header/game.h"
 #include "../header/renderer.h"
 #include "../header/menu.h"
 #include "../header/input.h"
 #include "../header/reseau.h"
 
+
 static Server serv = { 0 };
 
 int main(int argc, char *argv[]) {
     // Initialisation du jeu
     SDL_Log("argc: %d, argv : %s", argc, argv[0]);
+    srand((unsigned) time(NULL));
     Uint32 start;
     sdl_t *pSDL = initSDL();
     game_t *game = initGame(pSDL);
@@ -27,16 +30,17 @@ int main(int argc, char *argv[]) {
     pthread_t hebergement_thread;
     // First menu
     while (menu == 0) {
-//        if (song == 0) {
-//        playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
-//        }
+
+        playsound(TROPSTYLE2_SOUND);
+
         drawMenu(game->pSDL);
         menu = menuEvent(game->pSDL, pSDL->son[0]);
     }
-//    SDL_CloseAudio();
+  // SDL_CloseAudio();
 //     Menu Network
     SDL_StartTextInput();
     while (menu != -1 && network == 0) {
+        playsound(TROPSTYLE3_SOUND);
         drawMenuNetwork(game->pSDL);
         network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 //         Input
@@ -99,7 +103,6 @@ int main(int argc, char *argv[]) {
 
     // On libère la mémoire
     destroySDL(pSDL);
-    //free(player);
     free(game);
 
     return EXIT_SUCCESS;

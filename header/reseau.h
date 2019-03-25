@@ -3,6 +3,8 @@
 
 #include "client.h"
 #include "serv.h"
+#include "bomb.h"
+#include "bit.h"
 
 #define DISCONNECT_CODE 10
 #define OK_CODE 11

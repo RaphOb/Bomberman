@@ -65,12 +65,6 @@ int gameEvent(game_t *game)
                 case SDLK_b:
                     if (p->alive == 'Y') {
                         c_emission(p, BOMB_CODE);
-                        int index = getIndexBomb(p);
-                        if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], game->map)) { // TODO remplacer le 1 par p->nbBombe quand ce sera update par le serveur
-//                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
-                            toggleBit(game->map[p->bomb[index].cell_y], p->bomb[index].cell_x, 3);
-                            placeBomb(game->pSDL, p, &p->bomb[index]);
-                        }
                     }
                     break;
                 default :

@@ -71,6 +71,7 @@ int game_thread();
 void close_socket_client(Client *c);
 void close_all_socket_clients();
 // ----- CLIENTS -----
+player_t *getPlayerForClient(int i);
 void disconnect_client(Client *c);
 void disconnect_all_clients();
 void delete_client(Client *c);

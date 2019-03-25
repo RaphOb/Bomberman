@@ -108,6 +108,11 @@ void close_game_thread()
 
 // ----- CLIENTS -----
 
+player_t *getPlayerForClient(int i)
+{
+    return &g_serv_info.client[i]->p;
+}
+
 void disconnect_all_clients()
 {
     close_game_thread();
@@ -161,6 +166,7 @@ void init_all_clients()
     for (int i=0 ; i<MAX_CLIENT ; i++) {
         clients[i].num_client = -1;
         clients[i].p.number = -1;
+        g_serv_info.client[i] = &clients[i];
     }
 }
 
@@ -386,6 +392,7 @@ int game_thread()
     while(1) {
         // NULL -> tous les clients ; 0 Pas de code particulier
         SDL_Delay(2);
+
         s_emission(NULL, 0);
     }
 }

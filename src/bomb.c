@@ -15,10 +15,10 @@
 void makeExplosion(bomb_t *bomb, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    bomb->tickBombDropped = 0;
+    /*bomb->tickBombDropped = 0;
     bomb->isPosed = 0;
     bomb->explosion = 1;
-    bomb->tickExplosion = SDL_GetTicks();
+    bomb->tickExplosion = SDL_GetTicks();*/
     playSound(son);
 
 }

@@ -415,14 +415,47 @@ int s_reception(Client *c, t_client_request *c_request)
 int game_thread()
 {
     SDL_Log("[Server] Lancement de game thread\n");
+    const int size_m = 2;
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
         // NULL -> tous les clients ; 0 Pas de code particulier
         SDL_Delay(2);
+        int currentTick = SDL_GetTicks();
+        static int n = 0;
 
         for (int i = 0; i < MAX_CLIENT ; i++) {
             player_t *p = getPlayerForClient(i);
-
+            for (int j = 0; j < p->nbBombe; j++) {
+                if (p->bomb[j].isPosed) {
+                    if (currentTick - p->bomb->tickBombDropped > 1000 && n == 0) {
+                        p->bomb->pos_x -= BOMB_PNG_W / size_m;
+                        p->bomb->pos_y -= BOMB_PNG_H / size_m;
+                        p->bomb->height *= size_m;
+                        p->bomb->width *= size_m;
+                        n = 1;
+                    }
+                    if (currentTick - p->bomb->tickBombDropped > 2000) {
+                        p->bomb->tickBombDropped = 0;
+                        p->bomb->isPosed = 0;
+                        p->bomb->explosion = 1;
+                        p->bomb->tickExplosion = SDL_GetTicks();
+                        n = 0;
+                    }
+                }
+                if (p->bomb[j].explosion == 1) {
+                    int frame = 0;
+                    for (int k = 1; k <= 4; k++) {
+                        if (currentTick - p->bomb[j].tickExplosion > k * 200) frame = k;
+                    }
+                    if (currentTick - p->bomb[j].tickExplosion > 1000) {
+                        p->bomb[j].explosion = 0;
+                        p->bombPosed--;
+                        checkBombDamage(g_serv_info.map, p->bomb[j]);
+                        p->bomb[j].cell_x = -1;
+                        p->bomb[j].cell_y = -1;
+                    }
+                }
+            }
         }
 
         s_emission(NULL, 0);

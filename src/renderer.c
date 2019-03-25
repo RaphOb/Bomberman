@@ -29,14 +29,14 @@ void drawGame(game_t *game)
                 if (game->players[i].bomb[j].explosion == 1) {
                     int frame = 0;
                     for (int k = 1; k <= 4; k++) {
-                        if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
+                        //if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
                     }
                     if (currentTick - game->players[i].bomb[j].tickExplosion > 1000) {
-                        game->players[i].bomb[j].explosion = 0;
+                        /*game->players[i].bomb[j].explosion = 0;
                         game->players[i].bombPosed--;
                         checkBombDamage(game->map, game->players[i].bomb[j]);
                         game->players[i].bomb[j].cell_x = -1;
-                        game->players[i].bomb[j].cell_y = -1;
+                        game->players[i].bomb[j].cell_y = -1;*/
                     } else {
                         renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb[j]);
                     }
@@ -118,16 +118,17 @@ void renderBomb(sdl_t *pSDL, bomb_t *bomb)
     SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
 //        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
-    if (currentTick - bomb->tickBombDropped > 1000 && n == 0) {
+    /*if (currentTick - bomb->tickBombDropped > 1000 && n == 0) {
         bomb->pos_x -= BOMB_PNG_W / size_m;
         bomb->pos_y -= BOMB_PNG_H / size_m;
         bomb->height *= size_m;
         bomb->width *= size_m;
         n = 1;
-    }
+    }*/
     if (currentTick - bomb->tickBombDropped > 2000) {
-        makeExplosion(bomb, pSDL->son[1]);
-        n = 0;
+        //makeExplosion(bomb, pSDL->son[1]);
+        playSound(pSDL->son[1]);
+        //n = 0;
     }
 
 //    for (int i = 0; i < MAX_BOMBE; i++) {

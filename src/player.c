@@ -9,6 +9,7 @@
 #include "../header/map.h"
 #include "../header/bit.h"
 #include "../header/game.h"
+#include "../header/bomb.h"
 
 /**
  * function : init the player
@@ -126,13 +127,13 @@ int collideWith(map_t map, player_t *player, int x, int y)
  * @param player
  * @return 1 if the player can place a bomb, 0 if not
  */
-int canPlayerPlaceBomb(player_t *player, bomb_t *bomb)
+int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map)
 {
     const float percentage = 0.6f;
     if (isPlayerOnOneCell(player)) {
         bomb->cell_x = player->map_x[0];
         bomb->cell_y = player->map_y[0];
-        return 1;
+        return !isBombOnCell(map, bomb->cell_x, bomb->cell_y);
     } else {
         if (player->map_x[0] != player->map_x[1]) {
             const int middle_x = player->map_x[1] * REAL_BLOCK_SIZE;
@@ -142,7 +143,7 @@ int canPlayerPlaceBomb(player_t *player, bomb_t *bomb)
             if (abs_x >= percentage * PLAYER_WIDTH || abs_x2 >= percentage * PLAYER_WIDTH) {
                 bomb->cell_x = (abs_x >= percentage * PLAYER_WIDTH) ? player->map_x[0] : player->map_x[1];
                 bomb->cell_y = player->map_y[0];
-                return 1;
+                return !isBombOnCell(map, bomb->cell_x, bomb->cell_y);
             } else {
                 return 0;
             }
@@ -154,7 +155,7 @@ int canPlayerPlaceBomb(player_t *player, bomb_t *bomb)
             if (abs_y >= percentage * PLAYER_HEIGHT || abs_y2 >= percentage * PLAYER_HEIGHT) {
                 bomb->cell_x = player->map_x[0];
                 bomb->cell_y = (abs_y >= percentage * PLAYER_HEIGHT) ? player->map_y[0] : player->map_y[1];
-                return 1;
+                return !isBombOnCell(map, bomb->cell_x, bomb->cell_y);
             } else {
                 return 0;
             }

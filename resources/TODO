@@ -1,5 +1,5 @@
 TODO :
-Last update : 01/03/2019 - 12h45
+Last update : 21/03/2019 - 16h56
 
 SDL
 Urgent
@@ -12,6 +12,7 @@ Prochainement
     - Une animation quand le joueur meurt
     - Score
     - Refactor menu.c et input.c c'est mosh
+    - Chain Explosion
 Bonus
     - (proportionnalité de la poisition du jouer: e.i si joueur est a 90% sur 0 renvois 0. fluidifier) (fait ?)
     - Faire en sorte que les images, personnages, bombes soient responsive selon SIZE_M

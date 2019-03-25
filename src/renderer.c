@@ -6,6 +6,7 @@
 #include "../header/bit.h"
 #include "../header/menu.h"
 #include "../header/bonus.h"
+#include "../header/bomb.h"
 
 
 /**
@@ -20,34 +21,28 @@ void drawGame(game_t *game)
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number >= 0) {
-            //SDL_Log("player : %d\n", game->players[i].number);
-//            if (game->players[i].bombPosed == 1) {
-//            }
-//            SDL_Log("player : %d, bombPosed: %d, ", i, game->players[i].bombPosed);
             int currentTick = SDL_GetTicks();
             for (int j = 0; j < game->players[i].nbBombe; j++) {
                 if (game->players[i].bomb[j].isPosed) {
                     renderBomb(game->pSDL, &game->players[i].bomb[j]);
                 }
-//                SDL_Log("explosion: %d",game->players[i].bomb[j].explosion );
                 if (game->players[i].bomb[j].explosion == 1) {
                     int frame = 0;
                     for (int k = 1; k <= 4; k++) {
-//                        SDL_Log("tickexplosion: %d", game->players[i].bomb[j].tickExplosion);
                         if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
                     }
-//                    SDL_Log("currentTick - game->players[i].bomb[j].tickExplosion: %d", currentTick - game->players[i].bomb[j].tickExplosion);
                     if (currentTick - game->players[i].bomb[j].tickExplosion > 1000) {
                         game->players[i].bomb[j].explosion = 0;
                         game->players[i].bombPosed--;
                         checkBombDamage(game->map, game->players[i].bomb[j]);
+                        game->players[i].bomb[j].cell_x = -1;
+                        game->players[i].bomb[j].cell_y = -1;
                     } else {
                         renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb[j]);
                     }
                 }
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
-//            if (game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
             }
         }
@@ -293,16 +288,3 @@ void renderMap(map_t map, sdl_t *pSdl)
         }
     }
 }
-
-//
-//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER])
-//{
-//    for (int i = 0; i < MAX_PLAYER; i++) {
-//        for (int j = 0; j < player[i].nbBombe; j++) {
-//            if (player[i].bomb[j].cell_x == x && player[i].bomb[j].cell_y == y) {
-//                SDL_Log("yes");
-//                return &player[i].bomb[j];
-//            }
-//        }
-//    }
-//}

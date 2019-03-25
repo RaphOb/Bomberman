@@ -66,9 +66,9 @@ int gameEvent(game_t *game)
                     if (p->alive == 'Y') {
                         c_emission(p, BOMB_CODE);
                         int index = getIndexBomb(p);
-                        if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index])) { // TODO remplacer le 1 par p->nbBombe quand ce sera update par le serveur
+                        if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], game->map)) { // TODO remplacer le 1 par p->nbBombe quand ce sera update par le serveur
 //                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
-                            toggleBit(game->map[p->bomb[index].cell_x], p->bomb[index].cell_y, 3);
+                            toggleBit(game->map[p->bomb[index].cell_y], p->bomb[index].cell_x, 3);
                             placeBomb(game->pSDL, p, &p->bomb[index]);
                         }
                     }
@@ -80,7 +80,7 @@ int gameEvent(game_t *game)
         }
     }
 //    SDL_Log("bombposed: %d", p->bombPosed);
-    for (int i = 0; i < MAX_BOMBE; i++) {
+    for (int i = 0; i < p->nbBombe; i++) {
         checkExplosion(game, p->bomb[i]);
     }
     if (p->alive == 'Y') {

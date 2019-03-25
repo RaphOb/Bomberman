@@ -57,7 +57,7 @@ player_t initPlayer();
 bomb_t createBomb();
 void updatePlayerCell(player_t *player);
 int collideWith(map_t map, player_t *player, int x, int y);
-int canPlayerPlaceBomb(player_t *player, bomb_t *bomb);
+int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map);
 int isPlayerOnOneCell(player_t *player);
 
 #endif //BOMBERMAN_PLAYER_H

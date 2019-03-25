@@ -20,6 +20,14 @@ void toggleBit(char *line, int indexCol, int indexBit)
     line[indexCol] ^= 1U << pos;
 }
 
+void setBit(char *line, int indexCol, int indexBit)
+{
+    int pos = indexBit % 8;
+//    unsigned char flag = 1;   // flag = 00000001
+//   flag = flag << pos;      // flag = 0000...010...000   (shifted k positions)
+    line[indexCol] |= 1U << pos;
+}
+
 /**
  * function: Get the bit (0 or 1) at the position "indexBit" from a character in a two dimensional array.
  * "line" represents a one dimensional array and "indexCol" is the index of the character you want the bit from.

@@ -49,11 +49,11 @@ void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
     bomb->pos_y = pos_y;
     bomb->width = BOMB_PNG_W;
     bomb->height = BOMB_PNG_H;
-    pSDL->dst_bomb[player->bombPosed].h = BOMB_PNG_H;
-    pSDL->dst_bomb[player->bombPosed].w = BOMB_PNG_W;
-    pSDL->dst_bomb[player->bombPosed].x = pos_x;
-    pSDL->dst_bomb[player->bombPosed].y = pos_y;
-//    SDL_Log("bombposed: %d, x: %d, y: %d", player->bombPosed, pSDL->dst_bomb[player->bombPosed].x, pSDL->dst_bomb[player->bombPosed].y);
+//    pSDL->dst_bomb[player->bombPosed].h = BOMB_PNG_H;
+//    pSDL->dst_bomb[player->bombPosed].w = BOMB_PNG_W;
+//    pSDL->dst_bomb[player->bombPosed].x = pos_x;
+//    pSDL->dst_bomb[player->bombPosed].y = pos_y;
+////    SDL_Log("bombposed: %d, x: %d, y: %d", player->bombPosed, pSDL->dst_bomb[player->bombPosed].x, pSDL->dst_bomb[player->bombPosed].y);
     bomb->isPosed = 1;
     player->bombPosed++;
     bomb->tickBombDropped = SDL_GetTicks();
@@ -99,9 +99,10 @@ void checkBombPlayer(player_t *player, bomb_t b) {
 void checkExplosion(game_t *game, bomb_t bomb)
 {
     if (bomb.explosion == 1) {
-        toggleBit(game->map[bomb.cell_y], bomb.cell_x , 3);
+        if (getBit(game->map[bomb.cell_y], bomb.cell_x, 3)) {
+            toggleBit(game->map[bomb.cell_y], bomb.cell_x, 3);
+        }
         for (int i = 0; i < MAX_PLAYER; i++) {
-//            SDL_Log("alive: %c", game->players[i].alive);
             if (game->players[i].alive == 'Y') {
                 checkBombPlayer(&game->players[i], bomb);
             }
@@ -172,6 +173,12 @@ void chainExplosion(map_t map, int pos_x, int pos_y)
         // explode
 
     }
+}
+
+int isBombOnCell(map_t map, int x, int y)
+{
+    SDL_Log("x: %d, y: %d, res: %d", x, y, getBit(map[y], x, 3));
+    return getBit(map[y], x, 3);
 }
 
 //

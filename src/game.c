@@ -148,7 +148,7 @@ void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
  * @param b
  * @param pSDL
  */
-void checkBombPlayer(player_t *player, bomb_t b) {
+void checkBombPlayer(player_t *player, bomb_t b, map_t map) {
     const int bpos_x = b.cell_x;
     const int bpos_y = b.cell_y;
     const int ppos_x = player->map_x[0];
@@ -157,25 +157,21 @@ void checkBombPlayer(player_t *player, bomb_t b) {
     //left
     for (int j = 1; j <= b.range; j++) {
         if (((bpos_x - j >= ppos_x && ppos_x > bpos_x - (b.range + 1))
-        || bpos_x == ppos_x) && bpos_y == ppos_y) {
+        || bpos_x == ppos_x) && bpos_y == ppos_y && !getBit(map[bpos_y],bpos_x - 1, 1)) {
             player->alive = 'N';
-            SDL_Log("boum");
 
         }
             //right
-        else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y) {
+        else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y && !getBit(map[bpos_y],bpos_x + 1, 1)) {
             player->alive = 'N';
-            SDL_Log("boum");
         }
             //top
-        else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x) {
+        else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x && !getBit(map[bpos_y],bpos_y - 1, 1)) {
             player->alive = 'N';
-            SDL_Log("boum");
         }
             //bottom
-        else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range +1)) || bpos_y == ppos_y) && bpos_x == ppos_x) {
+        else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range +1)) || bpos_y == ppos_y) && bpos_x == ppos_x && !getBit(map[bpos_y],bpos_y + 1, 1)) {
             player->alive = 'N';
-            SDL_Log("boum");
         }
 //    c_emission(player, 0);
     }
@@ -188,7 +184,7 @@ void checkExplosion(game_t *game, bomb_t bomb)
         for (int i = 0; i < MAX_PLAYER; i++) {
 //            SDL_Log("alive: %c", game->players[i].alive);
             if (game->players[i].alive == 'Y') {
-                checkBombPlayer(&game->players[i], bomb);
+                checkBombPlayer(&game->players[i], bomb, game->map);
             }
         }
     }

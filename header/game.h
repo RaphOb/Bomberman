@@ -32,7 +32,7 @@ int getIndexBomb(player_t *p);
 void makeExplosion(bomb_t *bomb, son_t* son);
 void checkBombDamage(map_t map, bomb_t b);
 int destroyBlock(map_t map, int pos_x, int pos_y);
-void checkBombPlayer(player_t *player, bomb_t b);
+void checkBombPlayer(player_t *player, bomb_t b, map_t map);
 void checkExplosion(game_t *game, bomb_t b);
 
 #endif //BOMBERMAN_GAME_H

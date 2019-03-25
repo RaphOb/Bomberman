@@ -90,9 +90,11 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    SDL_Log("Waiting for listen server thread\n");
-    pthread_join(game->listen_serv_thread, NULL);
-    SDL_Log("Listen server thread is closed\n");
+    if (play == 1) {
+        SDL_Log("Waiting for listen server thread\n");
+        pthread_join(game->listen_serv_thread, NULL);
+        SDL_Log("Listen server thread is closed\n");
+    }
     if (host == 1) {
         SDL_Log("Waiting for server thread\n");
         pthread_cancel(hebergement_thread);

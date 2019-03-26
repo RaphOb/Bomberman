@@ -167,7 +167,7 @@ int destroyBlock(map_t map, int pos_x, int pos_y)
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {
         toggleBit(map[pos_y], pos_x, 1);
         toggleBit(map[pos_y], pos_x, 2);
-        if ((rand() % 4) == 1) {
+        if ((rand() % 4) < 3) {
             spawnBonus(map, pos_x, pos_y);
         }
         return 1;

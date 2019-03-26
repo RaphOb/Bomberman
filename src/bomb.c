@@ -15,10 +15,10 @@
 void makeExplosion(bomb_t *bomb, son_t* son)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    bomb->tickBombDropped = 0;
+    /*bomb->tickBombDropped = 0;
     bomb->isPosed = 0;
     bomb->explosion = 1;
-    bomb->tickExplosion = SDL_GetTicks();
+    bomb->tickExplosion = SDL_GetTicks();*/
     playSound(son);
 
 }
@@ -40,7 +40,7 @@ int getIndexBomb(player_t *p)
  * @param player
  * @param map
  */
-void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
+void placeBomb(player_t *player, bomb_t *bomb)
 {
     int pos_x = START_X_MAP + (bomb->cell_x * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
     int pos_y = START_Y_MAP + (bomb->cell_y * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);

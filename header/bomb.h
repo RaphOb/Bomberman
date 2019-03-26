@@ -7,7 +7,7 @@
 
 #include "game.h"
 
-void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb);
+void placeBomb(player_t *player, bomb_t *bomb);
 int getIndexBomb(player_t *p);
 void makeExplosion(bomb_t *bomb, son_t* son);
 void checkBombDamage(map_t map, bomb_t b);

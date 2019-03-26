@@ -108,6 +108,11 @@ void close_game_thread()
 
 // ----- CLIENTS -----
 
+player_t *getPlayerForClient(int i)
+{
+    return &g_serv_info.client[i]->p;
+}
+
 void disconnect_all_clients()
 {
     close_game_thread();
@@ -161,6 +166,7 @@ void init_all_clients()
     for (int i=0 ; i<MAX_CLIENT ; i++) {
         clients[i].num_client = -1;
         clients[i].p.number = -1;
+        g_serv_info.client[i] = &clients[i];
     }
 }
 
@@ -301,22 +307,45 @@ game_t init_game_server_side(int code)
     //useless for server side
     g.nb_client_serv = 0;
 
+    // MAP
+    for (int x = 0; x < 9; x++) {
+        for (int y = 0; y < 13; y++) {
+            g.map[x][y] = g_serv_info.map[x][y];
+        }
+    }
+
     for (int i = 0; i < MAX_CLIENT ; i++) {
         Client c = clients[i];
         g.players[i].x_pos = c.p.x_pos;
         g.players[i].y_pos = c.p.y_pos;
+        g.players[i].map_x[0] = c.p.map_x[0];
+        g.players[i].map_x[1] = c.p.map_x[1];
+        g.players[i].map_y[0] = c.p.map_y[0];
+        g.players[i].map_y[1] = c.p.map_y[1];
         g.players[i].direction = c.p.direction;
         g.players[i].number = c.p.number;
         g.players[i].alive = c.p.alive;
         g.players[i].co_is_ok = c.p.co_is_ok;
         g.players[i].speed = c.p.speed;
-        g.players[i].nbBombe = c.p.nbBombe;
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
-        for (int j = 0; j < MAX_BOMBE; j++) {
-//            SDL_Log("bbb");
+
+        // Bombe
+        g.players[i].bombPosed = c.p.bombPosed;
+        g.players[i].nbBombe = c.p.nbBombe;
+        for (int j = 0; j < g.players[i].nbBombe; j++) {
+            g.players[i].bomb[j].pos_x = c.p.bomb[j].pos_x;
+            g.players[i].bomb[j].pos_y = c.p.bomb[j].pos_y;
+            g.players[i].bomb[j].cell_x = c.p.bomb[j].cell_x;
+            g.players[i].bomb[j].cell_y = c.p.bomb[j].cell_y;
             g.players[i].bomb[j].range = c.p.bomb[j].range;
+            g.players[i].bomb[j].width = c.p.bomb[j].width;
+            g.players[i].bomb[j].height = c.p.bomb[j].height;
+            g.players[i].bomb[j].isPosed = c.p.bomb[j].isPosed;
+            g.players[i].bomb[j].tickBombDropped = c.p.bomb[j].tickBombDropped;
+            g.players[i].bomb[j].tickExplosion = c.p.bomb[j].tickExplosion;
+            g.players[i].bomb[j].explosion = c.p.bomb[j].explosion;
         }
     }
 
@@ -326,19 +355,18 @@ game_t init_game_server_side(int code)
 int s_reception(Client *c, t_client_request *c_request)
 {
     int ret_thread;
+    int index;
+    player_t *p = &c->p;
     // Le code permet d'interpreter les donnees de la structure de façons différentes et d'en faire ce qu'on veut
     //SDL_Log("[Server] Client code : %d\n", c_request->code_reseau);
     c->p.x_pos = c_request->x_pos;
     c->p.y_pos = c_request->y_pos;
+    updatePlayerCell(&c->p);
     c->p.direction = c_request->dir;
     c->p.still = c_request->still;
     c->p.alive = c_request->alive;
     c->p.speed = c_request->speed;
-    c->p.nbBombe = c_request->nbBombe;
-    for (int i = 0; i < MAX_BOMBE; i++) {
-//        SDL_Log("ccc");
-        c->p.bomb[i].range = c_request->range;
-    }
+    //c->p.nbBombe = c_request->nbBombe;
     switch (c_request->code_reseau) {
         case DISCONNECT_CODE:
             if (c == NULL) {
@@ -362,7 +390,12 @@ int s_reception(Client *c, t_client_request *c_request)
             //SDL_Log("[Server] Client %d : RIGHT\n", c->num_client);
             break;
         case BOMB_CODE:
-            //SDL_Log("[Server] Client %d : BOMB\n", c->num_client);
+            index = getIndexBomb(p);
+            if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], g_serv_info.map)) {
+//                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
+                toggleBit(g_serv_info.map[p->bomb[index].cell_y], p->bomb[index].cell_x, 3);
+                placeBomb(p, &p->bomb[index]);
+            }
             break;
         case CO_IS_OK:
             c->p.co_is_ok = 1;
@@ -382,10 +415,49 @@ int s_reception(Client *c, t_client_request *c_request)
 int game_thread()
 {
     SDL_Log("[Server] Lancement de game thread\n");
+    const int size_m = 2;
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
         // NULL -> tous les clients ; 0 Pas de code particulier
         SDL_Delay(2);
+        int currentTick = SDL_GetTicks();
+        static int n = 0;
+
+        for (int i = 0; i < MAX_CLIENT ; i++) {
+            player_t *p = getPlayerForClient(i);
+            for (int j = 0; j < p->nbBombe; j++) {
+                if (p->bomb[j].isPosed) {
+                    if (currentTick - p->bomb->tickBombDropped > 1000 && n == 0) {
+                        p->bomb->pos_x -= BOMB_PNG_W / size_m;
+                        p->bomb->pos_y -= BOMB_PNG_H / size_m;
+                        p->bomb->height *= size_m;
+                        p->bomb->width *= size_m;
+                        n = 1;
+                    }
+                    if (currentTick - p->bomb->tickBombDropped > 2000) {
+                        p->bomb->tickBombDropped = 0;
+                        p->bomb->isPosed = 0;
+                        p->bomb->explosion = 1;
+                        p->bomb->tickExplosion = SDL_GetTicks();
+                        n = 0;
+                    }
+                }
+                if (p->bomb[j].explosion == 1) {
+                    int frame = 0;
+                    for (int k = 1; k <= 4; k++) {
+                        if (currentTick - p->bomb[j].tickExplosion > k * 200) frame = k;
+                    }
+                    if (currentTick - p->bomb[j].tickExplosion > 1000) {
+                        p->bomb[j].explosion = 0;
+                        p->bombPosed--;
+                        checkBombDamage(g_serv_info.map, p->bomb[j]);
+                        p->bomb[j].cell_x = -1;
+                        p->bomb[j].cell_y = -1;
+                    }
+                }
+            }
+        }
+
         s_emission(NULL, 0);
     }
 }
@@ -432,6 +504,10 @@ int app_serv(void* serv_port)
 {
     init();
     init_all_clients();
+
+    if (extractArrayFromFile(g_serv_info.map) == 0) {
+        //return (NULL);
+    }
 
     char *port = strdup((char *)serv_port);
 

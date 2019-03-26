@@ -78,7 +78,24 @@ int gameEvent(game_t *game)
         checkExplosion(game, p->bomb[i]);
     }
     if (p->alive == 'Y') {
-        doMove(keystates, p, game->map);
+        if (keystates[SDL_SCANCODE_UP]) {
+            p->y_pos -= p->speed;
+            c_emission(p, UP_CODE);
+        }
+        if (keystates[SDL_SCANCODE_DOWN]) {
+            p->y_pos += p->speed;
+            c_emission(p, DOWN_CODE);
+        }
+        if (keystates[SDL_SCANCODE_LEFT]) {
+            p->x_pos -= p->speed;
+            c_emission(p, LEFT_CODE);
+        }
+        if (keystates[SDL_SCANCODE_RIGHT]) {
+            p->x_pos += p->speed;
+            SDL_Log("aaa");
+            c_emission(p, RIGHT_CODE);
+        }
+//        doMove(keystates, p, game->map);
     }
     return res;
 }

@@ -29,15 +29,9 @@ void drawGame(game_t *game)
                 if (game->players[i].bomb[j].explosion == 1) {
                     int frame = 0;
                     for (int k = 1; k <= 4; k++) {
-                        //if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
+                        if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
                     }
-                    if (currentTick - game->players[i].bomb[j].tickExplosion > 1000) {
-                        /*game->players[i].bomb[j].explosion = 0;
-                        game->players[i].bombPosed--;
-                        checkBombDamage(game->map, game->players[i].bomb[j]);
-                        game->players[i].bomb[j].cell_x = -1;
-                        game->players[i].bomb[j].cell_y = -1;*/
-                    } else {
+                    if (currentTick - game->players[i].bomb[j].tickExplosion < 1000) {
                         renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb[j]);
                     }
                 }
@@ -112,46 +106,14 @@ void renderMenuNetwork(sdl_t *pSDL)
  */
 void renderBomb(sdl_t *pSDL, bomb_t *bomb)
 {
-    static int n = 0;
-    const int size_m = 2;
     int currentTick = SDL_GetTicks();
     SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
 //        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
-    /*if (currentTick - bomb->tickBombDropped > 1000 && n == 0) {
-        bomb->pos_x -= BOMB_PNG_W / size_m;
-        bomb->pos_y -= BOMB_PNG_H / size_m;
-        bomb->height *= size_m;
-        bomb->width *= size_m;
-        n = 1;
-    }*/
     if (currentTick - bomb->tickBombDropped > 2000) {
         //makeExplosion(bomb, pSDL->son[1]);
         playSound(pSDL->son[1]);
-        //n = 0;
     }
-
-//    for (int i = 0; i < MAX_BOMBE; i++) {
-//        if (player->bomb[i].isPosed) {
-//            SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &pSDL->dst_bomb[i]);
-//            if (currentTick - player->bomb[i].tickBombDropped > 1000 && n == 0) {
-//                pSDL->dst_bomb[i].x -= BOMB_PNG_W / size_m;
-//                pSDL->dst_bomb[i].y -= BOMB_PNG_H / size_m;
-//                pSDL->dst_bomb[i].h *= size_m;
-//                pSDL->dst_bomb[i].w *= size_m;
-//                n = 1;
-//            }
-//            if (currentTick - player->bomb[i].tickBombDropped > 2000) {
-//                player->bomb[i].tickBombDropped = 0;
-//                player->bomb[i].isPosed = 0;
-//                player->bomb[i].explosion = 1;
-//                player->bomb[i].tickExplosion = SDL_GetTicks();
-//                playSound(pSDL->son[1]);
-//                //            makeExplosion(player, pSDL->son[1]);
-//                n = 0;
-//            }
-//        }
-//    }
 }
 
 /**

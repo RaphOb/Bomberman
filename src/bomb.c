@@ -6,20 +6,31 @@
 #include "../header/bit.h"
 #include "../header/bonus.h"
 
+
+void updateBombForAnim(bomb_t *bomb)
+{
+    const int size_m = 2;
+    bomb->pos_x -= BOMB_PNG_W / size_m;
+    bomb->pos_y -= BOMB_PNG_H / size_m;
+    bomb->height *= size_m;
+    bomb->width *= size_m;
+}
+
+
 /**
  * function : When a bomb explode, this function is called and it updates some variables to trigger the animation
  * and play the sound.
  * @param player
  * @param son
  */
-void makeExplosion(bomb_t *bomb, son_t* son)
+void makeExplosion(bomb_t *bomb)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
-    /*bomb->tickBombDropped = 0;
+    bomb->tickBombDropped = 0;
     bomb->isPosed = 0;
     bomb->explosion = 1;
-    bomb->tickExplosion = SDL_GetTicks();*/
-    playSound(son);
+    bomb->tickExplosion = SDL_GetTicks();
+//    playSound(son);
 
 }
 

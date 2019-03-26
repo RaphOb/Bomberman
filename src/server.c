@@ -384,7 +384,6 @@ int s_reception(Client *c, t_client_request *c_request)
         case DOWN_CODE:
         case LEFT_CODE:
         case RIGHT_CODE:
-            SDL_Log("aaa");
             doMove(c_request->code_reseau, p, g_serv_info.map, c_request->x_pos, c_request->y_pos);
             break;
         case BOMB_CODE:

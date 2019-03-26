@@ -5,6 +5,7 @@
 #include "../header/bomb.h"
 #include "../header/bit.h"
 #include "../header/bonus.h"
+#include "../header/reseau.h"
 
 
 void updateBombForAnim(bomb_t *bomb)
@@ -107,16 +108,15 @@ void checkBombPlayer(player_t *player, bomb_t b) {
     }
 }
 
-void checkExplosion(game_t *game, bomb_t bomb)
+void checkExplosion(map_t map, bomb_t bomb)
 {
-    if (bomb.explosion == 1) {
-        if (getBit(game->map[bomb.cell_y], bomb.cell_x, 3)) {
-            toggleBit(game->map[bomb.cell_y], bomb.cell_x, 3);
-        }
-        for (int i = 0; i < MAX_PLAYER; i++) {
-            if (game->players[i].alive == 'Y') {
-                checkBombPlayer(&game->players[i], bomb);
-            }
+    if (getBit(map[bomb.cell_y], bomb.cell_x, 3)) {
+        toggleBit(map[bomb.cell_y], bomb.cell_x, 3);
+    }
+    for (int i = 0; i < MAX_PLAYER; i++) {
+        player_t *player = getPlayerForClient(i);
+        if (player->alive == 'Y') {
+            checkBombPlayer(player, bomb);
         }
     }
 }

@@ -74,9 +74,6 @@ int gameEvent(game_t *game)
         }
     }
 //    SDL_Log("bombposed: %d", p->bombPosed);
-    for (int i = 0; i < p->nbBombe; i++) {
-        checkExplosion(game, p->bomb[i]);
-    }
     if (p->alive == 'Y') {
         if (keystates[SDL_SCANCODE_UP]) {
             p->y_pos -= p->speed;

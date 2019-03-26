@@ -434,6 +434,7 @@ int game_thread()
                     }
                 }
                 if (p->bomb[j].explosion == 1) {
+                    checkExplosion(g_serv_info.map, p->bomb[j]);
                     if (currentTick - p->bomb[j].tickExplosion > 1000) {
                         p->bomb[j].explosion = 0;
                         p->bombPosed--;

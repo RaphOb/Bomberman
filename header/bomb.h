@@ -14,7 +14,7 @@ void makeExplosion(bomb_t *bomb);
 void checkBombDamage(map_t map, bomb_t b);
 int destroyBlock(map_t map, int pos_x, int pos_y);
 void checkBombPlayer(player_t *player, bomb_t b);
-void checkExplosion(game_t *game, bomb_t b);
+void checkExplosion(map_t map, bomb_t b);
 int isBombOnCell(map_t map, int x, int y);
 bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER]);
 

@@ -82,15 +82,15 @@ int gameEvent(game_t *game)
             p->y_pos -= p->speed;
             c_emission(p, UP_CODE);
         }
-        if (keystates[SDL_SCANCODE_DOWN]) {
+        else if (keystates[SDL_SCANCODE_DOWN]) {
             p->y_pos += p->speed;
             c_emission(p, DOWN_CODE);
         }
-        if (keystates[SDL_SCANCODE_LEFT]) {
+        else if (keystates[SDL_SCANCODE_LEFT]) {
             p->x_pos -= p->speed;
             c_emission(p, LEFT_CODE);
         }
-        if (keystates[SDL_SCANCODE_RIGHT]) {
+        else if (keystates[SDL_SCANCODE_RIGHT]) {
             p->x_pos += p->speed;
             SDL_Log("aaa");
             c_emission(p, RIGHT_CODE);

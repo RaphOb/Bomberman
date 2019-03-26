@@ -76,31 +76,31 @@ void placeBomb(player_t *player, bomb_t *bomb)
  * @param player
  * @param b
  */
-void checkBombPlayer(player_t *player, bomb_t b) {
+void checkBombPlayer(player_t *player, bomb_t b, map_t map) {
     const int bpos_x = b.cell_x;
     const int bpos_y = b.cell_y;
     const int ppos_x = player->map_x[0];
     const int ppos_y = player->map_y[0];
 
-    //left
     for (int j = 1; j <= b.range; j++) {
-        if (((bpos_x - j >= ppos_x && ppos_x > bpos_x - (b.range + 1)) || bpos_x == ppos_x) && bpos_y == ppos_y) {
+        //left
+        if (((bpos_x - j >= ppos_x && ppos_x > bpos_x - (b.range + 1)) || bpos_x == ppos_x) && bpos_y == ppos_y && !getBit(map[bpos_y], bpos_x - 1, 1)) {
             player->alive = 'N';
             SDL_Log("boum");
 
         }
             //right
-        else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y) {
+        else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y && !getBit(map[bpos_y], bpos_x + 1, 1)) {
             player->alive = 'N';
             SDL_Log("boum");
         }
             //top
-        else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x) {
+        else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x && !getBit(map[bpos_y - 1], bpos_x, 1)) {
             player->alive = 'N';
             SDL_Log("boum");
         }
             //bottom
-        else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range + 1)) || bpos_y == ppos_y) && bpos_x == ppos_x) {
+        else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range + 1)) || bpos_y == ppos_y) && bpos_x == ppos_x && !getBit(map[bpos_y + 1], bpos_x, 1)) {
             player->alive = 'N';
             SDL_Log("boum");
         }
@@ -116,7 +116,7 @@ void checkExplosion(map_t map, bomb_t bomb)
     for (int i = 0; i < MAX_PLAYER; i++) {
         player_t *player = getPlayerForClient(i);
         if (player->alive == 'Y') {
-            checkBombPlayer(player, bomb);
+            checkBombPlayer(player, bomb, map);
         }
     }
 }

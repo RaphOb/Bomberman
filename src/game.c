@@ -90,6 +90,8 @@ int gameEvent(game_t *game)
         else if (keystates[SDL_SCANCODE_RIGHT]) {
             p->x_pos += p->speed;
             c_emission(p, RIGHT_CODE);
+        } else {
+            c_emission(p, 0);
         }
 //        doMove(keystates, p, game->map);
     }

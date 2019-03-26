@@ -110,7 +110,8 @@ void renderBomb(sdl_t *pSDL, bomb_t *bomb)
     SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
 //        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
-    if (currentTick - bomb->tickBombDropped > 2000) {
+//    SDL_Log("allo : %d", currentTick - bomb->tickBombDropped);
+    if (currentTick - bomb->tickBombDropped > 1980) {
         //makeExplosion(bomb, pSDL->son[1]);
         playSound(pSDL->son[1]);
     }

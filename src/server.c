@@ -424,11 +424,11 @@ int game_thread()
             player_t *p = getPlayerForClient(i);
             for (int j = 0; j < p->nbBombe; j++) {
                 if (p->bomb[j].isPosed) {
-                    if (currentTick - p->bomb->tickBombDropped > 1000 && n == 0) {
+                    if (currentTick - p->bomb[j].tickBombDropped > 1000 && n == 0) {
                         updateBombForAnim(&p->bomb[j]);
                         n = 1;
                     }
-                    if (currentTick - p->bomb->tickBombDropped > 2000) {
+                    if (currentTick - p->bomb[j].tickBombDropped > 2000) {
                         makeExplosion(&p->bomb[j]);
                         n = 0;
                     }

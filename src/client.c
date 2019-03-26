@@ -195,7 +195,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     pthread_mutex_lock(&g->players[indice].mutex_player);
     g->players[indice].x_pos = p->x_pos;
     g->players[indice].y_pos = p->y_pos;
-    SDL_Log("still: %d", p->still);
+//    SDL_Log("still: %d", p->still);
     g->players[indice].still = p->still;
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;

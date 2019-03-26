@@ -1,10 +1,13 @@
 TODO :
-Last update : 21/03/2019 - 16h56
+Last update : 26/03/2019 - 16h33
 
 SDL
 Urgent
     - Commentaires
 
+BUG
+    - Explosion parfois en double à cause du tickBombExplosion pas mise à jour, un truc comme ça
+    - Pb affichage explosion
 
 Prochainement
     - Condenser sprite menu

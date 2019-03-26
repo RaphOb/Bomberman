@@ -111,11 +111,9 @@ void c_emission(player_t *player, int code)
     c_request.x_pos = player->x_pos;
     c_request.y_pos = player->y_pos;
     c_request.dir = player->direction;
-    c_request.still = player->still;
+//    c_request.still = player->still;
     c_request.speed = player->speed;
-    c_request.nbBombe = player->nbBombe;
-//    SDL_Log("eee");
-    c_request.range= player->bomb[0].range;
+    //c_request.nbBombe = player->nbBombe;
     c_request.alive = player->alive;
     c_request.co_is_ok = player->co_is_ok;
     switch (code) {
@@ -134,6 +132,10 @@ void c_emission(player_t *player, int code)
             break;
         case RIGHT_CODE:
             c_request.code_reseau = RIGHT_CODE;
+            break;
+        case BOMB_CODE:
+            c_request.code_reseau = BOMB_CODE;
+            c_request.command = 1;
             break;
         case CO_IS_OK:
             c_request.code_reseau = CO_IS_OK;
@@ -174,6 +176,11 @@ void listen_server(void* g_param)
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
                         maj_player(game, g.players[i].number, &g.players[i]);
+                        for (int x = 0; x < 9; x++) {
+                            for (int y = 0; y < 13; y++) {
+                                game->map[x][y] = g.map[x][y];
+                            }
+                        }
                     }
                 }
                 run =  c_reception(p->code_reseau, serv.sock);
@@ -188,17 +195,31 @@ void maj_player(game_t *g, int indice, player_t *p)
     pthread_mutex_lock(&g->players[indice].mutex_player);
     g->players[indice].x_pos = p->x_pos;
     g->players[indice].y_pos = p->y_pos;
+//    SDL_Log("still: %d", p->still);
     g->players[indice].still = p->still;
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;
     g->players[indice].speed = p->speed;
-    g->players[indice].nbBombe = p->nbBombe;
     g->players[indice].number = p->number;
-    for (int i = 0; i < MAX_BOMBE; i++) {
-//        SDL_Log("ddd");
-        g->players[indice].bomb[i].range = p->bomb[0].range;
-    }
     g->players[indice].alive = p->alive;
     g->players[indice].co_is_ok = p->co_is_ok;
+
+    // Bombe
+    g->players[indice].bombPosed = p->bombPosed;
+    g->players[indice].nbBombe = p->nbBombe;
+    for (int j = 0; j < p->nbBombe; j++) {
+        g->players[indice].bomb[j].pos_x = p->bomb[j].pos_x;
+        g->players[indice].bomb[j].pos_y = p->bomb[j].pos_y;
+        g->players[indice].bomb[j].cell_x = p->bomb[j].cell_x;
+        g->players[indice].bomb[j].cell_y = p->bomb[j].cell_y;
+        g->players[indice].bomb[j].range = p->bomb[j].range;
+        g->players[indice].bomb[j].width = p->bomb[j].width;
+        g->players[indice].bomb[j].height = p->bomb[j].height;
+        g->players[indice].bomb[j].isPosed = p->bomb[j].isPosed;
+        g->players[indice].bomb[j].tickBombDropped = p->bomb[j].tickBombDropped;
+        g->players[indice].bomb[j].tickExplosion = p->bomb[j].tickExplosion;
+        g->players[indice].bomb[j].explosion = p->bomb[j].explosion;
+    }
+    //SDL_Log("g->players[indice].bomb[0].tickExplosion = %d\n", g->players[indice].bomb[0].tickExplosion);
     pthread_mutex_unlock(&g->players[indice].mutex_player);
 }

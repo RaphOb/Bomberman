@@ -5,6 +5,18 @@
 #include "../header/bomb.h"
 #include "../header/bit.h"
 #include "../header/bonus.h"
+#include "../header/reseau.h"
+
+
+void updateBombForAnim(bomb_t *bomb)
+{
+    const int size_m = 2;
+    bomb->pos_x -= BOMB_PNG_W / size_m;
+    bomb->pos_y -= BOMB_PNG_H / size_m;
+    bomb->height *= size_m;
+    bomb->width *= size_m;
+}
+
 
 /**
  * function : When a bomb explode, this function is called and it updates some variables to trigger the animation
@@ -12,14 +24,14 @@
  * @param player
  * @param son
  */
-void makeExplosion(bomb_t *bomb, son_t* son)
+void makeExplosion(bomb_t *bomb)
 {
 //    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
     bomb->tickBombDropped = 0;
     bomb->isPosed = 0;
     bomb->explosion = 1;
     bomb->tickExplosion = SDL_GetTicks();
-    playSound(son);
+//    playSound(son);
 
 }
 
@@ -40,7 +52,7 @@ int getIndexBomb(player_t *p)
  * @param player
  * @param map
  */
-void placeBomb(sdl_t *pSDL, player_t *player, bomb_t *bomb)
+void placeBomb(player_t *player, bomb_t *bomb)
 {
     int pos_x = START_X_MAP + (bomb->cell_x * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
     int pos_y = START_Y_MAP + (bomb->cell_y * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
@@ -96,16 +108,15 @@ void checkBombPlayer(player_t *player, bomb_t b) {
     }
 }
 
-void checkExplosion(game_t *game, bomb_t bomb)
+void checkExplosion(map_t map, bomb_t bomb)
 {
-    if (bomb.explosion == 1) {
-        if (getBit(game->map[bomb.cell_y], bomb.cell_x, 3)) {
-            toggleBit(game->map[bomb.cell_y], bomb.cell_x, 3);
-        }
-        for (int i = 0; i < MAX_PLAYER; i++) {
-            if (game->players[i].alive == 'Y') {
-                checkBombPlayer(&game->players[i], bomb);
-            }
+    if (getBit(map[bomb.cell_y], bomb.cell_x, 3)) {
+        toggleBit(map[bomb.cell_y], bomb.cell_x, 3);
+    }
+    for (int i = 0; i < MAX_PLAYER; i++) {
+        player_t *player = getPlayerForClient(i);
+        if (player->alive == 'Y') {
+            checkBombPlayer(player, bomb);
         }
     }
 }
@@ -156,7 +167,7 @@ int destroyBlock(map_t map, int pos_x, int pos_y)
     if (getBit(map[pos_y], pos_x, 1) == 1 && getBit(map[pos_y], pos_x, 2) == 1) {
         toggleBit(map[pos_y], pos_x, 1);
         toggleBit(map[pos_y], pos_x, 2);
-        if ((rand() % 4) == 1) {
+        if ((rand() % 4) < 3) {
             spawnBonus(map, pos_x, pos_y);
         }
         return 1;

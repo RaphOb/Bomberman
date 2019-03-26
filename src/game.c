@@ -91,6 +91,8 @@ int gameEvent(game_t *game)
             p->x_pos += p->speed;
             SDL_Log("aaa");
             c_emission(p, RIGHT_CODE);
+        } else {
+            c_emission(p, 0);
         }
 //        doMove(keystates, p, game->map);
     }

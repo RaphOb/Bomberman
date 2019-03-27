@@ -11,11 +11,11 @@
  * An array of the structure "move_t" containing a function pointer and the key corresponding
  */
 const move_t move[] = {
-        {moveUp, SDL_SCANCODE_UP},
-        {moveDown, SDL_SCANCODE_DOWN},
-        {moveLeft, SDL_SCANCODE_LEFT},
-        {moveRight, SDL_SCANCODE_RIGHT},
-        {NULL, SDL_SCANCODE_UNKNOWN}
+        {moveUp, UP_CODE},
+        {moveDown, DOWN_CODE},
+        {moveLeft, LEFT_CODE},
+        {moveRight, RIGHT_CODE},
+        {NULL, 0}
 };
 
 /**
@@ -25,14 +25,14 @@ const move_t move[] = {
  * @param map
  * @return
  */
-int doMove(const Uint8 *keystates, player_t *player, map_t map)
+int doMove(int code, player_t *player, map_t map, int request_x, int request_y)
 {
     int i = 0;
     player->still = 0;
 
-    while (move[i].key != 0) {
-        if (keystates[move[i].key]) {
-            move[i].func_move(player, map);
+    while (move[i].code != 0) {
+        if (code == move[i].code) {
+            move[i].func_move(player, map, request_x, request_y);
             updatePlayerCell(player);
             if (isPlayerOnOneCell(player) && isBonusOnCell(map, player->map_x[0], player->map_y[0])) {
                 typeBonus_e type = getBonus(map, player->map_x[0], player->map_y[0]);
@@ -43,36 +43,33 @@ int doMove(const Uint8 *keystates, player_t *player, map_t map)
         }
         i++;
     }
-    player->still = 1;
-    c_emission(player, 0);
-    return (0);
 }
 /**
  * function : Move the player up
  * @param player
  * @param map
  */
-void moveUp(player_t *player, map_t map)
+void moveUp(player_t *player, map_t map, int request_x, int request_y)
 {
     player->direction = 3;
-    if (player->y_pos > START_Y_MAP && collideWith(map, player, player->x_pos, player->y_pos - player->speed) == 0) {
-        player->y_pos -= player->speed;
+    if (player->y_pos > START_Y_MAP && collideWith(map, player, request_x, request_y) == 0) {
+        player->y_pos = request_y;
     }
-    c_emission(player, UP_CODE);
+//    c_emission(player, UP_CODE);
 }
 /**
  * function : Move the player right
  * @param player
  * @param map
  */
-void moveRight(player_t *player, map_t map)
+void moveRight(player_t *player, map_t map, int request_x, int request_y)
 {
     player->direction = 2;
     if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (REAL_BLOCK_SIZE)))
-        && collideWith(map, player, player->x_pos + player->speed, player->y_pos) == 0) {
-        player->x_pos += player->speed;
+        && collideWith(map, player, request_x, request_y) == 0) {
+        player->x_pos = request_x;
     }
-    c_emission(player, RIGHT_CODE);
+//    c_emission(player, RIGHT_CODE);
 }
 
 /**
@@ -80,14 +77,14 @@ void moveRight(player_t *player, map_t map)
  * @param player
  * @param map
  */
-void moveDown(player_t *player, map_t map)
+void moveDown(player_t *player, map_t map, int request_x, int request_y)
 {
     player->direction = 0;
     if (player->y_pos < ((START_Y_BACKGROUND + MAP_SIZE_H) - (PLAYER_HEIGHT + (REAL_BLOCK_SIZE / 2)))
-        && collideWith(map, player, player->x_pos, player->y_pos + player->speed) == 0) {
-        player->y_pos += player->speed;
+        && collideWith(map, player, request_x, request_y) == 0) {
+        player->y_pos = request_y;
     }
-    c_emission(player, DOWN_CODE);
+//    c_emission(player, DOWN_CODE);
 }
 
 /**
@@ -95,11 +92,11 @@ void moveDown(player_t *player, map_t map)
  * @param player
  * @param map
  */
-void moveLeft(player_t *player, map_t map)
+void moveLeft(player_t *player, map_t map, int request_x, int request_y)
 {
     player->direction = 1;
-    if (player->x_pos > START_X_MAP && collideWith(map, player, player->x_pos - player->speed, player->y_pos) == 0) {
-        player->x_pos -= player->speed;
+    if (player->x_pos > START_X_MAP && collideWith(map, player, request_x, request_y) == 0) {
+        player->x_pos = request_x;
     }
-    c_emission(player, LEFT_CODE);
+//    c_emission(player, LEFT_CODE);
 }

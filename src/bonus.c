@@ -88,7 +88,7 @@ void doBonus(typeBonus_e type, player_t *player)
     while (bonus[i].type != typeUnknown) {
         if (type == bonus[i].type) {
             bonus[i].func_bonus(player);
-            c_emission(player, 0);
+//            c_emission(player, 0);
             break;
         }
         i++;

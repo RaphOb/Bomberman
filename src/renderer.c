@@ -22,7 +22,7 @@ void drawGame(game_t *game)
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number >= 0) {
             int currentTick = SDL_GetTicks();
-            for (int j = 0; j < game->players[i].nbBombe; j++) {
+            for (int j = 0; j < MAX_BOMBE; j++) {
                 if (game->players[i].bomb[j].isPosed) {
                     renderBomb(game->pSDL, &game->players[i].bomb[j]);
                 }
@@ -112,7 +112,6 @@ void renderBomb(sdl_t *pSDL, bomb_t *bomb)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
 //    SDL_Log("allo : %d", currentTick - bomb->tickBombDropped);
     if (currentTick - bomb->tickBombDropped > 1980) {
-        //makeExplosion(bomb, pSDL->son[1]);
         playSound(pSDL->son[1]);
     }
 }

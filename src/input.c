@@ -46,6 +46,9 @@ int loopInputConnect(sdl_t *pSDL)
         renderInput(textRectPort, pSDL, port);
         renderInput(textRectIp, pSDL, ip);
         renderInput(textRectPseudo, pSDL, pseudo);
+        SDL_Rect dst_menu_retour = {20, 550, 350, 350};
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
+
         if (quit == 0) {
             quit = manageInput(ip);
         } else if (quit == 1) {
@@ -100,6 +103,8 @@ int loopInputHost(sdl_t *pSDL, char **p)
         } else if (quit == 1) {
             quit = manageInput(pseudo);
         }
+        SDL_Rect dst_menu_retour = {20, 550, 350, 350};
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
         SDL_RenderPresent(pSDL->pRenderer);
     }
 

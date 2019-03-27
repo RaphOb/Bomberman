@@ -23,47 +23,50 @@ int main(int argc, char *argv[]) {
     //game->players[0] = player;
 
     int quit = 0;
-    int menu = 0;
-    int network = 0;
+    pSDL->menu = 0;
+    pSDL->network = 3;
     int play = 0;
     int host = 0;
     pthread_t hebergement_thread;
     // First menu
-    while (menu == 0) {
+    while (pSDL->menu == 0) {
 
-        playsound(TROPSTYLE2_SOUND);
-
-        drawMenu(game->pSDL);
-        menu = menuEvent(game->pSDL, pSDL->son[0]);
-    }
-  // SDL_CloseAudio();
+        while ( pSDL->menu != -1 && pSDL->network == 3) {
+            playsound(TROPSTYLE2_SOUND);
+            drawMenu(game->pSDL);
+            pSDL->menu = menuEvent(game->pSDL, pSDL->son[0]);
+        }
+        // SDL_CloseAudio();
 //     Menu Network
-    SDL_StartTextInput();
-    while (menu != -1 && network == 0) {
-        playsound(TROPSTYLE3_SOUND);
-        drawMenuNetwork(game->pSDL);
-        network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
+        SDL_StartTextInput();
+
+        while (pSDL->menu != -1 &&  pSDL->network == 0) {
+
+            playsound(TROPSTYLE3_SOUND);
+            drawMenuNetwork(game->pSDL);
+            pSDL->network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 //         Input
-        if (network == 1) {
-            play = loopInputConnect(game->pSDL);
-            getNbClientServer(game, &player);
-        } else if (network == 2) {
-            host = 1;
-            char *port = malloc(sizeof(char) * 10);
-            play = loopInputHost(game->pSDL, &port);
-            serv.s_port = strdup(port);
-            SDL_Log("set port : %s\n", port);
-            if (play == 1) {
-                int ret_thread = pthread_create(&hebergement_thread, NULL, (void *) app_serv, (void *) serv.s_port);
-                if (ret_thread != 0) {
-                    SDL_Log("Thread server fail");
-                } else {
-                    SDL_Log("creation reussie");
-                    // Attente de la création du serveur
-                    SDL_Delay(500);
-                    init();
-                    init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
-                    getNbClientServer(game, &player);
+            if ( pSDL->network == 1) {
+                play = loopInputConnect(game->pSDL);
+                getNbClientServer(game, &player);
+            } else if ( pSDL->network == 2) {
+                host = 1;
+                char *port = malloc(sizeof(char) * 10);
+                play = loopInputHost(game->pSDL, &port);
+                serv.s_port = strdup(port);
+                SDL_Log("set port : %s\n", port);
+                if (play == 1) {
+                    int ret_thread = pthread_create(&hebergement_thread, NULL, (void *) app_serv, (void *) serv.s_port);
+                    if (ret_thread != 0) {
+                        SDL_Log("Thread server fail");
+                    } else {
+                        SDL_Log("creation reussie");
+                        // Attente de la création du serveur
+                        SDL_Delay(500);
+                        init();
+                        init_co_from_cli_to_serv(NULL, serv.s_port, NULL);
+                        getNbClientServer(game, &player);
+                    }
                 }
             }
         }
@@ -79,7 +82,7 @@ int main(int argc, char *argv[]) {
     if (play == 1) {
         int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
     }
-    while (menu != -1 && quit != -1 && play == 1 && network != -1) {
+    while (pSDL->menu != -1 && quit != -1 && play == 1 &&  pSDL->network != -1) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();

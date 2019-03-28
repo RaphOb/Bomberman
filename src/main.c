@@ -41,11 +41,11 @@ int main(int argc, char *argv[]) {
         SDL_StartTextInput();
 
         while (pSDL->menu != -1 &&  pSDL->network == 0) {
-
             playsound(TROPSTYLE3_SOUND);
             drawMenuNetwork(game->pSDL);
             pSDL->network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
-//         Input
+
+            //         Input
             if ( pSDL->network == 1) {
                 play = loopInputConnect(game->pSDL);
                 getNbClientServer(game, &player);

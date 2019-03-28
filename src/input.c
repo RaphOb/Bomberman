@@ -38,6 +38,7 @@ int loopInputConnect(sdl_t *pSDL)
 
     int quit = 0;
 
+
     while (quit != -1 && quit != 3) {
         SDL_RenderClear(pSDL->pRenderer);
         renderStringText(pSDL->pRenderer, ip->textureMsgDisplayed, dstStringIp);
@@ -50,11 +51,11 @@ int loopInputConnect(sdl_t *pSDL)
         SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
 
         if (quit == 0) {
-            quit = manageInput(ip);
+            quit = manageInput(ip, pSDL);
         } else if (quit == 1) {
-            quit = manageInput(port);
+            quit = manageInput(port, pSDL);
         } else {
-            quit = manageInput(pseudo);
+            quit = manageInput(pseudo, pSDL);
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
@@ -68,6 +69,7 @@ int loopInputConnect(sdl_t *pSDL)
     TTF_CloseFont(font);
     return (quit == -1) ? 0 : 1;
 }
+
 
 /**
  *
@@ -86,6 +88,7 @@ int loopInputHost(sdl_t *pSDL, char **p)
     SDL_Texture *texturePort = createTextureText(pSDL->pRenderer, font, color, "ENTREZ LE PORT: ");
     SDL_Texture *texturePseudo = createTextureText(pSDL->pRenderer, font, color, "PSEUDO: ");
 
+
     input_t *pseudo = initInput(font, color, texturePseudo);
     input_t *port = initInput(font, color, texturePort);
 
@@ -98,10 +101,12 @@ int loopInputHost(sdl_t *pSDL, char **p)
         renderStringText(pSDL->pRenderer, port->textureMsgDisplayed, dstStringPort);
         renderInput(textRectPort, pSDL, port);
         renderInput(textRectPseudo, pSDL, pseudo);
+
+
         if (quit == 0) {
-            quit = manageInput(port);
+            quit = manageInput(port, pSDL);
         } else if (quit == 1) {
-            quit = manageInput(pseudo);
+            quit = manageInput(pseudo, pSDL);
         }
         SDL_Rect dst_menu_retour = {20, 550, 350, 350};
         SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
@@ -124,7 +129,7 @@ int loopInputHost(sdl_t *pSDL, char **p)
  * @param input
  * @return
  */
-int manageInput(input_t *input)
+int manageInput(input_t *input, sdl_t* pSDL)
 {
     SDL_Event event;
     static int quit = 0;
@@ -144,6 +149,12 @@ int manageInput(input_t *input)
     } else if (event.type == SDL_TEXTINPUT) {
         input->len += strlen(event.text.text);
         strcat(input->str, event.text.text);
+    } else if (event.type == SDL_MOUSEBUTTONUP) {
+        if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350) {
+            pSDL->network = 0;
+            quit = -1;
+            SDL_Log("Petit bug ici encore");
+        }
     }
 
     return quit;

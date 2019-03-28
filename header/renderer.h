@@ -18,5 +18,6 @@ void renderMenu(sdl_t *pSDL);
 void drawMenu(sdl_t *pSDL);
 void drawMenuNetwork(sdl_t *pSDL);
 void renderMenuNetwork(sdl_t *pSDL);
+void renderBanner(sdl_t *pSDL, player_t *player);
 
 #endif //BOMBERMAN_RENDERER_H

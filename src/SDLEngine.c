@@ -33,8 +33,8 @@ sdl_t *initSDL()
         return NULL;
     }
 
-    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W,
-                                     MAP_SIZE_H, 0);
+    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, START_X_BACKGROUND + MAP_SIZE_W,
+                                     START_Y_BACKGROUND + MAP_SIZE_H, 0);
     if (pSDL->pWindow == NULL) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         destroySDL(pSDL);

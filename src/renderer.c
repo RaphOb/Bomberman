@@ -7,6 +7,7 @@
 #include "../header/menu.h"
 #include "../header/bonus.h"
 #include "../header/bomb.h"
+#include "../header/input.h"
 
 
 /**
@@ -16,7 +17,8 @@
 void drawGame(game_t *game)
 {
     SDL_RenderClear(game->pSDL->pRenderer);
-    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
+//    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
+    renderBanner(game->pSDL, getMyPlayer(game));
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
@@ -55,6 +57,36 @@ void drawMenu(sdl_t *pSDL)
     renderMenu(pSDL);
     SDL_RenderPresent(pSDL->pRenderer);
 
+}
+
+void renderBanner(sdl_t *pSDL, player_t *player)
+{
+    char str[2] = {'\0'};
+    const int y = 25;
+    TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
+    SDL_Color color = {0, 0, 0, 255};
+    SDL_Rect dst_banner = {0, 0, START_X_BACKGROUND + MAP_SIZE_W, START_Y_BACKGROUND};
+    SDL_Rect dst_bonus = {START_X_BACKGROUND + (MAP_SIZE_W / 3), y, 50, 50};
+    SDL_Rect dst_text_bonus = {START_X_BACKGROUND + (MAP_SIZE_W / 3) + 60, y, 50, 50};
+    SDL_Rect dst_bonus2 = {START_X_BACKGROUND + (MAP_SIZE_W / 4), y, 50, 50};
+    SDL_Rect dst_text_bonus2 = {START_X_BACKGROUND + (MAP_SIZE_W / 4) + 60, y, 50, 50};
+    SDL_Rect dst_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6), y, 50, 50};
+    SDL_Rect dst_text_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6) + 60, y, 50, 50};
+    sprintf(str, "%d", player->bomb[0].range);
+    SDL_Texture *text_bonus = createTextureText(pSDL->pRenderer, font, color, str);
+    sprintf(str, "%d", player->nbBombe);
+    SDL_Texture *text_bonus2 = createTextureText(pSDL->pRenderer, font, color, str);
+    sprintf(str, "%d", player->speed);
+    SDL_Texture *text_bonus3 = createTextureText(pSDL->pRenderer, font, color, str);
+    // Render rect
+    SDL_SetRenderDrawColor(pSDL->pRenderer, 36, 182, 102, 255);
+    SDL_RenderFillRect(pSDL->pRenderer, &dst_banner);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBonus[bRangeBombe], NULL, &dst_bonus);
+    renderStringText(pSDL->pRenderer, text_bonus, dst_text_bonus);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBonus[bNbBombe], NULL, &dst_bonus2);
+    renderStringText(pSDL->pRenderer, text_bonus2, dst_text_bonus2);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBonus[bVitesse], NULL, &dst_bonus3);
+    renderStringText(pSDL->pRenderer, text_bonus3, dst_text_bonus3);
 }
 
 /**

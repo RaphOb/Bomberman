@@ -363,7 +363,7 @@ int s_reception(Client *c, t_client_request *c_request)
 //    p->y_pos = c_request->y_pos;
 //    updatePlayerCell(&c->p);
 
-    p->direction = c_request->dir;
+    //p->direction = c_request->dir;
 //    p->still = c_request->still;
     p->alive = c_request->alive;
     p->speed = c_request->speed;

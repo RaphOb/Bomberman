@@ -8,7 +8,6 @@ Urgent
 BUG
     - Explosion parfois en double à cause du tickBombExplosion pas mise à jour, un truc comme ça
     - Pb affichage explosion
-    - On peut pas poser de bombe tout en bas à droite
 
 Prochainement
     - Condenser sprite menu

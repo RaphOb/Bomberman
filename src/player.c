@@ -68,8 +68,8 @@ bomb_t createBomb()
  */
 void updatePlayerCell(player_t *player)
 {
-    const int pos_x = player->x_pos - 80;
-    const int pos_y = player->y_pos - 40;
+    const int pos_x = player->x_pos - START_X_MAP;
+    const int pos_y = player->y_pos - START_Y_MAP;
 
     player->map_x[0] = (pos_x + 1) / REAL_BLOCK_SIZE;
     player->map_y[0] = (pos_y + 1) / REAL_BLOCK_SIZE;
@@ -92,11 +92,11 @@ void updatePlayerCell(player_t *player)
  */
 int collideWith(map_t map, player_t *player, int x, int y)
 {
-    const int pos_x = x - 80;
-    const int pos_y = y - 40;
+    const int pos_x = x - START_X_MAP;
+    const int pos_y = y - START_Y_MAP;
+
     int cell_x = (pos_x + 1) / REAL_BLOCK_SIZE;
     int cell_y = (pos_y + 1) / REAL_BLOCK_SIZE;
-//    SDL_Log("%d, %d", PLAYER_WIDTH, PLAYER_HEIGHT);
     int cell_x2 = (pos_x + PLAYER_WIDTH - 1) / REAL_BLOCK_SIZE;
     int cell_y2 = (pos_y + PLAYER_HEIGHT - 1) / REAL_BLOCK_SIZE;
 
@@ -113,6 +113,7 @@ int collideWith(map_t map, player_t *player, int x, int y)
     } else {
         cell_y2 = (pos_y + 1) / REAL_BLOCK_SIZE;
     }
+
 
 //    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
 //    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));

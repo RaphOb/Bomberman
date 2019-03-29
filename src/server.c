@@ -185,8 +185,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].p.speed = 3;
             clients[i].p.nbBombe = 1;
             for (int j = 0; j < MAX_BOMBE; j++) {
-//                SDL_Log("aaa");
-                clients[i].p.bomb[j].range = 1;
+                clients[i].p.bomb[j] = createBomb();
             }
             switch (i) {
                 case 0:
@@ -335,7 +334,7 @@ game_t init_game_server_side(int code)
         // Bombe
         g.players[i].bombPosed = c.p.bombPosed;
         g.players[i].nbBombe = c.p.nbBombe;
-        for (int j = 0; j < g.players[i].nbBombe; j++) {
+        for (int j = 0; j < MAX_BOMBE; j++) {
             g.players[i].bomb[j].pos_x = c.p.bomb[j].pos_x;
             g.players[i].bomb[j].pos_y = c.p.bomb[j].pos_y;
             g.players[i].bomb[j].cell_x = c.p.bomb[j].cell_x;
@@ -388,7 +387,9 @@ int s_reception(Client *c, t_client_request *c_request)
             break;
         case BOMB_CODE:
             index = getIndexBomb(p);
-            if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], g_serv_info.map)) {
+            SDL_Log("p->bombPosed: %d, p->nbBombe: %d", p->bombPosed, p->nbBombe);
+            if (p->bombPosed < p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], g_serv_info.map)) {
+                SDL_Log("allo");
 //                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
                 toggleBit(g_serv_info.map[p->bomb[index].cell_y], p->bomb[index].cell_x, 3);
                 placeBomb(p, &p->bomb[index]);
@@ -421,7 +422,8 @@ int game_thread()
 
         for (int i = 0; i < MAX_CLIENT ; i++) {
             player_t *p = getPlayerForClient(i);
-            for (int j = 0; j < p->nbBombe; j++) {
+
+            for (int j = 0; j < MAX_BOMBE; j++) {
                 if (p->bomb[j].isPosed) {
                     if (currentTick - p->bomb[j].tickBombDropped > 1000 && n == 0) {
                         updateBombForAnim(&p->bomb[j]);

@@ -38,7 +38,6 @@ void makeExplosion(bomb_t *bomb)
 int getIndexBomb(player_t *p)
 {
     for (int i = 0; i < p->nbBombe; i++) {
-//        if (i == 0 && p->bombPosed == 0) return 0;
         if (p->bomb[i].isPosed == 0 && p->bomb[i].explosion == 0) {
             return i;
         }
@@ -61,10 +60,6 @@ void placeBomb(player_t *player, bomb_t *bomb)
     bomb->pos_y = pos_y;
     bomb->width = BOMB_PNG_W;
     bomb->height = BOMB_PNG_H;
-//    pSDL->dst_bomb[player->bombPosed].h = BOMB_PNG_H;
-//    pSDL->dst_bomb[player->bombPosed].w = BOMB_PNG_W;
-//    pSDL->dst_bomb[player->bombPosed].x = pos_x;
-//    pSDL->dst_bomb[player->bombPosed].y = pos_y;
 ////    SDL_Log("bombposed: %d, x: %d, y: %d", player->bombPosed, pSDL->dst_bomb[player->bombPosed].x, pSDL->dst_bomb[player->bombPosed].y);
     bomb->isPosed = 1;
     player->bombPosed++;

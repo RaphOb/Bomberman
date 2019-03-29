@@ -207,7 +207,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     // Bombe
     g->players[indice].bombPosed = p->bombPosed;
     g->players[indice].nbBombe = p->nbBombe;
-    for (int j = 0; j < p->nbBombe; j++) {
+    for (int j = 0; j < MAX_BOMBE; j++) {
         g->players[indice].bomb[j].pos_x = p->bomb[j].pos_x;
         g->players[indice].bomb[j].pos_y = p->bomb[j].pos_y;
         g->players[indice].bomb[j].cell_x = p->bomb[j].cell_x;

@@ -67,12 +67,12 @@ int main(int argc, char *argv[]) {
 
             //         Input
             if ( pSDL->network == 1) {
-                play = loopInputConnect(game->pSDL);
+                play = loopInputConnect(game);
                 getNbClientServer(game, &player);
             } else if ( pSDL->network == 2) {
                 host = 1;
                 char *port = malloc(sizeof(char) * 10);
-                play = loopInputHost(game->pSDL, &port);
+                play = loopInputHost(game, &port);
                 serv.s_port = strdup(port);
                 SDL_Log("set port : %s\n", port);
                 if (play == 1) {
@@ -97,7 +97,7 @@ int main(int argc, char *argv[]) {
     if (host == 1) {
         // Lancer la partie cote serveur
         SDL_Log("[Client] Signal debut de partie au serveur");
-        c_emission(&player, 200);
+        c_emission(getMyPlayer(game), 200);
     }
     if (play == 1) {
         int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);

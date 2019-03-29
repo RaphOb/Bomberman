@@ -56,6 +56,7 @@ typedef struct s_client_request
     int command; /* Une commande du client (0 : Ne rien faire / 1 : Poser une bombe) */
     int speed; /* La vitesse du joueur */
     int ckecksum; /* Un checksum simple */
+    char *name;
     int code_reseau;
     int nbBombe;
     int still;

@@ -33,8 +33,10 @@ sdl_t *initSDL()
         return NULL;
     }
 
-    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, START_X_BACKGROUND + MAP_SIZE_W,
-                                     START_Y_BACKGROUND + MAP_SIZE_H, 0);
+    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+
+    SDL_Log("Window_width: %d, height: %d", WINDOW_WIDTH, WINDOW_HEIGHT);
     if (pSDL->pWindow == NULL) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -50,6 +52,7 @@ sdl_t *initSDL()
     pSDL->font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     pSDL->son[0] = initAudio(HOVER_SOUND);
     pSDL->son[1] = initAudio(EXPLOSION_SOUND);
+    initBackground(pSDL);
     initPlayerSDL(pSDL);
     initMap(pSDL);
     initBlock(pSDL);
@@ -222,6 +225,10 @@ void destroySDL(sdl_t *pSDL)
             SDL_DestroyTexture(pSDL->texturePlayers[i]);
             pSDL->texturePlayers[i] = NULL;
         }
+    }
+    if (pSDL->textureBackground) {
+        SDL_DestroyTexture(pSDL->textureBackground);
+        pSDL->textureBackground = NULL;
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
@@ -502,5 +509,24 @@ void initBonus(sdl_t *pSDL)
     SDL_FreeSurface(mNbBomb);
     SDL_FreeSurface(bSpeed);
     SDL_FreeSurface(mSpeed);
+}
+
+void initBackground(sdl_t *pSDL)
+{
+    SDL_Surface *surfaceBackground = IMG_Load("../resources/img/background1.jpg");
+
+    if (!surfaceBackground) {
+        SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return ;
+    } else {
+        pSDL->textureBackground = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBackground);
+        if (!pSDL->textureBackground) {
+            SDL_Log("impossible d'initialiser la texture : %s\n", SDL_GetError());
+            destroySDL(pSDL);
+            return ;
+        }
+    }
+    SDL_FreeSurface(surfaceBackground);
 }
 

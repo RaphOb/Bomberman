@@ -37,9 +37,9 @@ int loopInputConnect(sdl_t *pSDL)
     input_t *pseudo = initInput(font, color, texturePseudo);
 
     int quit = 0;
-
     while (quit != -1 && quit != 3) {
         SDL_RenderClear(pSDL->pRenderer);
+        renderBackgroundMenu(pSDL);
         renderStringText(pSDL->pRenderer, ip->textureMsgDisplayed, dstStringIp);
         renderStringText(pSDL->pRenderer, port->textureMsgDisplayed, dstStringPort);
         renderStringText(pSDL->pRenderer, pseudo->textureMsgDisplayed, dstStringPseudo);
@@ -91,9 +91,9 @@ int loopInputHost(sdl_t *pSDL, char **p)
 
 
     int quit = 0;
-
     while (quit != -1 && quit != 2) {
         SDL_RenderClear(pSDL->pRenderer);
+        renderBackgroundMenu(pSDL);
         renderStringText(pSDL->pRenderer, pseudo->textureMsgDisplayed, dstStringPseudo);
         renderStringText(pSDL->pRenderer, port->textureMsgDisplayed, dstStringPort);
         renderInput(textRectPort, pSDL, port);

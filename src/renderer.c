@@ -54,6 +54,7 @@ void drawMenu(sdl_t *pSDL)
 {
     SDL_RenderClear(pSDL->pRenderer);
     SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
+    renderBackgroundMenu(pSDL);
     renderMenu(pSDL);
     SDL_RenderPresent(pSDL->pRenderer);
 
@@ -142,6 +143,7 @@ void drawMenuNetwork(sdl_t *pSDL)
 {
     SDL_RenderClear(pSDL->pRenderer);
     SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
+    renderBackgroundMenu(pSDL);
     renderMenuNetwork(pSDL);
     SDL_RenderPresent(pSDL->pRenderer);
 }
@@ -312,4 +314,10 @@ void renderMap(map_t map, sdl_t *pSdl)
 //            }
         }
     }
+}
+
+void renderBackgroundMenu(sdl_t *pSDL)
+{
+    SDL_Rect dst = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBackground, NULL, &dst);
 }

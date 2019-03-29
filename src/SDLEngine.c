@@ -47,6 +47,7 @@ sdl_t *initSDL()
         return NULL;
     }
 
+    pSDL->font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     pSDL->son[0] = initAudio(HOVER_SOUND);
     pSDL->son[1] = initAudio(EXPLOSION_SOUND);
     initPlayerSDL(pSDL);
@@ -235,6 +236,7 @@ void destroySDL(sdl_t *pSDL)
     SDL_Quit();
     closeAudio(pSDL->son[0]);
     closeAudio(pSDL->son[1]);
+    TTF_CloseFont(pSDL->font);
     free(pSDL->buttonPlay);
     free(pSDL->buttonQuit);
     free(pSDL->buttonHost);

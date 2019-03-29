@@ -18,7 +18,7 @@ void drawGame(game_t *game)
 {
     SDL_RenderClear(game->pSDL->pRenderer);
 //    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
-    renderBanner(game->pSDL, getMyPlayer(game));
+    renderBanner(game->pSDL, game->players, game);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
@@ -59,11 +59,11 @@ void drawMenu(sdl_t *pSDL)
 
 }
 
-void renderBanner(sdl_t *pSDL, player_t *player)
+void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game)
 {
+    player_t *player = getMyPlayer(game);
     char str[2] = {'\0'};
     const int y = 25;
-    TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {0, 0, 0, 255};
     SDL_Rect dst_banner = {0, 0, START_X_BACKGROUND + MAP_SIZE_W, START_Y_BACKGROUND};
     SDL_Rect dst_bonus = {START_X_BACKGROUND + (MAP_SIZE_W / 3), y, 50, 50};
@@ -73,11 +73,11 @@ void renderBanner(sdl_t *pSDL, player_t *player)
     SDL_Rect dst_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6), y, 50, 50};
     SDL_Rect dst_text_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6) + 60, y, 50, 50};
     sprintf(str, "%d", player->bomb[0].range);
-    SDL_Texture *text_bonus = createTextureText(pSDL->pRenderer, font, color, str);
+    SDL_Texture *text_bonus = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     sprintf(str, "%d", player->nbBombe);
-    SDL_Texture *text_bonus2 = createTextureText(pSDL->pRenderer, font, color, str);
+    SDL_Texture *text_bonus2 = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     sprintf(str, "%d", player->speed);
-    SDL_Texture *text_bonus3 = createTextureText(pSDL->pRenderer, font, color, str);
+    SDL_Texture *text_bonus3 = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     // Render rect
     SDL_SetRenderDrawColor(pSDL->pRenderer, 36, 182, 102, 255);
     SDL_RenderFillRect(pSDL->pRenderer, &dst_banner);
@@ -87,6 +87,37 @@ void renderBanner(sdl_t *pSDL, player_t *player)
     renderStringText(pSDL->pRenderer, text_bonus2, dst_text_bonus2);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBonus[bVitesse], NULL, &dst_bonus3);
     renderStringText(pSDL->pRenderer, text_bonus3, dst_text_bonus3);
+
+    renderTextPlayer(pSDL, players);
+
+
+}
+
+
+void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER])
+{
+    SDL_Color color = {45, 94, 205, 255};
+    SDL_Rect dst = {0, 0, 0, 0};
+    char str[2] = {'\0'};
+    for (int i = 0; i < MAX_PLAYER; i++) {
+        if (players[i].number != -1) {
+            if (players[i].alive == 'N') {
+                // TODO Display Red Pseudo
+                color.r = 205;
+                color.g = 56;
+                color.b = 26;
+            }
+
+            int divide = (i % 2) == 0 ? 2 : 4;
+            int y = (i < 2) ? 0 : 30;
+            dst.x = MAP_SIZE_W - (MAP_SIZE_W / divide);
+            dst.y = y;
+
+            sprintf(str, "%d", players[i].number);
+            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
+            renderStringText(pSDL->pRenderer, textureTextPlayer, dst);
+        }
+    }
 }
 
 /**
@@ -161,10 +192,9 @@ void renderExplosion(sdl_t *pSDL, int frame, map_t map, bomb_t bomb)
     int blocked[4] = {0};
     int pos_x = START_X_MAP + (bomb.cell_x * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_W / 2);
     int pos_y = START_Y_MAP + (bomb.cell_y * REAL_BLOCK_SIZE) + (REAL_BLOCK_SIZE / 2) - (BOMB_PNG_H / 2);
-//    SDL_Log("pos_x : %d, pos_y : %d", pos_x, pos_y);
 
-    const int cell_x = (pos_x - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
-    const int cell_y = (pos_y - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
+    const int cell_x = (pos_x - START_X_BACKGROUND - REAL_BLOCK_SIZE) / REAL_BLOCK_SIZE;
+    const int cell_y = (pos_y - START_Y_BACKGROUND - REAL_BLOCK_SIZE / 2) / REAL_BLOCK_SIZE;
     SDL_Rect dst_mid = {pos_x + ((BOMB_PNG_W - REAL_BLOCK_SIZE) / 2), pos_y + ((BOMB_PNG_H - REAL_BLOCK_SIZE) / 2), REAL_BLOCK_SIZE, REAL_BLOCK_SIZE};
     SDL_Rect src = {0, 64 - frame * 16, 16, 16};
 

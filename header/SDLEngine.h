@@ -61,6 +61,7 @@ struct sdl_s {
     SDL_Texture *textureMenuRetour;
     son_t* son[2];
     SDL_Texture *textureBonus[6];
+    TTF_Font *font;
     int menu;
     int network;
 };

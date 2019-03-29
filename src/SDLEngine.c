@@ -226,9 +226,13 @@ void destroySDL(sdl_t *pSDL)
             pSDL->texturePlayers[i] = NULL;
         }
     }
-    if (pSDL->textureBackground) {
-        SDL_DestroyTexture(pSDL->textureBackground);
-        pSDL->textureBackground = NULL;
+    if (pSDL->textureBackground[0]) {
+        SDL_DestroyTexture(pSDL->textureBackground[0]);
+        pSDL->textureBackground[0] = NULL;
+    }
+    if (pSDL->textureBackground[1]) {
+        SDL_DestroyTexture(pSDL->textureBackground[1]);
+        pSDL->textureBackground[1] = NULL;
     }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
@@ -514,19 +518,22 @@ void initBonus(sdl_t *pSDL)
 void initBackground(sdl_t *pSDL)
 {
     SDL_Surface *surfaceBackground = IMG_Load("../resources/img/background1.jpg");
+    SDL_Surface *surfaceBackground2 = IMG_Load("../resources/img/background2.jpg");
 
-    if (!surfaceBackground) {
+    if (!surfaceBackground || !surfaceBackground2) {
         SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return ;
     } else {
-        pSDL->textureBackground = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBackground);
-        if (!pSDL->textureBackground) {
+        pSDL->textureBackground[0] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBackground);
+        pSDL->textureBackground[1] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBackground2);
+        if (!pSDL->textureBackground[0] || !pSDL->textureBackground[1]) {
             SDL_Log("impossible d'initialiser la texture : %s\n", SDL_GetError());
             destroySDL(pSDL);
             return ;
         }
     }
     SDL_FreeSurface(surfaceBackground);
+    SDL_FreeSurface(surfaceBackground2);
 }
 

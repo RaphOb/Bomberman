@@ -33,8 +33,10 @@ sdl_t *initSDL()
         return NULL;
     }
 
-    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, MAP_SIZE_W,
-                                     MAP_SIZE_H, 0);
+    pSDL->pWindow = SDL_CreateWindow("Bomberman", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
+            WINDOW_WIDTH, WINDOW_HEIGHT, 0);
+
+    SDL_Log("Window_width: %d, height: %d", WINDOW_WIDTH, WINDOW_HEIGHT);
     if (pSDL->pWindow == NULL) {
         fprintf(stderr, "SDL_CreateWindow Error: %s\n", SDL_GetError());
         destroySDL(pSDL);
@@ -47,8 +49,10 @@ sdl_t *initSDL()
         return NULL;
     }
 
+    pSDL->font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     pSDL->son[0] = initAudio(HOVER_SOUND);
     pSDL->son[1] = initAudio(EXPLOSION_SOUND);
+    initBackground(pSDL);
     initPlayerSDL(pSDL);
     initMap(pSDL);
     initBlock(pSDL);
@@ -222,6 +226,14 @@ void destroySDL(sdl_t *pSDL)
             pSDL->texturePlayers[i] = NULL;
         }
     }
+    if (pSDL->textureBackground[0]) {
+        SDL_DestroyTexture(pSDL->textureBackground[0]);
+        pSDL->textureBackground[0] = NULL;
+    }
+    if (pSDL->textureBackground[1]) {
+        SDL_DestroyTexture(pSDL->textureBackground[1]);
+        pSDL->textureBackground[1] = NULL;
+    }
     if (pSDL->pRenderer) {
         SDL_DestroyRenderer(pSDL->pRenderer);
         pSDL->pRenderer = NULL;
@@ -235,6 +247,7 @@ void destroySDL(sdl_t *pSDL)
     SDL_Quit();
     closeAudio(pSDL->son[0]);
     closeAudio(pSDL->son[1]);
+    TTF_CloseFont(pSDL->font);
     free(pSDL->buttonPlay);
     free(pSDL->buttonQuit);
     free(pSDL->buttonHost);
@@ -500,5 +513,27 @@ void initBonus(sdl_t *pSDL)
     SDL_FreeSurface(mNbBomb);
     SDL_FreeSurface(bSpeed);
     SDL_FreeSurface(mSpeed);
+}
+
+void initBackground(sdl_t *pSDL)
+{
+    SDL_Surface *surfaceBackground = IMG_Load("../resources/img/background1.jpg");
+    SDL_Surface *surfaceBackground2 = IMG_Load("../resources/img/background2.jpg");
+
+    if (!surfaceBackground || !surfaceBackground2) {
+        SDL_Log("impossible d'initialiser l'image : %s\n", SDL_GetError());
+        destroySDL(pSDL);
+        return ;
+    } else {
+        pSDL->textureBackground[0] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBackground);
+        pSDL->textureBackground[1] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceBackground2);
+        if (!pSDL->textureBackground[0] || !pSDL->textureBackground[1]) {
+            SDL_Log("impossible d'initialiser la texture : %s\n", SDL_GetError());
+            destroySDL(pSDL);
+            return ;
+        }
+    }
+    SDL_FreeSurface(surfaceBackground);
+    SDL_FreeSurface(surfaceBackground2);
 }
 

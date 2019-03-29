@@ -14,6 +14,8 @@
 
 #define BOMB_PNG_W 30
 #define BOMB_PNG_H 32
+#define WINDOW_WIDTH (START_X_BACKGROUND + MAP_SIZE_W)
+#define WINDOW_HEIGHT (START_Y_BACKGROUND + MAP_SIZE_H)
 
 //Path wav sound
 #define EXPLOSION_SOUND     "../resources/sound/explosion.wav"
@@ -47,6 +49,7 @@ typedef struct button_s {
 struct sdl_s {
     SDL_Window *pWindow;
     SDL_Renderer *pRenderer;
+    SDL_Texture *textureBackground[2];
     SDL_Texture *textureMap;
     SDL_Texture *textureBlock;
     SDL_Texture *texturePlayers[4];
@@ -61,6 +64,9 @@ struct sdl_s {
     SDL_Texture *textureMenuRetour;
     son_t* son[2];
     SDL_Texture *textureBonus[6];
+    TTF_Font *font;
+    int menu;
+    int network;
 };
 typedef struct sdl_s sdl_t;
 
@@ -81,6 +87,7 @@ void initBomb(sdl_t *pSDL);
 void initExplosion(sdl_t *pSDL);
 void initMenu(sdl_t *pSDL);
 void initBonus(sdl_t *pSDL);
+void initBackground(sdl_t *pSDL);
 button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *textureOff);
 void playSound(son_t* son);
 son_t* initAudio(char* path);

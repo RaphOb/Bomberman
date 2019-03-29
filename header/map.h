@@ -13,7 +13,7 @@
 #define BASE_MAP_W          240
 #define BASE_MAP_H          160
 #define START_X_BACKGROUND  0
-#define START_Y_BACKGROUND  0
+#define START_Y_BACKGROUND  100
 #define MAP_SIZE_W          (BASE_MAP_W * SIZE_M)
 #define MAP_SIZE_H          (BASE_MAP_H * SIZE_M)
 #define MAP_SIZE            MAP_X * MAP_Y

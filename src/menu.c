@@ -55,6 +55,7 @@ int menuEvent(sdl_t *pSDL, son_t* son)
             switch (event.key.keysym.sym) {
                 case SDLK_p:
                     res = 1;
+                    pSDL->network = 0;
                     break;
                 case SDLK_q:
                 case SDLK_ESCAPE :
@@ -74,6 +75,7 @@ int menuEvent(sdl_t *pSDL, son_t* son)
                 event.button.x < (MAP_SIZE_W / 2) - (IMG_MENU_W / 4) + IMG_MENU_W / 2 && event.button.y > 280 &&
                 event.button.y < 280 + IMG_MENU_H / 2) {
                 res = 1;
+                pSDL->network = 0;
             }
         } else if (event.type == SDL_MOUSEMOTION) {
 
@@ -151,8 +153,11 @@ int menuNetworkEvent(sdl_t *pSDL, son_t* son)
         if ( event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 450 &&  event.button.y < 450 + 150) {
             res = 1;
         }
-        if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350)
+        if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350) {
             SDL_Log("retour menu");
+            pSDL->menu = 0;
+            res = 3;
+        }
         //Todo :retour menu à faire
     }
     return res;

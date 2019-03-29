@@ -2,6 +2,7 @@
 #include <SDL_timer.h>
 #include "../header/reseau.h"
 #include "../header/game.h"
+#include "../header/move.h"
 
 static Client clients[MAX_CLIENT] = { 0 };
 static SOCKET sock;
@@ -184,8 +185,7 @@ int add_client(int s, SOCKADDR_IN csin)
             clients[i].p.speed = 3;
             clients[i].p.nbBombe = 1;
             for (int j = 0; j < MAX_BOMBE; j++) {
-//                SDL_Log("aaa");
-                clients[i].p.bomb[j].range = 1;
+                clients[i].p.bomb[j] = createBomb();
             }
             switch (i) {
                 case 0:
@@ -194,18 +194,18 @@ int add_client(int s, SOCKADDR_IN csin)
                     clients[i].p.direction = 2;
                     break;
                 case 1:
-                    clients[i].p.x_pos = START_X_MAP;
+                    clients[i].p.x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE + PLAYER_WIDTH);
                     clients[i].p.y_pos = START_Y_MAP;
                     clients[i].p.direction = 0;
                     break;
                 case 2:
                     clients[i].p.x_pos = START_X_MAP;
-                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.y_pos = MAP_SIZE_H;
                     clients[i].p.direction = 1;
                     break;
                 case 3:
-                    clients[i].p.x_pos = START_X_MAP;
-                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE + PLAYER_WIDTH);
+                    clients[i].p.y_pos = MAP_SIZE_H;
                     clients[i].p.direction = 3;
                     break;
                 default:
@@ -334,7 +334,7 @@ game_t init_game_server_side(int code)
         // Bombe
         g.players[i].bombPosed = c.p.bombPosed;
         g.players[i].nbBombe = c.p.nbBombe;
-        for (int j = 0; j < g.players[i].nbBombe; j++) {
+        for (int j = 0; j < MAX_BOMBE; j++) {
             g.players[i].bomb[j].pos_x = c.p.bomb[j].pos_x;
             g.players[i].bomb[j].pos_y = c.p.bomb[j].pos_y;
             g.players[i].bomb[j].cell_x = c.p.bomb[j].cell_x;
@@ -359,13 +359,15 @@ int s_reception(Client *c, t_client_request *c_request)
     player_t *p = &c->p;
     // Le code permet d'interpreter les donnees de la structure de façons différentes et d'en faire ce qu'on veut
     //SDL_Log("[Server] Client code : %d\n", c_request->code_reseau);
-    c->p.x_pos = c_request->x_pos;
-    c->p.y_pos = c_request->y_pos;
-    updatePlayerCell(&c->p);
-    c->p.direction = c_request->dir;
-    c->p.still = c_request->still;
-    c->p.alive = c_request->alive;
-    c->p.speed = c_request->speed;
+//    p->x_pos = c_request->x_pos;
+//    p->y_pos = c_request->y_pos;
+//    updatePlayerCell(&c->p);
+
+    //p->direction = c_request->dir;
+//    p->still = c_request->still;
+    p->alive = c_request->alive;
+    p->speed = c_request->speed;
+    p->still = 1;
     //c->p.nbBombe = c_request->nbBombe;
     switch (c_request->code_reseau) {
         case DISCONNECT_CODE:
@@ -378,20 +380,15 @@ int s_reception(Client *c, t_client_request *c_request)
             display_clients_co();
             break;
         case UP_CODE:
-            //SDL_Log("[Server] Client %d : UP\n", c->num_client);
-            break;
         case DOWN_CODE:
-            //SDL_Log("[Server] Client %d : DOWN\n", c->num_client);
-            break;
         case LEFT_CODE:
-            //SDL_Log("[Server] Client %d : LEFT\n", c->num_client);
-            break;
         case RIGHT_CODE:
-            //SDL_Log("[Server] Client %d : RIGHT\n", c->num_client);
+            doMove(c_request->code_reseau, p, g_serv_info.map, c_request->x_pos, c_request->y_pos);
             break;
         case BOMB_CODE:
             index = getIndexBomb(p);
-            if (p->bombPosed <= p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], g_serv_info.map)) {
+            SDL_Log("p->bombPosed: %d, p->nbBombe: %d", p->bombPosed, p->nbBombe);
+            if (p->bombPosed < p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], g_serv_info.map)) {
 //                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
                 toggleBit(g_serv_info.map[p->bomb[index].cell_y], p->bomb[index].cell_x, 3);
                 placeBomb(p, &p->bomb[index]);
@@ -415,7 +412,6 @@ int s_reception(Client *c, t_client_request *c_request)
 int game_thread()
 {
     SDL_Log("[Server] Lancement de game thread\n");
-    const int size_m = 2;
     // Bloquer une variable -> change var avec un client qui balance un code
     while(1) {
         // NULL -> tous les clients ; 0 Pas de code particulier
@@ -425,28 +421,20 @@ int game_thread()
 
         for (int i = 0; i < MAX_CLIENT ; i++) {
             player_t *p = getPlayerForClient(i);
-            for (int j = 0; j < p->nbBombe; j++) {
+
+            for (int j = 0; j < MAX_BOMBE; j++) {
                 if (p->bomb[j].isPosed) {
-                    if (currentTick - p->bomb->tickBombDropped > 1000 && n == 0) {
-                        p->bomb->pos_x -= BOMB_PNG_W / size_m;
-                        p->bomb->pos_y -= BOMB_PNG_H / size_m;
-                        p->bomb->height *= size_m;
-                        p->bomb->width *= size_m;
+                    if (currentTick - p->bomb[j].tickBombDropped > 1000 && n == 0) {
+                        updateBombForAnim(&p->bomb[j]);
                         n = 1;
                     }
-                    if (currentTick - p->bomb->tickBombDropped > 2000) {
-                        p->bomb->tickBombDropped = 0;
-                        p->bomb->isPosed = 0;
-                        p->bomb->explosion = 1;
-                        p->bomb->tickExplosion = SDL_GetTicks();
+                    if (currentTick - p->bomb[j].tickBombDropped > 2000) {
+                        makeExplosion(&p->bomb[j]);
                         n = 0;
                     }
                 }
                 if (p->bomb[j].explosion == 1) {
-                    int frame = 0;
-                    for (int k = 1; k <= 4; k++) {
-                        if (currentTick - p->bomb[j].tickExplosion > k * 200) frame = k;
-                    }
+                    checkExplosion(g_serv_info.map, p->bomb[j]);
                     if (currentTick - p->bomb[j].tickExplosion > 1000) {
                         p->bomb[j].explosion = 0;
                         p->bombPosed--;
@@ -457,7 +445,6 @@ int game_thread()
                 }
             }
         }
-
         s_emission(NULL, 0);
     }
 }

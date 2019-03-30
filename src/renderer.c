@@ -267,6 +267,29 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
     }
 }
 
+/**
+ *
+ * @param player
+ */
+void renderblood(sdl_t* pSDL, player_t *player)
+{
+    if (player->current_frame > 4) {
+        player->current_frame = 0;
+    }
+    SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
+    SDL_Rect dst = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
+
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[4], &src, &dst);
+
+    if(player->still == 0) {
+        player->frame_time++;
+        if(FPS / player->frame_time == 4) {
+            player->current_frame ++;
+            player->frame_time = 0;
+        }
+    }
+}
+
 void renderBonus(sdl_t *pSDL, typeBonus_e type, int x, int y)
 {
     SDL_Rect src = {0, 0, 24, 24};

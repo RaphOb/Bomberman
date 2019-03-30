@@ -41,9 +41,8 @@ void drawGame(game_t *game)
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
-            } else if (game->players[i].alive == 'N' && game->blood < 7) {
+            } else if (game->players[i].alive == 'N' && game->players[i].current_frame < 9) {
                 renderblood(game->pSDL, &game->players[i]);
-                game->blood ++;
             }
         }
     }
@@ -250,6 +249,7 @@ void renderBackground(sdl_t *pSDL)
  */
 void renderPlayer(sdl_t *pSDL, player_t *player)
 {
+    SDL_Log("player : current_frame: %d", player->current_frame);
     if (player->current_frame > 2) {
         player->current_frame = 0;
     }
@@ -261,7 +261,6 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
 //    SDL_Log("player number: %d", player->number);
 //    SDL_Log("player texture: %d", pSDL->texturePlayers[player->number] != NULL);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[player->number], &src, &r);
-
     if (player->still == 0) {
         player->frame_time++;
         if (FPS / player->frame_time == 4) {
@@ -277,9 +276,9 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
  */
 void renderblood(sdl_t* pSDL, player_t *player)
 {
-    if (player->current_frame > 9) {
-        player->current_frame = 0;
-    }
+    SDL_Log("current_frame: %d", player->current_frame);
+    SDL_Log("frame_time: %d", player->frame_time);
+
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
     SDL_Rect dst = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
 
@@ -287,8 +286,8 @@ void renderblood(sdl_t* pSDL, player_t *player)
 
 
         player->frame_time++;
-        if(FPS / player->frame_time == 9) {
-            player->current_frame ++;
+        if(FPS / player->frame_time == 6) {
+            player->current_frame++;
             player->frame_time = 0;
         }
 

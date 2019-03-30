@@ -23,8 +23,8 @@ void drawGame(game_t *game)
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number >= 0) {
-            int currentTick = SDL_GetTicks();
             for (int j = 0; j < MAX_BOMBE; j++) {
+                int currentTick = SDL_GetTicks();
                 if (game->players[i].bomb[j].isPosed) {
                     renderBomb(game->pSDL, &game->players[i].bomb[j]);
                 }
@@ -54,7 +54,7 @@ void drawMenu(sdl_t *pSDL)
 {
     SDL_RenderClear(pSDL->pRenderer);
     SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
-    renderBackgroundMenu(pSDL);
+    renderBackgroundMenu(pSDL, 0);
     renderMenu(pSDL);
     SDL_RenderPresent(pSDL->pRenderer);
 
@@ -68,11 +68,11 @@ void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game)
     SDL_Color color = {0, 0, 0, 255};
     SDL_Rect dst_banner = {0, 0, START_X_BACKGROUND + MAP_SIZE_W, START_Y_BACKGROUND};
     SDL_Rect dst_bonus = {START_X_BACKGROUND + (MAP_SIZE_W / 3), y, 50, 50};
-    SDL_Rect dst_text_bonus = {START_X_BACKGROUND + (MAP_SIZE_W / 3) + 60, y, 50, 50};
+    SDL_Rect dst_text_bonus = {START_X_BACKGROUND + (MAP_SIZE_W / 3) + 60, y, 0, 0};
     SDL_Rect dst_bonus2 = {START_X_BACKGROUND + (MAP_SIZE_W / 4), y, 50, 50};
-    SDL_Rect dst_text_bonus2 = {START_X_BACKGROUND + (MAP_SIZE_W / 4) + 60, y, 50, 50};
+    SDL_Rect dst_text_bonus2 = {START_X_BACKGROUND + (MAP_SIZE_W / 4) + 60, y, 0, 0};
     SDL_Rect dst_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6), y, 50, 50};
-    SDL_Rect dst_text_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6) + 60, y, 50, 50};
+    SDL_Rect dst_text_bonus3 = {START_X_BACKGROUND + (MAP_SIZE_W / 6) + 60, y, 0, 0};
     sprintf(str, "%d", player->bomb[0].range);
     SDL_Texture *text_bonus = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     sprintf(str, "%d", player->nbBombe);
@@ -143,7 +143,7 @@ void drawMenuNetwork(sdl_t *pSDL)
 {
     SDL_RenderClear(pSDL->pRenderer);
     SDL_SetRenderDrawColor(pSDL->pRenderer, 0, 0, 0, 255);
-    renderBackgroundMenu(pSDL);
+    renderBackgroundMenu(pSDL, 0);
     renderMenuNetwork(pSDL);
     SDL_RenderPresent(pSDL->pRenderer);
 }
@@ -267,6 +267,29 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
     }
 }
 
+/**
+ *
+ * @param player
+ */
+void renderblood(sdl_t* pSDL, player_t *player)
+{
+    if (player->current_frame > 4) {
+        player->current_frame = 0;
+    }
+    SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
+    SDL_Rect dst = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
+
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[4], &src, &dst);
+
+    if(player->still == 0) {
+        player->frame_time++;
+        if(FPS / player->frame_time == 4) {
+            player->current_frame ++;
+            player->frame_time = 0;
+        }
+    }
+}
+
 void renderBonus(sdl_t *pSDL, typeBonus_e type, int x, int y)
 {
     SDL_Rect src = {0, 0, 24, 24};
@@ -316,8 +339,8 @@ void renderMap(map_t map, sdl_t *pSdl)
     }
 }
 
-void renderBackgroundMenu(sdl_t *pSDL)
+void renderBackgroundMenu(sdl_t *pSDL, int i)
 {
     SDL_Rect dst = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBackground, NULL, &dst);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBackground[i], NULL, &dst);
 }

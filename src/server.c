@@ -194,18 +194,18 @@ int add_client(int s, SOCKADDR_IN csin)
                     clients[i].p.direction = 2;
                     break;
                 case 1:
-                    clients[i].p.x_pos = START_X_MAP;
+                    clients[i].p.x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE + PLAYER_WIDTH);
                     clients[i].p.y_pos = START_Y_MAP;
                     clients[i].p.direction = 0;
                     break;
                 case 2:
                     clients[i].p.x_pos = START_X_MAP;
-                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.y_pos = MAP_SIZE_H;
                     clients[i].p.direction = 1;
                     break;
                 case 3:
-                    clients[i].p.x_pos = START_X_MAP;
-                    clients[i].p.y_pos = START_Y_MAP;
+                    clients[i].p.x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE + PLAYER_WIDTH);
+                    clients[i].p.y_pos = MAP_SIZE_H;
                     clients[i].p.direction = 3;
                     break;
                 default:
@@ -363,7 +363,7 @@ int s_reception(Client *c, t_client_request *c_request)
 //    p->y_pos = c_request->y_pos;
 //    updatePlayerCell(&c->p);
 
-    p->direction = c_request->dir;
+    //p->direction = c_request->dir;
 //    p->still = c_request->still;
     p->alive = c_request->alive;
     p->speed = c_request->speed;
@@ -389,7 +389,6 @@ int s_reception(Client *c, t_client_request *c_request)
             index = getIndexBomb(p);
             SDL_Log("p->bombPosed: %d, p->nbBombe: %d", p->bombPosed, p->nbBombe);
             if (p->bombPosed < p->nbBombe && canPlayerPlaceBomb(p, &p->bomb[index], g_serv_info.map)) {
-                SDL_Log("allo");
 //                        SDL_Log("bomb pos_x: %d, pos_y: %d", p->bomb[p->bombPosed].cell_x, p->bomb[p->bombPosed].cell_y);
                 toggleBit(g_serv_info.map[p->bomb[index].cell_y], p->bomb[index].cell_x, 3);
                 placeBomb(p, &p->bomb[index]);

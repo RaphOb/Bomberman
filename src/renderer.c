@@ -277,7 +277,7 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
  */
 void renderblood(sdl_t* pSDL, player_t *player)
 {
-    if (player->current_frame > 6) {
+    if (player->current_frame > 9) {
         player->current_frame = 0;
     }
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
@@ -287,7 +287,7 @@ void renderblood(sdl_t* pSDL, player_t *player)
 
 
         player->frame_time++;
-        if(FPS / player->frame_time == 6) {
+        if(FPS / player->frame_time == 9) {
             player->current_frame ++;
             player->frame_time = 0;
         }

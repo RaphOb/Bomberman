@@ -249,7 +249,6 @@ void renderBackground(sdl_t *pSDL)
  */
 void renderPlayer(sdl_t *pSDL, player_t *player)
 {
-    SDL_Log("player : current_frame: %d", player->current_frame);
     if (player->current_frame > 2) {
         player->current_frame = 0;
     }

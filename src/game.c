@@ -21,6 +21,7 @@
 game_t *initGame(sdl_t *pSDL)
 {
     game_t *game = malloc(sizeof(game_t));
+    game->blood = 0;
     if (!game) {
         return (NULL);
     }

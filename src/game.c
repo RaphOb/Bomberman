@@ -39,6 +39,7 @@ game_t *initGame(sdl_t *pSDL)
 
 player_t *getMyPlayer(game_t *g)
 {
+    g->players[g->nb_client_serv].name = strdup(g->name);
     return &g->players[g->nb_client_serv];
 }
 

@@ -26,6 +26,7 @@ typedef struct bombs_s {
     int range;
     int isPosed;
     int explosion;
+    int frame;
     int tickBombDropped;
     int tickExplosion;
 } bomb_t;

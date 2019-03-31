@@ -18,26 +18,17 @@ void drawGame(game_t *game)
 {
 
     SDL_RenderClear(game->pSDL->pRenderer);
-//    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBanner(game->pSDL, game->players, game);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number >= 0) {
             for (int j = 0; j < MAX_BOMBE; j++) {
-                int currentTick = SDL_GetTicks();
-//                SDL_Log("currentTick: %d", currentTick);
                 if (game->players[i].bomb[j].isPosed) {
                     renderBomb(game->pSDL, &game->players[i].bomb[j]);
                 }
                 if (game->players[i].bomb[j].explosion == 1) {
-                    int frame = 0;
-                    for (int k = 1; k <= 4; k++) {
-                        if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
-                    }
-                    if (currentTick - game->players[i].bomb[j].tickExplosion < 1000) {
-                        renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb[j]);
-                    }
+                    renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
                 }
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
@@ -227,7 +218,6 @@ void renderBomb(sdl_t *pSDL, bomb_t *bomb)
     SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
 //        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
-//    SDL_Log("allo : %d", currentTick - bomb->tickBombDropped);
     if (currentTick - bomb->tickBombDropped > 1980) {
         playSound(pSDL->son[1]);
     }

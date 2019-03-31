@@ -347,6 +347,7 @@ game_t init_game_server_side(int code)
             g.players[i].bomb[j].tickBombDropped = c.p.bomb[j].tickBombDropped;
             g.players[i].bomb[j].tickExplosion = c.p.bomb[j].tickExplosion;
             g.players[i].bomb[j].explosion = c.p.bomb[j].explosion;
+            g.players[i].bomb[j].frame = c.p.bomb[j].frame;
         }
     }
 
@@ -438,6 +439,9 @@ int game_thread()
                     }
                 }
                 if (p->bomb[j].explosion == 1) {
+                    for (int k = 1; k <= 4; k++) {
+                        if (currentTick - p->bomb[j].tickExplosion > k * 200) p->bomb[j].frame = k;
+                    }
                     checkExplosion(g_serv_info.map, p->bomb[j]);
                     if (currentTick - p->bomb[j].tickExplosion > 1000) {
                         p->bomb[j].explosion = 0;

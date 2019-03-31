@@ -223,6 +223,7 @@ void maj_player(game_t *g, int indice, player_t *p)
         g->players[indice].bomb[j].tickBombDropped = p->bomb[j].tickBombDropped;
         g->players[indice].bomb[j].tickExplosion = p->bomb[j].tickExplosion;
         g->players[indice].bomb[j].explosion = p->bomb[j].explosion;
+        g->players[indice].bomb[j].frame = p->bomb[j].frame;
     }
     //SDL_Log("g->players[indice].bomb[0].tickExplosion = %d\n", g->players[indice].bomb[0].tickExplosion);
     pthread_mutex_unlock(&g->players[indice].mutex_player);

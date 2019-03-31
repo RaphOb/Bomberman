@@ -7,7 +7,8 @@ Urgent
 
 BUG
     - Explosion parfois en double à cause du tickBombExplosion pas mise à jour, un truc comme ça
-    - Pb affichage explosion
+    - Pb affichage explosion (corrigé)
+    - Pb joueur 2 meurt direct si il bouge pas et qu'on pose une bombe avec le j1 (position sans doute pas mise a jour)
 
 Prochainement
     - Condenser sprite menu

@@ -16,6 +16,7 @@
  */
 void drawGame(game_t *game)
 {
+
     SDL_RenderClear(game->pSDL->pRenderer);
 //    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBanner(game->pSDL, game->players, game);
@@ -40,6 +41,9 @@ void drawGame(game_t *game)
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
+            } else if (game->players[i].alive == 'N' && game->blood < 7) {
+                renderblood(game->pSDL, &game->players[i]);
+                game->blood ++;
             }
         }
     }
@@ -99,11 +103,9 @@ void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER])
 {
     SDL_Color color = {45, 94, 205, 255};
     SDL_Rect dst = {0, 0, 0, 0};
-    char str[2] = {'\0'};
     for (int i = 0; i < MAX_PLAYER; i++) {
         if (players[i].number != -1) {
             if (players[i].alive == 'N') {
-                // TODO Display Red Pseudo
                 color.r = 205;
                 color.g = 56;
                 color.b = 26;
@@ -114,8 +116,7 @@ void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER])
             dst.x = MAP_SIZE_W - (MAP_SIZE_W / divide);
             dst.y = y;
 
-            sprintf(str, "%d", players[i].number);
-            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
+            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, pSDL->font, color, players[i].name);
             renderStringText(pSDL->pRenderer, textureTextPlayer, dst);
         }
     }
@@ -265,6 +266,29 @@ void renderPlayer(sdl_t *pSDL, player_t *player)
             player->frame_time = 0;
         }
     }
+}
+
+/**
+ *
+ * @param player
+ */
+void renderblood(sdl_t* pSDL, player_t *player)
+{
+    if (player->current_frame > 9) {
+        player->current_frame = 0;
+    }
+    SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
+    SDL_Rect dst = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
+
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[4], &src, &dst);
+
+
+        player->frame_time++;
+        if(FPS / player->frame_time == 9) {
+            player->current_frame ++;
+            player->frame_time = 0;
+        }
+
 }
 
 void renderBonus(sdl_t *pSDL, typeBonus_e type, int x, int y)

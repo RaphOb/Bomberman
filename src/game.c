@@ -21,6 +21,7 @@
 game_t *initGame(sdl_t *pSDL)
 {
     game_t *game = malloc(sizeof(game_t));
+    game->blood = 0;
     if (!game) {
         return (NULL);
     }
@@ -38,6 +39,7 @@ game_t *initGame(sdl_t *pSDL)
 
 player_t *getMyPlayer(game_t *g)
 {
+    g->players[g->nb_client_serv].name = strdup(g->name);
     return &g->players[g->nb_client_serv];
 }
 

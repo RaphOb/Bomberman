@@ -358,7 +358,8 @@ void initPlayerSDL(sdl_t *pSDL)
     SDL_Surface *surfacePlayer2 = IMG_Load("../resources/sprite/perso2.png");
     SDL_Surface *surfacePlayer3 = IMG_Load("../resources/sprite/perso3.png");
     SDL_Surface *surfacePlayer4 = IMG_Load("../resources/sprite/perso4.png");
-    if (!surfacePlayer || !surfacePlayer2) {
+    SDL_Surface *surfaceblood = IMG_Load("../resources/sprite/Blood.png");
+    if (!surfacePlayer || !surfacePlayer2 || !surfaceblood) {
         fprintf(stderr, "impossible d'initialiser l'image : %s\n", SDL_GetError());
         destroySDL(pSDL);
         return;
@@ -367,7 +368,9 @@ void initPlayerSDL(sdl_t *pSDL)
         pSDL->texturePlayers[1] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer2);
         pSDL->texturePlayers[2] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer3);
         pSDL->texturePlayers[3] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer4);
-        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1] || !pSDL->texturePlayers[2] || !pSDL->texturePlayers[3]) {
+        pSDL->texturePlayers[4] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceblood);
+        if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1] || !pSDL->texturePlayers[2] || !pSDL->texturePlayers[3]
+        || !pSDL->texturePlayers[4]) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
             destroySDL(pSDL);
             return;

@@ -52,8 +52,7 @@ struct sdl_s {
     SDL_Texture *textureBackground[2];
     SDL_Texture *textureMap;
     SDL_Texture *textureBlock;
-    SDL_Texture *texturePlayers[4];
-    SDL_Rect dst_bomb[5];
+    SDL_Texture *texturePlayers[5];
     SDL_Texture *textureBomb;
     SDL_Texture *textureExplosion[7];
     button_t *buttonPlay;

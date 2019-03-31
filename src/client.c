@@ -165,7 +165,7 @@ void listen_server(void* g_param)
         FD_ZERO(&serv.readfs);
         FD_SET(serv.sock, &serv.readfs);
 
-        game_t g = {0};
+        game_t g;
 
         select((int)serv.sock+1, &serv.readfs, NULL, NULL, NULL);
 
@@ -179,7 +179,6 @@ void listen_server(void* g_param)
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
                         game->start = g.start;
-                        SDL_Log("listen, start: %d", game->start);
                         maj_player(game, g.players[i].number, &g.players[i]);
                         for (int x = 0; x < 9; x++) {
                             for (int y = 0; y < 13; y++) {

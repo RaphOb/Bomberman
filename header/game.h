@@ -28,6 +28,7 @@ typedef struct game_s {
 
 game_t *initGame(sdl_t *sdl);
 player_t *getMyPlayer(game_t *g);
+int getNbPlayer(game_t *g);
 int gameEvent(game_t *game);
 
 #endif //BOMBERMAN_GAME_H

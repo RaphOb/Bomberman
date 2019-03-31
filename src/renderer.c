@@ -26,6 +26,7 @@ void drawGame(game_t *game)
         if (game->players[i].number >= 0) {
             for (int j = 0; j < MAX_BOMBE; j++) {
                 int currentTick = SDL_GetTicks();
+//                SDL_Log("currentTick: %d", currentTick);
                 if (game->players[i].bomb[j].isPosed) {
                     renderBomb(game->pSDL, &game->players[i].bomb[j]);
                 }

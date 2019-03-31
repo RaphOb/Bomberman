@@ -42,6 +42,17 @@ player_t *getMyPlayer(game_t *g)
     return &g->players[g->nb_client_serv];
 }
 
+int getNbPlayer(game_t *g)
+{
+    int nb = 0;
+
+    for (int i = 0; i < MAX_PLAYER; i++) {
+        if (g->players[i].number != -1)
+            nb++;
+    }
+    return nb;
+}
+
 /**
  * function : key press event
  * @param game

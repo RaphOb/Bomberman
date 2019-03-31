@@ -78,10 +78,23 @@ void getNbClientServer(game_t *g, player_t *p)
         if (buffer != NULL) {
             g->nb_client_serv = atoi(buffer);
             player_t *myPlayer = getMyPlayer(g);
-            myPlayer->co_is_ok = 1;
             myPlayer->alive = p->alive;
+            myPlayer->code_reseau = p->code_reseau;
+            myPlayer->co_is_ok = 1;
+            myPlayer->number = p->number;
+            myPlayer->checksum = p->checksum;
+            myPlayer->x_pos = p->x_pos;
+            myPlayer->y_pos = p->y_pos;
             myPlayer->speed = p->speed;
+            myPlayer->bombPosed = p->bombPosed;
+            myPlayer->nbBombe = p->nbBombe;
+            myPlayer->frags = p->frags;
+            myPlayer->current_frame = p->current_frame;
+            myPlayer->frame_time = p->frame_time;
+            myPlayer->direction = p->direction;
             myPlayer->still = p->still;
+            myPlayer->mutex_player = p->mutex_player;
+            myPlayer->name = strdup(g->name);
             c_emission(myPlayer, 201);
         }
     }
@@ -206,7 +219,6 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].number = p->number;
     g->players[indice].alive = p->alive;
     g->players[indice].co_is_ok = p->co_is_ok;
-
     // Bombe
     g->players[indice].bombPosed = p->bombPosed;
     g->players[indice].nbBombe = p->nbBombe;

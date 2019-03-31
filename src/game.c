@@ -30,6 +30,7 @@ game_t *initGame(sdl_t *pSDL)
     }
     game->pSDL = pSDL;
     for (int i = 0; i < MAX_PLAYER ; i++) {
+        game->players[i] = initPlayer();
         game->players[i].number = -1;
     }
     return game;
@@ -38,7 +39,7 @@ game_t *initGame(sdl_t *pSDL)
 
 player_t *getMyPlayer(game_t *g)
 {
-    g->players[g->nb_client_serv].name = strdup(g->name);
+    //g->players[g->nb_client_serv].name = strdup(g->name);
     return &g->players[g->nb_client_serv];
 }
 

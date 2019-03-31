@@ -41,9 +41,9 @@ void drawGame(game_t *game)
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
-            } else if (game->players[i].alive == 'N' && game->blood < 7) {
+            } else if (game->players[i].alive == 'N' && game->players[i].current_frame < 9) {
                 renderblood(game->pSDL, &game->players[i]);
-                game->blood ++;
+                game->players[i].current_frame ++;
             }
         }
     }

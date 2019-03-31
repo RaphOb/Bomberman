@@ -103,9 +103,12 @@ void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER])
 {
     SDL_Color color = {45, 94, 205, 255};
     SDL_Rect dst = {0, 0, 0, 0};
+    char *str;
     for (int i = 0; i < MAX_PLAYER; i++) {
         if (players[i].number != -1) {
+            str = malloc(sizeof(char) * strlen(players[i].name));
             if (players[i].alive == 'N') {
+                // TODO Display Red Pseudo
                 color.r = 205;
                 color.g = 56;
                 color.b = 26;
@@ -116,7 +119,8 @@ void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER])
             dst.x = MAP_SIZE_W - (MAP_SIZE_W / divide);
             dst.y = y;
 
-            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, pSDL->font, color, players[i].name);
+            sprintf(str, "%s", players[i].name);
+            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
             renderStringText(pSDL->pRenderer, textureTextPlayer, dst);
         }
     }

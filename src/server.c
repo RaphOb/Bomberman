@@ -330,7 +330,6 @@ game_t init_game_server_side(int code)
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
-        g.players[i].name = strdup(c.p.name);
 
         // Bombe
         g.players[i].bombPosed = c.p.bombPosed;
@@ -366,7 +365,6 @@ int s_reception(Client *c, t_client_request *c_request)
 
     //p->direction = c_request->dir;
 //    p->still = c_request->still;
-    p->name = strdup(c_request->name);
     p->alive = c_request->alive;
     p->speed = c_request->speed;
     p->still = 1;

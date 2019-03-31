@@ -79,10 +79,7 @@ void getNbClientServer(game_t *g, player_t *p)
             g->nb_client_serv = atoi(buffer);
             player_t *myPlayer = getMyPlayer(g);
             myPlayer->co_is_ok = 1;
-            myPlayer->alive = p->alive;
-            myPlayer->speed = p->speed;
-            myPlayer->still = p->still;
-            c_emission(myPlayer, 201);
+            c_emission(p, 201);
         }
     }
 }
@@ -116,7 +113,6 @@ void c_emission(player_t *player, int code)
     //c_request.dir = player->direction;
 //    c_request.still = player->still;
     c_request.speed = player->speed;
-    c_request.name = strdup(player->name);
     //c_request.nbBombe = player->nbBombe;
     c_request.alive = player->alive;
     c_request.co_is_ok = player->co_is_ok;
@@ -199,6 +195,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     pthread_mutex_lock(&g->players[indice].mutex_player);
     g->players[indice].x_pos = p->x_pos;
     g->players[indice].y_pos = p->y_pos;
+    //SDL_Log("direction: %d", p->direction);
     g->players[indice].still = p->still;
     g->players[indice].code_reseau = p->code_reseau;
     g->players[indice].direction = p->direction;

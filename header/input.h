@@ -18,8 +18,8 @@ typedef struct input_s {
     SDL_Texture *inputTexture;
 } input_t;
 
-int loopInputConnect(game_t *game);
-int loopInputHost(game_t *game, char **port);
+int loopInputConnect(sdl_t *pSDL);
+int loopInputHost(sdl_t *pSDL, char **port);
 void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rect dst);
 SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color, char *str);
 void renderInput(SDL_Rect rect, sdl_t *pSDL, input_t *input);

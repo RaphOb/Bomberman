@@ -140,9 +140,6 @@ void c_emission(player_t *player, int code)
         case CO_IS_OK:
             c_request.code_reseau = CO_IS_OK;
             break;
-        case START_GAME :
-            c_request.code_reseau = START_GAME;
-            break;
         case 200:
             c_request.code_reseau = 200;
             break;
@@ -165,7 +162,7 @@ void listen_server(void* g_param)
         FD_ZERO(&serv.readfs);
         FD_SET(serv.sock, &serv.readfs);
 
-        game_t g;
+        game_t g = {0};
 
         select((int)serv.sock+1, &serv.readfs, NULL, NULL, NULL);
 
@@ -178,7 +175,6 @@ void listen_server(void* g_param)
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
-                        game->start = g.start;
                         maj_player(game, g.players[i].number, &g.players[i]);
                         for (int x = 0; x < 9; x++) {
                             for (int y = 0; y < 13; y++) {
@@ -207,7 +203,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].number = p->number;
     g->players[indice].alive = p->alive;
     g->players[indice].co_is_ok = p->co_is_ok;
-    g->players[indice].host = p->host;
+
     // Bombe
     g->players[indice].bombPosed = p->bombPosed;
     g->players[indice].nbBombe = p->nbBombe;
@@ -223,7 +219,6 @@ void maj_player(game_t *g, int indice, player_t *p)
         g->players[indice].bomb[j].tickBombDropped = p->bomb[j].tickBombDropped;
         g->players[indice].bomb[j].tickExplosion = p->bomb[j].tickExplosion;
         g->players[indice].bomb[j].explosion = p->bomb[j].explosion;
-        g->players[indice].bomb[j].frame = p->bomb[j].frame;
     }
     //SDL_Log("g->players[indice].bomb[0].tickExplosion = %d\n", g->players[indice].bomb[0].tickExplosion);
     pthread_mutex_unlock(&g->players[indice].mutex_player);

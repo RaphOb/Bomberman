@@ -23,12 +23,10 @@ typedef struct game_s {
     sdl_t *pSDL;
     pthread_t listen_serv_thread;
     int blood;
-    int start;
 } game_t;
 
 game_t *initGame(sdl_t *sdl);
 player_t *getMyPlayer(game_t *g);
-int getNbPlayer(game_t *g);
 int gameEvent(game_t *game);
 
 #endif //BOMBERMAN_GAME_H

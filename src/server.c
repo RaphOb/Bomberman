@@ -306,7 +306,7 @@ game_t init_game_server_side(int code)
     game_t g;
     //useless for server side
     g.nb_client_serv = 0;
-    g.start = g_serv_info.start;
+
     // MAP
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 13; y++) {
@@ -330,7 +330,6 @@ game_t init_game_server_side(int code)
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
-        g.players[i].host = c.is_host;
 
         // Bombe
         g.players[i].bombPosed = c.p.bombPosed;
@@ -347,7 +346,6 @@ game_t init_game_server_side(int code)
             g.players[i].bomb[j].tickBombDropped = c.p.bomb[j].tickBombDropped;
             g.players[i].bomb[j].tickExplosion = c.p.bomb[j].tickExplosion;
             g.players[i].bomb[j].explosion = c.p.bomb[j].explosion;
-            g.players[i].bomb[j].frame = c.p.bomb[j].frame;
         }
     }
 
@@ -399,9 +397,6 @@ int s_reception(Client *c, t_client_request *c_request)
         case CO_IS_OK:
             c->p.co_is_ok = 1;
             break;
-        case START_GAME :
-            g_serv_info.start = 1;
-            break;
         case 200:
             c->is_host = 1;
             ret_thread = pthread_create(&g_serv_info.g_thread, NULL, (void *) game_thread, NULL);
@@ -439,9 +434,6 @@ int game_thread()
                     }
                 }
                 if (p->bomb[j].explosion == 1) {
-                    for (int k = 1; k <= 4; k++) {
-                        if (currentTick - p->bomb[j].tickExplosion > k * 200) p->bomb[j].frame = k;
-                    }
                     checkExplosion(g_serv_info.map, p->bomb[j]);
                     if (currentTick - p->bomb[j].tickExplosion > 1000) {
                         p->bomb[j].explosion = 0;

@@ -15,7 +15,6 @@
 #define RIGHT_CODE 33
 #define BOMB_CODE 34
 #define CO_IS_OK 201
-#define START_GAME 404
 #define NB_CLIENT_SERV_CODE 111
 #define CODE_SIZE (2+1)
 

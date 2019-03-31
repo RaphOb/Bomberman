@@ -47,11 +47,12 @@ int main(int argc, char *argv[]) {
     pSDL->network = 3;
     int play = 0;
     int host = 0;
+    int lobby = 0;
     pthread_t hebergement_thread;
     // First menu
     while (pSDL->menu == 0) {
 
-        while ( pSDL->menu != -1 && pSDL->network == 3) {
+        while (pSDL->menu != -1 && pSDL->network == 3) {
             playsound(TROPSTYLE2_SOUND);
             drawMenu(game->pSDL);
             pSDL->menu = menuEvent(game->pSDL, pSDL->son[0]);
@@ -66,7 +67,7 @@ int main(int argc, char *argv[]) {
             pSDL->network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 
             //         Input
-            if ( pSDL->network == 1) {
+            if (pSDL->network == 1) {
                 play = loopInputConnect(game->pSDL);
                 getNbClientServer(game, &player);
             } else if ( pSDL->network == 2) {
@@ -102,7 +103,18 @@ int main(int argc, char *argv[]) {
     if (play == 1) {
         int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
     }
-    while (pSDL->menu != -1 && quit != -1 && play == 1 &&  pSDL->network != -1) {
+
+//    while (pSDL->menu != -1 && pSDL->network != -1 && lobby == 0 && play == 1) {
+//        drawMenuLobby(game->pSDL, game->players);
+//        lobby = menuLobbyEvent(game->pSDL, pSDL->son[0]);
+//
+//        if (lobby == 1) {
+//            //Envoyer aux autres joueurs que la partie commence
+//        }
+//    }
+
+
+    while (pSDL->menu != -1 && quit != -1 && play == 1 &&  pSDL->network != -1 && lobby == 0) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();

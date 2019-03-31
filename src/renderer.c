@@ -43,6 +43,7 @@ void drawGame(game_t *game)
                 renderPlayer(game->pSDL, &game->players[i]);
             } else if (game->players[i].alive == 'N' && game->players[i].current_frame < 9) {
                 renderblood(game->pSDL, &game->players[i]);
+                game->players[i].current_frame ++;
             }
         }
     }

@@ -306,7 +306,7 @@ game_t init_game_server_side(int code)
     game_t g;
     //useless for server side
     g.nb_client_serv = 0;
-
+    g.start = g_serv_info.start;
     // MAP
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 13; y++) {
@@ -330,6 +330,7 @@ game_t init_game_server_side(int code)
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
+        g.players[i].host = c.is_host;
 
         // Bombe
         g.players[i].bombPosed = c.p.bombPosed;
@@ -396,6 +397,9 @@ int s_reception(Client *c, t_client_request *c_request)
             break;
         case CO_IS_OK:
             c->p.co_is_ok = 1;
+            break;
+        case START_GAME :
+            g_serv_info.start = 1;
             break;
         case 200:
             c->is_host = 1;

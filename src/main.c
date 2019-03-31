@@ -104,17 +104,16 @@ int main(int argc, char *argv[]) {
         int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
     }
 
-//    while (pSDL->menu != -1 && pSDL->network != -1 && lobby == 0 && play == 1) {
-//        drawMenuLobby(game->pSDL, game->players);
-//        lobby = menuLobbyEvent(game->pSDL, pSDL->son[0]);
-//
-//        if (lobby == 1) {
-//            //Envoyer aux autres joueurs que la partie commence
-//        }
-//    }
+    while (pSDL->menu != -1 && pSDL->network != -1 && play == 1 && game->start == 0) {
+        drawMenuLobby(game->pSDL, game->players, getMyPlayer(game)->host);
+        lobby = menuLobbyEvent(game->pSDL, pSDL->son[0], getMyPlayer(game)->host);
+        if (lobby == 1) {
+            c_emission(&player, START_GAME);
+            //Envoyer aux autres joueurs que la partie commence
+        }
+    }
 
-
-    while (pSDL->menu != -1 && quit != -1 && play == 1 &&  pSDL->network != -1 && lobby == 0) {
+    while (pSDL->menu != -1 && quit != -1 && play == 1 &&  pSDL->network != -1 && game->start == 1) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();

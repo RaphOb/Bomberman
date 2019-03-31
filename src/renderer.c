@@ -168,18 +168,29 @@ void renderMenuNetwork(sdl_t *pSDL)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
 }
 
-void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER])
+void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host)
+{
+    SDL_RenderClear(pSDL->pRenderer);
+    renderBackgroundMenu(pSDL, 1);
+    renderMenuLobby(pSDL, players, host);
+    SDL_RenderPresent(pSDL->pRenderer);
+}
+
+
+void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host)
 {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
     SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
 
-//    renderPlayerConnected(pSDL, players);
+    renderPlayerConnected(pSDL, players);
+
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonLaunch->textureButton[pSDL->buttonLaunch->hover], NULL, &pSDL->buttonLaunch->dstRect);
+    if (host == 1) {
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonLaunch->textureButton[pSDL->buttonLaunch->hover], NULL, &pSDL->buttonLaunch->dstRect);
+    }
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
 
 }
-
 
 void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER])
 {
@@ -192,7 +203,7 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER])
     for (int i = 0; i < MAX_PLAYER; i++) {
         renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
         if (players[i].number != -1) {
-            SDL_Log("name: %s", players[i].name);
+//            SDL_Log("name: %s", players[i].name);
             // Connected
             sprintf(str , "%d", players[i].number);
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, str);
@@ -203,14 +214,6 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER])
 
     TTF_CloseFont(font);
 
-}
-
-void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER])
-{
-    SDL_RenderClear(pSDL->pRenderer);
-    renderBackgroundMenu(pSDL, 1);
-    renderMenuLobby(pSDL, players);
-    SDL_RenderPresent(pSDL->pRenderer);
 }
 /**
  * function : render de la bomb/ avec effet d'agrandissement/ timing de la bomb

@@ -23,6 +23,7 @@ typedef struct game_s {
     sdl_t *pSDL;
     pthread_t listen_serv_thread;
     int blood;
+    int start;
 } game_t;
 
 game_t *initGame(sdl_t *sdl);

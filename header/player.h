@@ -46,6 +46,7 @@ typedef struct player_s {
     int frags;
     int current_frame;
     int frame_time;
+    int host;
     int direction;
     int still;
     pthread_mutex_t mutex_player;

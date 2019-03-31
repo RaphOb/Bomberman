@@ -14,7 +14,7 @@
 
 int menuEvent(sdl_t *pSDL, son_t* son);
 int menuNetworkEvent(sdl_t *pSDL, son_t* son);
-int menuLobbyEvent(sdl_t *pSDL, son_t* son);
+int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host);
 
 
 #endif //BOMBERMAN_MENU_H

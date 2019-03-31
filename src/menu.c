@@ -162,3 +162,59 @@ int menuNetworkEvent(sdl_t *pSDL, son_t* son)
     }
     return res;
 }
+
+int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
+    int res = 0;
+    SDL_Event event;
+
+    int mouse_x = 0;
+    int mouse_y = 0;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    pSDL->buttonLaunch->hover = 0;
+    pSDL->buttonQuit->hover = 0;
+    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
+    const SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
+
+    if (SDL_HasIntersection(&mouse, &pSDL->buttonLaunch->dstRect)) {
+        pSDL->buttonLaunch->hover = 1;
+        hover_on1 = 1;
+        if (hover_on1 == 1 && hover_off1 == 1) {
+            hover_off1 = 0;
+            playSound(son);
+        }
+    } else if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
+        pSDL->buttonQuit->hover = 1;
+        hover_on1 = 1;
+        if (hover_on1 == 1 && hover_off1 == 1) {
+            hover_off1 = 0;
+            playSound(son);
+        }
+    } else {hover_off1 = 1;}
+
+    if (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            res = -1;
+        } else if (event.type == SDL_KEYDOWN) {
+            switch (event.key.keysym.sym) {
+                case SDLK_ESCAPE :
+                    res = -1;
+                    break;
+                default :
+                    fprintf(stderr, "touche inconnue %d\n", event.key.keysym.sym);
+                    break;
+            }
+        } else if (event.type == SDL_MOUSEBUTTONUP) {
+            const int size = (MAP_SIZE_W / 2) + 300 ;
+            if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 600 &&  event.button.y < 600 + 150) {
+                res = -1;
+            }
+            if (host == 1 && nbClient >= 2) {
+                if (event.button.x > size && event.button.x < size + 200 && event.button.y > 450 &&
+                    event.button.y < 450 + 150) {
+                    res = 1;
+                }
+            }
+        }
+    }
+    return res;
+}

@@ -51,6 +51,7 @@ bomb_t createBomb()
     b.range = 1;
     b.isPosed = 0;
     b.explosion = 0;
+    b.frame = 0;
     b.tickExplosion = 0;
     b.tickBombDropped = 0;
     b.cell_x = -1;

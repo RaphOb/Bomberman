@@ -9,6 +9,9 @@ BUG
     - Explosion parfois en double à cause du tickBombExplosion pas mise à jour, un truc comme ça
     - Pb affichage explosion (corrigé)
     - Pb joueur 2 meurt direct si il bouge pas et qu'on pose une bombe avec le j1 (position sans doute pas mise a jour)
+    - Game over menu s'affiche pour tous les joueurs.
+    - hover du try again ne fonctionne pas
+
 
 Prochainement
     - Condenser sprite menu
@@ -17,6 +20,7 @@ Prochainement
     - Score
     - Refactor menu.c et input.c c'est mosh
     - Chain Explosion
+    - activer le bouton try again pour recommencer la partie.
 Bonus
     - (proportionnalité de la poisition du jouer: e.i si joueur est a 90% sur 0 renvois 0. fluidifier) (fait ?)
     - Faire en sorte que les images, personnages, bombes soient responsive selon SIZE_M

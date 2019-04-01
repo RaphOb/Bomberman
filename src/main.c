@@ -43,6 +43,7 @@ int main(int argc, char *argv[]) {
     //game->players[0] = player;
 
     int quit = 0;
+    int restart = 0;
     pSDL->menu = 0;
     pSDL->network = 3;
     int play = 0;
@@ -56,6 +57,7 @@ int main(int argc, char *argv[]) {
             playsound(TROPSTYLE2_SOUND);
             drawMenu(game->pSDL);
             pSDL->menu = menuEvent(game->pSDL, pSDL->son[0]);
+
         }
         // SDL_CloseAudio();
 //     Menu Network
@@ -113,11 +115,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    while (pSDL->menu != -1 && quit != -1 && play == 1 && pSDL->network != -1 && game->start == 1) {
+    while (pSDL->menu != -1 && quit != -1 && play == 1 && pSDL->network != -1 && game->start == 1 && restart != -1) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();
         quit = gameEvent(game);
+        restart = menuGameOverEvent(pSDL);
+
 
         if (1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));

@@ -19,6 +19,7 @@ void drawGame(game_t *game)
 
     SDL_RenderClear(game->pSDL->pRenderer);
     renderBanner(game->pSDL, game->players, game);
+    renderGameOver(game->pSDL);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
@@ -33,8 +34,11 @@ void drawGame(game_t *game)
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
-            } else if (game->players[i].alive == 'N' && game->players[i].current_frame < 9) {
-                renderblood(game->pSDL, &game->players[i]);
+            } else if (game->players[i].alive == 'N' ) {
+                if (game->players[i].current_frame < 9) {
+                    renderblood(game->pSDL, &game->players[i]);
+                }
+                renderGameOver(game->pSDL);
                 game->players[i].current_frame ++;
             }
         }
@@ -56,6 +60,12 @@ void drawMenu(sdl_t *pSDL)
 
 }
 
+/**
+ * function : draw banner for score and bonus statement
+ * @param pSDL
+ * @param players
+ * @param game
+ */
 void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game)
 {
     player_t *player = getMyPlayer(game);
@@ -90,7 +100,11 @@ void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game)
 
 }
 
-
+/**
+ * function : display speudo
+ * @param pSDL
+ * @param players
+ */
 void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER])
 {
     SDL_Color color = {45, 94, 205, 255};
@@ -129,6 +143,20 @@ void renderMenu(sdl_t *pSDL)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonPlay->textureButton[pSDL->buttonPlay->hover], NULL, &pSDL->buttonPlay->dstRect);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &pSDL->buttonQuit->dstRect);
 
+}
+/**
+ *function : render menu game over when ... game is over :D
+ * @param pSDL
+ */
+void renderGameOver(sdl_t *pSDL)
+{
+    SDL_Rect dst_menuQuitter = {700, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
+    SDL_Rect dst_menugameover = {50, 100, MAP_SIZE_W, MAP_SIZE_W/2};
+
+
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonTryagain->textureButton[pSDL->buttonTryagain->hover], NULL, &pSDL->buttonTryagain->dstRect);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->texturegameover, NULL, &dst_menugameover);
 }
 
 /**

@@ -60,8 +60,10 @@ struct sdl_s {
     button_t *buttonConnect;
     button_t *buttonHost;
     button_t *buttonLaunch;
+    button_t * buttonTryagain;
     SDL_Texture *textureMenuLogo;
     SDL_Texture *textureMenuRetour;
+    SDL_Texture *texturegameover;
     son_t* son[2];
     SDL_Texture *textureBonus[6];
     TTF_Font *font;
@@ -94,6 +96,7 @@ son_t* initAudio(char* path);
 void closeAudio(son_t* son);
 int playsound(char* path);
 void my_audio_callback(void *userdata, Uint8 *stream, int len);
+void renderGameOver(sdl_t *pSDL);
 
 
 #endif //BOMBERMAN_SDLENGINE_H

@@ -160,6 +160,19 @@ void renderGameOver(sdl_t *pSDL)
 }
 
 /**
+ * function : render win logo if player win
+ * @param pSDL
+ */
+void renderWin(sdl_t *pSDL)
+{
+    SDL_Rect dst_youwin = {50, 100, MAP_SIZE_W, MAP_SIZE_W/2};
+    SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
+
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->textureyouWin, NULL, &dst_youwin);
+    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
+}
+
+/**
  * function : Draw the second menu concerning the network
  * @param pSDL
  */

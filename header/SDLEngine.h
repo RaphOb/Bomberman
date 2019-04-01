@@ -64,6 +64,7 @@ struct sdl_s {
     SDL_Texture *textureMenuLogo;
     SDL_Texture *textureMenuRetour;
     SDL_Texture *texturegameover;
+    SDL_Texture *textureyouWin;
     son_t* son[2];
     SDL_Texture *textureBonus[6];
     TTF_Font *font;

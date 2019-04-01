@@ -55,6 +55,7 @@ typedef struct {
     map_t map;
     Client *client[MAX_CLIENT];
     pthread_t g_thread;
+    int start;
 }game_serv_side;
 
 // ----- INITIALISATION -----

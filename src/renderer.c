@@ -18,25 +18,17 @@ void drawGame(game_t *game)
 {
 
     SDL_RenderClear(game->pSDL->pRenderer);
-//    SDL_SetRenderDrawColor(game->pSDL->pRenderer, 0, 0, 0, 255);
     renderBanner(game->pSDL, game->players, game);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
     for (int i = 0; i < MAX_PLAYER ; i++) {
         if (game->players[i].number >= 0) {
             for (int j = 0; j < MAX_BOMBE; j++) {
-                int currentTick = SDL_GetTicks();
                 if (game->players[i].bomb[j].isPosed) {
                     renderBomb(game->pSDL, &game->players[i].bomb[j]);
                 }
                 if (game->players[i].bomb[j].explosion == 1) {
-                    int frame = 0;
-                    for (int k = 1; k <= 4; k++) {
-                        if (currentTick - game->players[i].bomb[j].tickExplosion > k * 200) frame = k;
-                    }
-                    if (currentTick - game->players[i].bomb[j].tickExplosion < 1000) {
-                        renderExplosion(game->pSDL, frame, game->map, game->players[i].bomb[j]);
-                    }
+                    renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
                 }
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
@@ -168,18 +160,29 @@ void renderMenuNetwork(sdl_t *pSDL)
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
 }
 
-void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER])
+void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host)
+{
+    SDL_RenderClear(pSDL->pRenderer);
+    renderBackgroundMenu(pSDL, 1);
+    renderMenuLobby(pSDL, players, host);
+    SDL_RenderPresent(pSDL->pRenderer);
+}
+
+
+void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host)
 {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
     SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
 
-//    renderPlayerConnected(pSDL, players);
+    renderPlayerConnected(pSDL, players);
+
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonLaunch->textureButton[pSDL->buttonLaunch->hover], NULL, &pSDL->buttonLaunch->dstRect);
+    if (host == 1) {
+        SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonLaunch->textureButton[pSDL->buttonLaunch->hover], NULL, &pSDL->buttonLaunch->dstRect);
+    }
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
 
 }
-
 
 void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER])
 {
@@ -192,7 +195,7 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER])
     for (int i = 0; i < MAX_PLAYER; i++) {
         renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
         if (players[i].number != -1) {
-            SDL_Log("name: %s", players[i].name);
+//            SDL_Log("name: %s", players[i].name);
             // Connected
             sprintf(str , "%d", players[i].number);
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, str);
@@ -203,14 +206,6 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER])
 
     TTF_CloseFont(font);
 
-}
-
-void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER])
-{
-    SDL_RenderClear(pSDL->pRenderer);
-    renderBackgroundMenu(pSDL, 1);
-    renderMenuLobby(pSDL, players);
-    SDL_RenderPresent(pSDL->pRenderer);
 }
 /**
  * function : render de la bomb/ avec effet d'agrandissement/ timing de la bomb
@@ -223,7 +218,6 @@ void renderBomb(sdl_t *pSDL, bomb_t *bomb)
     SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
 //        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
-//    SDL_Log("allo : %d", currentTick - bomb->tickBombDropped);
     if (currentTick - bomb->tickBombDropped > 1980) {
         playSound(pSDL->son[1]);
     }

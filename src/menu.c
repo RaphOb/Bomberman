@@ -163,7 +163,7 @@ int menuNetworkEvent(sdl_t *pSDL, son_t* son)
     return res;
 }
 
-int menuLobbyEvent(sdl_t *pSDL, son_t* son){
+int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
     int res = 0;
     SDL_Event event;
 
@@ -208,8 +208,11 @@ int menuLobbyEvent(sdl_t *pSDL, son_t* son){
             if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 600 &&  event.button.y < 600 + 150) {
                 res = -1;
             }
-            if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 450 &&  event.button.y < 450 + 150) {
-                res = 1;
+            if (host == 1 && nbClient >= 2) {
+                if (event.button.x > size && event.button.x < size + 200 && event.button.y > 450 &&
+                    event.button.y < 450 + 150) {
+                    res = 1;
+                }
             }
         }
     }

@@ -19,7 +19,7 @@ void drawMenu(sdl_t *pSDL);
 void drawMenuNetwork(sdl_t *pSDL);
 void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host);
 void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host);
-void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER], char *str);
+void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]);
 void renderMenuNetwork(sdl_t *pSDL);
 void renderBanner(sdl_t *pSDL, player_t player[MAX_PLAYER], game_t *game);
 void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER]);

@@ -81,7 +81,7 @@ void getNbClientServer(game_t *g, player_t *p)
             myPlayer->alive = p->alive;
             myPlayer->code_reseau = p->code_reseau;
             myPlayer->co_is_ok = 1;
-            myPlayer->number = p->number;
+            myPlayer->number = g->nb_client_serv;
             myPlayer->checksum = p->checksum;
             myPlayer->x_pos = p->x_pos;
             myPlayer->y_pos = p->y_pos;
@@ -94,7 +94,8 @@ void getNbClientServer(game_t *g, player_t *p)
             myPlayer->direction = p->direction;
             myPlayer->still = p->still;
             myPlayer->mutex_player = p->mutex_player;
-            myPlayer->name = strdup(g->name);
+            myPlayer->name = strdup(strcat(g->name, "\0"));
+            SDL_Log("myPlayer->name = %d\n", (int)strlen(myPlayer->name));
             c_emission(myPlayer, 201);
         }
     }
@@ -180,18 +181,20 @@ void listen_server(void* g_param)
         FD_SET(serv.sock, &serv.readfs);
 
         game_t g = {0};
+        //SDL_Log("serv.sock = %d\n", (int)serv.sock);
 
         select((int)serv.sock+1, &serv.readfs, NULL, NULL, NULL);
 
         if (FD_ISSET(serv.sock, &serv.readfs)) {
             if((n = recv((SOCKET)serv.sock, (char *)&g, sizeof(g), 0)) < 0)
             {
-                SDL_Log("[Client] recv()");
+                SDL_Log("[Client - listen_server] recv()");
                 run =  c_reception(DISCONNECT_CODE, serv.sock);
             } else {
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
+                        //SDL_Log("g.players[i].name = %s\n", g.players[i].name);
                         maj_player(game, g.players[i].number, &g.players[i]);
                         for (int x = 0; x < 9; x++) {
                             for (int y = 0; y < 13; y++) {

@@ -261,10 +261,15 @@ void write_to_client(Client *c, int code)
 void write_to_all_clients(int code)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
+        //SDL_Log("clients[%d].p.number = %d\n", i, clients[i].p.number);
+        if (clients[i].p.number == 1) {
+            //SDL_Log("lol = %d\n", clients[i].p.co_is_ok);
+        }
         if (clients[i].num_client != -1 && clients[i].p.co_is_ok == 1) {
             write_to_client(&clients[i], code);
         }
     }
+    //SDL_Log("-------------------------\n");
 }
 
 void s_emission(Client *c, int code)
@@ -330,6 +335,7 @@ game_t init_game_server_side(int code)
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
+        //g.players[i].name = malloc(sizeof(char) * strlen(c.p.name));
         g.players[i].name = strdup(c.p.name);
 
         // Bombe
@@ -363,10 +369,14 @@ int s_reception(Client *c, t_client_request *c_request)
 //    p->x_pos = c_request->x_pos;
 //    p->y_pos = c_request->y_pos;
 //    updatePlayerCell(&c->p);
-
+    if (c->p.number == 1/* && c_request->code_reseau == 201*/) {
+        SDL_Log("mdr = %d\n", c_request->code_reseau);
+        SDL_Log("mdr3 = %s\n", c_request->name);
+        //p->co_is_ok = 1;
+    }
     //p->direction = c_request->dir;
 //    p->still = c_request->still;
-    p->name = strdup(c_request->name);
+    //p->name = strdup(c_request->name);
     p->alive = c_request->alive;
     p->speed = c_request->speed;
     p->still = 1;
@@ -396,7 +406,10 @@ int s_reception(Client *c, t_client_request *c_request)
                 placeBomb(p, &p->bomb[index]);
             }
             break;
-        case CO_IS_OK:
+        case 201:
+            if (c->p.number == 1) {
+                SDL_Log("mdr2\n");
+            }
             c->p.co_is_ok = 1;
             break;
         case 200:

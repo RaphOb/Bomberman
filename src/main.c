@@ -70,12 +70,12 @@ int main(int argc, char *argv[]) {
 
             //         Input
             if (pSDL->network == 1) {
-                play = loopInputConnect(game->pSDL);
+                play = loopInputConnect(game);
                 getNbClientServer(game, &player);
             } else if (pSDL->network == 2) {
                 host = 1;
                 char *port = malloc(sizeof(char) * 10);
-                play = loopInputHost(game->pSDL, &port);
+                play = loopInputHost(game, &port);
                 serv.s_port = strdup(port);
                 SDL_Log("set port : %s\n", port);
                 if (play == 1) {
@@ -105,9 +105,11 @@ int main(int argc, char *argv[]) {
     if (play == 1) {
         int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
     }
-
+SDL_Log("game->players[0].name = %s\n", game->players[0].name);
+    SDL_Log("blbllblblgetMyPlayer(game).name = %s\n", getMyPlayer(game)->name);
     while (pSDL->menu != -1 && pSDL->network != -1 && play == 1 && game->start == 0) {
         drawMenuLobby(game->pSDL, game->players, getMyPlayer(game)->host);
+        SDL_Log("getMyPlayer(game).name = %s\n", getMyPlayer(game)->name);
         lobby = menuLobbyEvent(game->pSDL, pSDL->son[0], getMyPlayer(game)->host, getNbPlayer(game));
         if (lobby == 1) {
             c_emission(&player, START_GAME);

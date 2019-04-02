@@ -18,8 +18,9 @@
  * @param pSDL
  * @return
  */
-int loopInputConnect(sdl_t *pSDL)
+int loopInputConnect(game_t *game)
 {
+    sdl_t *pSDL = game->pSDL;
     SDL_Rect textRectPseudo = {440, 500, 0, 0};
     SDL_Rect textRectIp = {510, 400, 0, 0};
     SDL_Rect textRectPort = {580, 450, 0, 0};
@@ -77,8 +78,9 @@ int loopInputConnect(sdl_t *pSDL)
  * @param p
  * @return
  */
-int loopInputHost(sdl_t *pSDL, char **p)
+int loopInputHost(game_t *game, char **p)
 {
+    sdl_t *pSDL = game->pSDL;
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
     SDL_Rect dstStringPseudo = {400, 450, 0, 0};

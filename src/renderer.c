@@ -32,9 +32,9 @@ void drawGame(game_t *game) {
                 }
             }
 
-            SDL_Log("%d", playerisDead(game, getMyPlayer(game)->number));
+            //SDL_Log("%d", playerisDead(game, getMyPlayer(game)->number));
             if (getMyPlayer(game)->alive == 'Y' && playerisDead(game, getMyPlayer(game)->number) > 0) {
-                SDL_Log("c'est la win");
+                //SDL_Log("c'est la win");
                // renderWin(game->pSDL);
             }
 
@@ -59,13 +59,13 @@ int playerisDead(game_t *game, int player) {
     int nbkill = 0;
     for(int i = 0; i < MAX_PLAYER; i++ ) {
         if (game->players[i].alive == 'N' && game->players[i].number != player) {
-            SDL_Log("dois passer ici ci un mort et pas l'autre");
+            //SDL_Log("dois passer ici ci un mort et pas l'autre");
             nbkill++;
         }
     }
     if (nbkill == game->nb_client_serv) {
         res = 1;
-        SDL_Log("dois passer ici si all mort sauf getMyplayer");
+        //SDL_Log("dois passer ici si all mort sauf getMyplayer");
         return res;
     }
     return res;
@@ -146,7 +146,7 @@ void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
             dst.x = MAP_SIZE_W - (MAP_SIZE_W / divide);
             dst.y = y;
 
-            sprintf(str, "%d", players[i].number);
+            sprintf(str, "%s", players[i].name);
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
             renderStringText(pSDL->pRenderer, textureTextPlayer, dst);
         }
@@ -235,9 +235,9 @@ void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
 void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
     SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
-
+    SDL_Log("nameFFFFUCK0: %s\n", players[0].name);
     renderPlayerConnected(pSDL, players);
-
+    SDL_Log("nameFFFFUCK1: %s\n", players[0].name);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
     if (host == 1) {
         SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonLaunch->textureButton[pSDL->buttonLaunch->hover], NULL,
@@ -248,18 +248,19 @@ void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
 }
 
 void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
-    char str[2] = {'\0'};
+    char str[20] = {'\0'};
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
     SDL_Rect dstStringBase = {400, 300, 0, 0};
     SDL_Texture *textureHost = createTextureText(pSDL->pRenderer, font, color, "Joueur(s) connecte(s): ");
     SDL_Rect base_dst = {500, 300, 0, 0};
     for (int i = 0; i < MAX_PLAYER; i++) {
+        SDL_Log("nametg: %s", players[i].name);
         renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
         if (players[i].number != -1) {
-//            SDL_Log("name: %s", players[i].name);
+            SDL_Log("name: %s", players[i].name);
             // Connected
-            sprintf(str, "%d", players[i].number);
+            sprintf(str, "%s", players[i].name);
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, str);
             base_dst.y += 50;
             renderStringText(pSDL->pRenderer, textureTextPlayer, base_dst);
@@ -376,8 +377,8 @@ void renderPlayer(sdl_t *pSDL, player_t *player) {
  * @param player
  */
 void renderblood(sdl_t *pSDL, player_t *player) {
-    SDL_Log("current_frame: %d", player->current_frame);
-    SDL_Log("frame_time: %d", player->frame_time);
+    //SDL_Log("current_frame: %d", player->current_frame);
+    //SDL_Log("frame_time: %d", player->frame_time);
 
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
     SDL_Rect dst = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};

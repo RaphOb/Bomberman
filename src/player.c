@@ -18,7 +18,7 @@
 player_t initPlayer()
 {
     player_t p;
-
+    char str[20] = {'a'};
     p.alive = 'Y';
     p.co_is_ok = 0;
     p.bombPosed = 0;
@@ -36,6 +36,7 @@ player_t initPlayer()
     p.frame_time = 0;
     p.direction = 2;
     p.still = 1;
+    strcpy(p.name, str);
     pthread_mutex_init(&p.mutex_player, NULL);
     for (int i = 0; i < MAX_BOMBE; i++) {
         p.bomb[i] = createBomb();
@@ -51,6 +52,7 @@ bomb_t createBomb()
     b.range = 1;
     b.isPosed = 0;
     b.explosion = 0;
+    b.frame = 0;
     b.tickExplosion = 0;
     b.tickBombDropped = 0;
     b.cell_x = -1;

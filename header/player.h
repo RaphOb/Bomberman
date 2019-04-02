@@ -26,6 +26,7 @@ typedef struct bombs_s {
     int range;
     int isPosed;
     int explosion;
+    int frame;
     int tickBombDropped;
     int tickExplosion;
 } bomb_t;
@@ -46,6 +47,7 @@ typedef struct player_s {
     int frags;
     int current_frame;
     int frame_time;
+    int host;
     int direction;
     int still;
     pthread_mutex_t mutex_player;

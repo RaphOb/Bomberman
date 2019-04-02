@@ -81,22 +81,30 @@ void checkBombPlayer(player_t *player, bomb_t b, map_t map) {
         //left
         if (((bpos_x - j >= ppos_x && ppos_x > bpos_x - (b.range + 1)) || bpos_x == ppos_x) && bpos_y == ppos_y && !getBit(map[bpos_y], bpos_x - 1, 1)) {
             player->alive = 'N';
+            player->frame_time = 0;
+            player->current_frame = 3;
             SDL_Log("boum");
 
         }
             //right
         else if ((bpos_x + j <= ppos_x && ppos_x < bpos_x + (b.range + 1)) && bpos_y == ppos_y && !getBit(map[bpos_y], bpos_x + 1, 1)) {
             player->alive = 'N';
+            player->frame_time = 0;
+            player->current_frame = 3;
             SDL_Log("boum");
         }
             //top
         else if ((bpos_y - j >= ppos_y && ppos_y > bpos_y - (b.range + 1))  && bpos_x == ppos_x && !getBit(map[bpos_y - 1], bpos_x, 1)) {
             player->alive = 'N';
+            player->frame_time = 0;
+            player->current_frame = 3;
             SDL_Log("boum");
         }
             //bottom
         else if (((bpos_y + j <= ppos_y && ppos_y < bpos_y + (b.range + 1)) || bpos_y == ppos_y) && bpos_x == ppos_x && !getBit(map[bpos_y + 1], bpos_x, 1)) {
             player->alive = 'N';
+            player->frame_time = 0;
+            player->current_frame = 3;
             SDL_Log("boum");
         }
 //    c_emission(player, 0);

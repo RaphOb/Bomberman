@@ -43,33 +43,36 @@ int main(int argc, char *argv[]) {
     //game->players[0] = player;
 
     int quit = 0;
+    int restart = 0;
     pSDL->menu = 0;
     pSDL->network = 3;
     int play = 0;
     int host = 0;
+    int lobby = 0;
     pthread_t hebergement_thread;
     // First menu
     while (pSDL->menu == 0) {
 
-        while ( pSDL->menu != -1 && pSDL->network == 3) {
+        while (pSDL->menu != -1 && pSDL->network == 3) {
             playsound(TROPSTYLE2_SOUND);
             drawMenu(game->pSDL);
             pSDL->menu = menuEvent(game->pSDL, pSDL->son[0]);
+
         }
         // SDL_CloseAudio();
 //     Menu Network
         SDL_StartTextInput();
 
-        while (pSDL->menu != -1 &&  pSDL->network == 0) {
+        while (pSDL->menu != -1 && pSDL->network == 0) {
             playsound(TROPSTYLE3_SOUND);
             drawMenuNetwork(game->pSDL);
             pSDL->network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 
             //         Input
-            if ( pSDL->network == 1) {
+            if (pSDL->network == 1) {
                 play = loopInputConnect(game);
                 getNbClientServer(game, &player);
-            } else if ( pSDL->network == 2) {
+            } else if (pSDL->network == 2) {
                 host = 1;
                 char *port = malloc(sizeof(char) * 10);
                 play = loopInputHost(game, &port);
@@ -102,13 +105,24 @@ int main(int argc, char *argv[]) {
     if (play == 1) {
         int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
     }
-    while (pSDL->menu != -1 && quit != -1 && play == 1 &&  pSDL->network != -1) {
+    while (pSDL->menu != -1 && pSDL->network != -1 && play == 1 && game->start == 0) {
+        drawMenuLobby(game->pSDL, game->players, getMyPlayer(game)->host);
+        lobby = menuLobbyEvent(game->pSDL, pSDL->son[0], getMyPlayer(game)->host, getNbPlayer(game));
+        if (lobby == 1) {
+            c_emission(getMyPlayer(game), START_GAME);
+            //Envoyer aux autres joueurs que la partie commence
+        }
+    }
+
+    while (pSDL->menu != -1 && quit != -1 && play == 1 && pSDL->network != -1 && game->start == 1 && restart != -1) {
         playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();
         quit = gameEvent(game);
+        restart = menuGameOverEvent(pSDL);
 
-        if(1000 / FPS > SDL_GetTicks() - start) {
+
+        if (1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
         }
     }

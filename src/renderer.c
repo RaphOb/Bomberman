@@ -236,7 +236,7 @@ void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
     SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
     SDL_Log("nameFFFFUCK0: %s\n", players[0].name);
-    renderPlayerConnected(pSDL, players);
+    renderPlayerConnected(pSDL, players, players[0].name);
     SDL_Log("nameFFFFUCK1: %s\n", players[0].name);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuLogo, NULL, &dst_menuLogo);
     if (host == 1) {
@@ -247,21 +247,22 @@ void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
 
 }
 
-void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
-    char str[20] = {'\0'};
+void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER], char *str) {
+//    char str[20] = {'\0'};
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
     SDL_Rect dstStringBase = {400, 300, 0, 0};
     SDL_Texture *textureHost = createTextureText(pSDL->pRenderer, font, color, "Joueur(s) connecte(s): ");
     SDL_Rect base_dst = {500, 300, 0, 0};
     for (int i = 0; i < MAX_PLAYER; i++) {
-        SDL_Log("nametg: %s", players[i].name);
+        SDL_Log("i: %d", i);
+        SDL_Log("nametg: %s", str);
         renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
         if (players[i].number != -1) {
             SDL_Log("name: %s", players[i].name);
             // Connected
-            sprintf(str, "%s", players[i].name);
-            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, str);
+//            sprintf(str, "%s", players[i].name);
+            SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, players[i].name);
             base_dst.y += 50;
             renderStringText(pSDL->pRenderer, textureTextPlayer, base_dst);
         }

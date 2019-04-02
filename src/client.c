@@ -78,7 +78,6 @@ void getNbClientServer(game_t *g, player_t *p)
         if (buffer != NULL) {
             g->nb_client_serv = atoi(buffer);
             player_t *myPlayer = getMyPlayer(g);
-            setPlayerXYDir(myPlayer);
             myPlayer->alive = p->alive;
             myPlayer->code_reseau = p->code_reseau;
             myPlayer->co_is_ok = 1;
@@ -92,6 +91,7 @@ void getNbClientServer(game_t *g, player_t *p)
             myPlayer->frame_time = p->frame_time;
             myPlayer->still = p->still;
             myPlayer->mutex_player = p->mutex_player;
+            setPlayerXYDir(myPlayer);
             strcpy(myPlayer->name, g->name);
             c_emission(myPlayer, 201);
         }

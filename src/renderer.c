@@ -31,13 +31,9 @@ void drawGame(game_t *game) {
                     renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
                 }
             }
-
-            //SDL_Log("%d", playerisDead(game, getMyPlayer(game)->number));
             if (getMyPlayer(game)->alive == 'Y' && playerisDead(game, getMyPlayer(game)->number) > 0) {
-                //SDL_Log("c'est la win");
-               // renderWin(game->pSDL);
+               renderWin(game->pSDL);
             }
-
             if (getMyPlayer(game)->alive == 'N') {
                 renderGameOver(game->pSDL);
             }
@@ -54,18 +50,23 @@ void drawGame(game_t *game) {
     SDL_RenderPresent(game->pSDL->pRenderer);
 }
 
+/**
+ * function : return 1 if all player is dead exept MyPlayer
+ * @param game
+ * @param player
+ * @return
+ */
 int playerisDead(game_t *game, int player) {
     int res = 0;
     int nbkill = 0;
     for(int i = 0; i < MAX_PLAYER; i++ ) {
         if (game->players[i].alive == 'N' && game->players[i].number != player) {
-            //SDL_Log("dois passer ici ci un mort et pas l'autre");
             nbkill++;
         }
     }
-    if (nbkill == game->nb_client_serv) {
+    if (nbkill == getNbPlayer(game) - 1) {
         res = 1;
-        //SDL_Log("dois passer ici si all mort sauf getMyplayer");
+        SDL_Log("dois passer ici si all mort sauf getMyplayer");
         return res;
     }
     return res;

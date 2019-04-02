@@ -175,3 +175,31 @@ int isPlayerOnOneCell(player_t *player)
 {
     return (player->map_x[0] == player->map_x[1] && player->map_y[0] == player->map_y[1]);
 }
+
+void setPlayerXYDir(player_t *p)
+{
+    switch (p->number) {
+        case 0:
+            p->x_pos = START_X_MAP;
+            p->y_pos = START_Y_MAP;
+            p->direction = 2;
+            break;
+        case 1:
+            p->x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE + PLAYER_WIDTH);
+            p->y_pos = START_Y_MAP;
+            p->direction = 0;
+            break;
+        case 2:
+            p->x_pos = START_X_MAP;
+            p->y_pos = MAP_SIZE_H;
+            p->direction = 1;
+            break;
+        case 3:
+            p->x_pos = MAP_SIZE_W - (REAL_BLOCK_SIZE + PLAYER_WIDTH);
+            p->y_pos = MAP_SIZE_H;
+            p->direction = 3;
+            break;
+        default:
+            break;
+    }
+}

@@ -78,20 +78,18 @@ void getNbClientServer(game_t *g, player_t *p)
         if (buffer != NULL) {
             g->nb_client_serv = atoi(buffer);
             player_t *myPlayer = getMyPlayer(g);
+            setPlayerXYDir(myPlayer);
             myPlayer->alive = p->alive;
             myPlayer->code_reseau = p->code_reseau;
             myPlayer->co_is_ok = 1;
             myPlayer->number = g->nb_client_serv;
             myPlayer->checksum = p->checksum;
-            myPlayer->x_pos = p->x_pos;
-            myPlayer->y_pos = p->y_pos;
             myPlayer->speed = p->speed;
             myPlayer->bombPosed = p->bombPosed;
             myPlayer->nbBombe = p->nbBombe;
             myPlayer->frags = p->frags;
             myPlayer->current_frame = p->current_frame;
             myPlayer->frame_time = p->frame_time;
-            myPlayer->direction = p->direction;
             myPlayer->still = p->still;
             myPlayer->mutex_player = p->mutex_player;
             strcpy(myPlayer->name, g->name);

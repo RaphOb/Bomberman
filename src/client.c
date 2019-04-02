@@ -78,8 +78,24 @@ void getNbClientServer(game_t *g, player_t *p)
         if (buffer != NULL) {
             g->nb_client_serv = atoi(buffer);
             player_t *myPlayer = getMyPlayer(g);
+            myPlayer->alive = p->alive;
+            myPlayer->code_reseau = p->code_reseau;
             myPlayer->co_is_ok = 1;
-            c_emission(p, 201);
+            myPlayer->number = g->nb_client_serv;
+            myPlayer->checksum = p->checksum;
+            myPlayer->x_pos = p->x_pos;
+            myPlayer->y_pos = p->y_pos;
+            myPlayer->speed = p->speed;
+            myPlayer->bombPosed = p->bombPosed;
+            myPlayer->nbBombe = p->nbBombe;
+            myPlayer->frags = p->frags;
+            myPlayer->current_frame = p->current_frame;
+            myPlayer->frame_time = p->frame_time;
+            myPlayer->direction = p->direction;
+            myPlayer->still = p->still;
+            myPlayer->mutex_player = p->mutex_player;
+            strcpy(myPlayer->name, g->name);
+            c_emission(myPlayer, 201);
         }
     }
 }
@@ -113,6 +129,7 @@ void c_emission(player_t *player, int code)
     //c_request.dir = player->direction;
 //    c_request.still = player->still;
     c_request.speed = player->speed;
+    strcpy(c_request.name, player->name);
     //c_request.nbBombe = player->nbBombe;
     c_request.alive = player->alive;
     c_request.co_is_ok = player->co_is_ok;
@@ -172,7 +189,7 @@ void listen_server(void* g_param)
         if (FD_ISSET(serv.sock, &serv.readfs)) {
             if((n = recv((SOCKET)serv.sock, (char *)&g, sizeof(g), 0)) < 0)
             {
-                SDL_Log("[Client] recv()");
+                SDL_Log("[Client - listen_server] recv()");
                 run =  c_reception(DISCONNECT_CODE, serv.sock);
             } else {
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
@@ -207,6 +224,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].number = p->number;
     g->players[indice].alive = p->alive;
     g->players[indice].co_is_ok = p->co_is_ok;
+    strcpy(g->players[indice].name, p->name);
     g->players[indice].host = p->host;
     // Bombe
     g->players[indice].bombPosed = p->bombPosed;

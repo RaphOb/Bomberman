@@ -84,6 +84,65 @@ int menuEvent(sdl_t *pSDL, son_t* son)
     return res;
 }
 
+int menuGameOverEvent(sdl_t *pSDL)
+{
+    int res = 0;
+    int mouse_x = 0;
+    int mouse_y = 0;
+    SDL_GetMouseState(&mouse_x, &mouse_y);
+    pSDL->buttonTryagain->hover = 0;
+    pSDL->buttonQuit->hover = 0;
+    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
+    SDL_Event event;
+
+    if (SDL_HasIntersection(&mouse, &pSDL->buttonTryagain->dstRect)) {
+        pSDL->buttonPlay->hover = 1;
+        hover_on = 1;
+        if (hover_on == 1 && hover_off == 1) {
+            hover_off = 0;
+        }
+    } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
+        pSDL->buttonQuit->hover = 1;
+        hover_on = 1;
+        if (hover_on == 1 && hover_off== 1) {
+            hover_off = 0;
+        }
+    } else { hover_off = 1;}
+
+    if (SDL_PollEvent(&event)) {
+        if (event.type == SDL_QUIT) {
+            res = -1;
+        } else if (event.type == SDL_KEYDOWN) {
+            switch (event.key.keysym.sym) {
+                case SDLK_p:
+                    res = 1;
+                    break;
+                case SDLK_q:
+                case SDLK_ESCAPE :
+                    res = -1;
+                    break;
+                default :
+                    fprintf(stderr, "touche inconnue %d\n", event.key.keysym.sym);
+                    break;
+            }
+        } else if (event.type == SDL_MOUSEBUTTONUP) {
+            if (event.button.x > 700  && event.button.x < (700 + IMG_MENU_W/3)
+                && event.button.y > 650 && event.button.y < 650 +(IMG_MENU_H/3)) {
+                res = -1;
+            }
+            if (event.button.x > 400 && event.button.x < 400 + (IMG_MENU_W/3) &&
+                event.button.y > 650 && event.button.y < 650 && (IMG_MENU_H / 3)) {
+                res = 1;
+                pSDL->network = 0;
+            }
+        } else if (event.type == SDL_MOUSEMOTION) {
+
+        }
+    }
+    return res;
+}
+
+
 /**
  * Function : Manage the events from the player in the network menu
  * @param pSDL

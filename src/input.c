@@ -61,7 +61,7 @@ int loopInputConnect(game_t *game)
     }
     if (quit == 3) {
         init();
-        game->name = strdup(pseudo->str);
+        strcpy(game->name, pseudo->str);
         init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
     }
     destroyInput(ip);
@@ -117,7 +117,7 @@ int loopInputHost(game_t *game, char **p)
 
     if (quit == 2) {
         *p = strdup(port->str);
-        game->name = strdup(pseudo->str);
+        strcpy(game->name, pseudo->str);
     }
 
     destroyInput(pseudo);

@@ -94,8 +94,7 @@ void getNbClientServer(game_t *g, player_t *p)
             myPlayer->direction = p->direction;
             myPlayer->still = p->still;
             myPlayer->mutex_player = p->mutex_player;
-            myPlayer->name = strdup(strcat(g->name, "\0"));
-            SDL_Log("myPlayer->name = %d\n", (int)strlen(myPlayer->name));
+            strcpy(myPlayer->name, g->name);
             c_emission(myPlayer, 201);
         }
     }
@@ -130,7 +129,7 @@ void c_emission(player_t *player, int code)
     //c_request.dir = player->direction;
 //    c_request.still = player->still;
     c_request.speed = player->speed;
-    c_request.name = strdup(player->name);
+    strcpy(c_request.name, player->name);
     //c_request.nbBombe = player->nbBombe;
     c_request.alive = player->alive;
     c_request.co_is_ok = player->co_is_ok;
@@ -222,6 +221,7 @@ void maj_player(game_t *g, int indice, player_t *p)
     g->players[indice].number = p->number;
     g->players[indice].alive = p->alive;
     g->players[indice].co_is_ok = p->co_is_ok;
+    strcpy(g->players[indice].name, p->name);
     // Bombe
     g->players[indice].bombPosed = p->bombPosed;
     g->players[indice].nbBombe = p->nbBombe;

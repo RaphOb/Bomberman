@@ -50,7 +50,7 @@ typedef struct player_s {
     int still;
     pthread_mutex_t mutex_player;
     bomb_t bomb[MAX_BOMBE];
-    char *name;
+    char name[20];
 } player_t;
 
 player_t initPlayer();

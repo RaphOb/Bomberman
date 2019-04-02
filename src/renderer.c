@@ -33,7 +33,7 @@ void drawGame(game_t *game) {
             }
 
             SDL_Log("%d", playerisDead(game, getMyPlayer(game)->number));
-            if (getMyPlayer(game)->alive == 'Y' && !playerisDead(game, getMyPlayer(game)->number)) {
+            if (getMyPlayer(game)->alive == 'Y' && playerisDead(game, getMyPlayer(game)->number) > 0) {
                 SDL_Log("c'est la win");
                // renderWin(game->pSDL);
             }
@@ -55,17 +55,17 @@ void drawGame(game_t *game) {
 }
 
 int playerisDead(game_t *game, int player) {
-    int i = 0;
     int res = 0;
     int nbkill = 0;
-    while (i < MAX_PLAYER) {
+    for(int i = 0; i < MAX_PLAYER; i++ ) {
         if (game->players[i].alive == 'N' && game->players[i].number != player) {
+            SDL_Log("dois passer ici ci un mort et pas l'autre");
             nbkill++;
         }
-        i++;
     }
     if (nbkill == game->nb_client_serv) {
         res = 1;
+        SDL_Log("dois passer ici si all mort sauf getMyplayer");
         return res;
     }
     return res;

@@ -60,6 +60,7 @@ int loopInputConnect(sdl_t *pSDL)
     }
     if (quit == 3) {
         init();
+        strcpy(game->name, pseudo->str);
         init_co_from_cli_to_serv(ip->str, port->str, pseudo->str);
     }
     destroyInput(ip);
@@ -114,6 +115,7 @@ int loopInputHost(sdl_t *pSDL, char **p)
 
     if (quit == 2) {
         *p = strdup(port->str);
+        strcpy(game->name, pseudo->str);
     }
 
     destroyInput(pseudo);

@@ -21,6 +21,7 @@ typedef struct game_s {
     player_t players[MAX_PLAYER];
     int nb_client_serv;
     sdl_t *pSDL;
+    char name[20];
     pthread_t listen_serv_thread;
     int blood;
     int start;

@@ -233,7 +233,7 @@ Client* get_client(int c)
 void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
-        if (clients[i].p.name != NULL) {
+        if (clients[i].p.name[0] != '\0') {
             SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].p.name, i, clients[i].num_client);
         } else {
             SDL_Log("[Server (%d)] client %d : %d\t", i, clients[i].num_client, clients[i].num_client);
@@ -330,6 +330,7 @@ game_t init_game_server_side(int code)
         g.players[i].code_reseau = code;
         g.players[i].checksum = sizeof(g.players[i]);
         g.players[i].still = c.p.still;
+        strcpy(g.players[i].name, c.p.name);
         g.players[i].host = c.is_host;
 
         // Bombe
@@ -364,9 +365,9 @@ int s_reception(Client *c, t_client_request *c_request)
 //    p->x_pos = c_request->x_pos;
 //    p->y_pos = c_request->y_pos;
 //    updatePlayerCell(&c->p);
-
     //p->direction = c_request->dir;
 //    p->still = c_request->still;
+    strcpy(p->name, c_request->name);
     p->alive = c_request->alive;
     p->speed = c_request->speed;
     p->still = 1;
@@ -396,7 +397,8 @@ int s_reception(Client *c, t_client_request *c_request)
                 placeBomb(p, &p->bomb[index]);
             }
             break;
-        case CO_IS_OK:
+        case 201:
+            display_clients_co();
             c->p.co_is_ok = 1;
             break;
         case START_GAME :

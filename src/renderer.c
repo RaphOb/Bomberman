@@ -35,7 +35,7 @@ void drawGame(game_t *game) {
             SDL_Log("%d", playerisDead(game, getMyPlayer(game)->number));
             if (getMyPlayer(game)->alive == 'Y' && !playerisDead(game, getMyPlayer(game)->number)) {
                 SDL_Log("c'est la win");
-                renderWin(game->pSDL);
+               // renderWin(game->pSDL);
             }
 
             if (getMyPlayer(game)->alive == 'N') {

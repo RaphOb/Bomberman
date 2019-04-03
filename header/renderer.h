@@ -26,5 +26,6 @@ void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER]);
 void renderBackgroundMenu(sdl_t *pSDL, int i);
 void renderBlood(sdl_t *pSDL, player_t *player);
 void renderWin(sdl_t *pSDL);
+void renderGameOver(sdl_t *pSDL);
 
 #endif //BOMBERMAN_RENDERER_H

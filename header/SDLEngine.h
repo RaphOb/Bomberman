@@ -41,7 +41,6 @@ struct sdl_s {
     button_t *buttonConnect;
     button_t *buttonHost;
     button_t *buttonLaunch;
-    button_t * buttonTryagain;
     SDL_Texture *textureMenuLogo;
     SDL_Texture *textureMenuRetour;
     SDL_Texture *texturegameover;

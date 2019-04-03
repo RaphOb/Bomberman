@@ -33,6 +33,7 @@ game_t *initGame(sdl_t *pSDL)
         game->players[i] = initPlayer();
         game->players[i].number = -1;
     }
+    pthread_mutex_init(&game->mutex_map, NULL);
     return game;
 }
 

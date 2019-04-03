@@ -16,7 +16,7 @@
  * @param game
  */
 void drawGame(game_t *game) {
-
+    pthread_mutex_lock(&game->mutex_map);
     SDL_RenderClear(game->pSDL->pRenderer);
     renderBanner(game->pSDL, game->players, game);
     renderGameOver(game->pSDL);
@@ -57,6 +57,7 @@ void drawGame(game_t *game) {
         }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);
+    pthread_mutex_unlock(&game->mutex_map);
 }
 
 /**

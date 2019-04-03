@@ -195,11 +195,13 @@ void listen_server(void* g_param)
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
                         game->start = g.start;
                         maj_player(game, g.players[i].number, &g.players[i]);
+                        pthread_mutex_lock(&game->mutex_map);
                         for (int x = 0; x < 9; x++) {
                             for (int y = 0; y < 13; y++) {
                                 game->map[x][y] = g.map[x][y];
                             }
                         }
+                        pthread_mutex_unlock(&game->mutex_map);
                     }
                 }
                 run =  c_reception(p->code_reseau, serv.sock);

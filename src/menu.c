@@ -81,17 +81,12 @@ int menuGameOverEvent(sdl_t *pSDL)
     int mouse_x = 0;
     int mouse_y = 0;
     SDL_GetMouseState(&mouse_x, &mouse_y);
-    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
-
-    pSDL->buttonTryagain->hover = 0;
     pSDL->buttonQuit->hover = 0;
-    if (SDL_HasIntersection(&mouse, &pSDL->buttonTryagain->dstRect)) {
-        pSDL->buttonPlay->hover = 1;
-        hover_on = 1;
-        if (hover_on == 1 && hover_off == 1) {
-            hover_off = 0;
-        }
-    } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
+    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
+    SDL_Event event;
+    SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
+
+     if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
         pSDL->buttonQuit->hover = 1;
         hover_on = 1;
         if (hover_on == 1 && hover_off== 1) {
@@ -104,9 +99,6 @@ int menuGameOverEvent(sdl_t *pSDL)
             res = -1;
         } else if (event.type == SDL_KEYDOWN) {
             switch (event.key.keysym.sym) {
-                case SDLK_p:
-                    res = 1;
-                    break;
                 case SDLK_q:
                 case SDLK_ESCAPE :
                     res = -1;
@@ -116,14 +108,9 @@ int menuGameOverEvent(sdl_t *pSDL)
                     break;
             }
         } else if (event.type == SDL_MOUSEBUTTONUP) {
-            if (event.button.x > 700 && event.button.x < 700 + (IMG_MENU_W / 3) &&
-                event.button.y > 650 && event.button.y < 650 + (IMG_MENU_H / 3)) {
+            if (event.button.x > 550  && event.button.x < (550 + IMG_MENU_W/3)
+                && event.button.y > 650 && event.button.y < 650 +(IMG_MENU_H/3)) {
                 res = -1;
-            }
-            if (event.button.x > 400 && event.button.x < 400 + (IMG_MENU_W / 3) &&
-                event.button.y > 650 && event.button.y < 650 + (IMG_MENU_H / 3)) {
-                res = 1;
-                pSDL->network = 0;
             }
         }
     }

@@ -22,7 +22,7 @@ typedef struct game_s {
     sdl_t *pSDL;
     char name[20];
     pthread_t listen_serv_thread;
-    int blood;
+    int leave;
     int start;
 } game_t;
 

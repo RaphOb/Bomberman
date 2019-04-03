@@ -24,8 +24,7 @@ void renderMenuNetwork(sdl_t *pSDL);
 void renderBanner(sdl_t *pSDL, player_t player[MAX_PLAYER], game_t *game);
 void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER]);
 void renderBackgroundMenu(sdl_t *pSDL, int i);
-void renderblood(sdl_t* pSDL, player_t *player);
+void renderBlood(sdl_t *pSDL, player_t *player);
 void renderWin(sdl_t *pSDL);
-int playerisDead(game_t *game, int player);
 
 #endif //BOMBERMAN_RENDERER_H

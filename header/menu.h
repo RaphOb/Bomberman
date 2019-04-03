@@ -16,6 +16,7 @@ int menuEvent(sdl_t *pSDL, son_t* son);
 int menuNetworkEvent(sdl_t *pSDL, son_t* son);
 int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbPlayer);
 int menuGameOverEvent(sdl_t *pSDL);
+void makeSoundHover(button_t *button, son_t *son);
 
 
 #endif //BOMBERMAN_MENU_H

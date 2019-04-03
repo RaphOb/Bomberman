@@ -13,7 +13,6 @@
 #include "../header/map.h"
 
 #define NB_MAPS 8
-#define MAX_PLAYER 4
 #define FPS 60
 
 typedef struct game_s {
@@ -29,7 +28,7 @@ typedef struct game_s {
 
 game_t *initGame(sdl_t *sdl);
 player_t *getMyPlayer(game_t *g);
-int getNbPlayer(game_t *g);
+int getNbPlayer(player_t players[MAX_PLAYER]);
 int gameEvent(game_t *game);
 
 #endif //BOMBERMAN_GAME_H

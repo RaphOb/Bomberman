@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     while (pSDL->menu == 0) {
 
         while (pSDL->menu != -1 && pSDL->network == 3) {
-          //  playsound(TROPSTYLE2_SOUND);
+            playMusic(TROPSTYLE2_SOUND);
             drawMenu(game->pSDL);
             pSDL->menu = menuEvent(game->pSDL, pSDL->son[0]);
         }
@@ -64,7 +64,7 @@ int main(int argc, char *argv[]) {
         SDL_StartTextInput();
 
         while (pSDL->menu != -1 && pSDL->network == 0) {
-          //  playsound(TROPSTYLE3_SOUND);
+            playMusic(TROPSTYLE3_SOUND);
             drawMenuNetwork(game->pSDL);
             pSDL->network = menuNetworkEvent(game->pSDL, pSDL->son[0]);
 
@@ -115,7 +115,7 @@ int main(int argc, char *argv[]) {
     }
 
     while (pSDL->menu != -1 && quit != -1 && play == 1 && pSDL->network != -1 && game->start == 1 && game->leave != -1) {
-      //  playsound(POURLESRELOUXAUXGOUTSDEME_SOUND);
+        playMusic(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();
         quit = gameEvent(game);

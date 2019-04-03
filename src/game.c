@@ -24,7 +24,6 @@ game_t *initGame(sdl_t *pSDL)
     if (!game) {
         return (NULL);
     }
-    game->blood = 0;
     game->start = 0;
     if (extractArrayFromFile(game->map) == 0) {
         return (NULL);

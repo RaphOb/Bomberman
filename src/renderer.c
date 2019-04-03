@@ -19,7 +19,7 @@ void drawGame(game_t *game) {
 //    SDL_Log("render");
     int i = 0;
     SDL_RenderClear(game->pSDL->pRenderer);
-//    renderBanner(game->pSDL, game->players, game);
+    renderBanner(game->pSDL, game->players, game);
 //    renderGameOver(game->pSDL);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
@@ -32,29 +32,29 @@ void drawGame(game_t *game) {
                 renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
             }
         }
-        if (getMyPlayer(game)->alive == 'Y' && isPlayerDead(game->players, getMyPlayer(game)->number) > 0) {
-            renderWin(game->pSDL);
-            game->leave = menuGameOverEvent(game->pSDL);
-            if (game->leave == -1) {
-                c_emission(getMyPlayer(game), DISCONNECT_CODE);
-            }
-        }
-        if (getMyPlayer(game)->alive == 'N') {
-            renderGameOver(game->pSDL);
-            game->leave = menuGameOverEvent(game->pSDL);
-            if (game->leave == -1) {
-                c_emission(getMyPlayer(game), DISCONNECT_CODE);
-            }
-        }
         if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
             renderPlayer(game->pSDL, &game->players[i]);
         } else if (game->players[i].alive == 'N') {
             if (game->players[i].current_frame < 9) {
-//                renderBlood(game->pSDL, &game->players[i]);
+                renderBlood(game->pSDL, &game->players[i]);
             }
             game->players[i].current_frame++;
         }
         i++;
+    }
+    if (getMyPlayer(game)->alive == 'Y' && isPlayerDead(game->players, getMyPlayer(game)->number) > 0) {
+        renderWin(game->pSDL);
+        game->leave = menuGameOverEvent(game->pSDL);
+        if (game->leave == -1) {
+            c_emission(getMyPlayer(game), DISCONNECT_CODE);
+        }
+    }
+    if (getMyPlayer(game)->alive == 'N') {
+        renderGameOver(game->pSDL);
+        game->leave = menuGameOverEvent(game->pSDL);
+        if (game->leave == -1) {
+            c_emission(getMyPlayer(game), DISCONNECT_CODE);
+        }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);
 }

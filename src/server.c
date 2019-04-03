@@ -234,9 +234,9 @@ void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
         if (clients[i].p.name[0] != '\0') {
-            SDL_Log("[Server (%d)] client (%s) %d : %d\t", clients[i].num_client, clients[i].p.name, i, clients[i].num_client);
+            SDL_Log("[Server (%d)] client (%s) %d : %d\tx = %d(%d-%d) et y = %d(%d-%d)", clients[i].num_client, clients[i].p.name, i, clients[i].num_client, clients[i].p.x_pos, clients[i].p.map_x[0], clients[i].p.map_x[1], clients[i].p.y_pos, clients[i].p.map_y[0], clients[i].p.map_y[1]);
         } else {
-            SDL_Log("[Server (%d)] client %d : %d\t", i, clients[i].num_client, clients[i].num_client);
+            SDL_Log("[Server (%d)] client %d : %d\tx = %d(%d-%d) et y = %d(%d-%d)", i, clients[i].num_client, clients[i].num_client, clients[i].p.x_pos, clients[i].p.y_pos, clients[i].p.map_x[0], clients[i].p.map_x[1], clients[i].p.map_y[0], clients[i].p.map_y[1]);
         }
     }
 }
@@ -400,6 +400,7 @@ int s_reception(Client *c, t_client_request *c_request)
         case 201:
             display_clients_co();
             c->p.co_is_ok = 1;
+            updatePlayerCell(&c->p);
             break;
         case START_GAME :
             g_serv_info.start = 1;

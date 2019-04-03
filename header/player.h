@@ -8,6 +8,7 @@
 #include <pthread.h>
 #include "../header/map.h"
 
+#define MAX_PLAYER 4
 #define TEXTURE_WIDTH 78
 #define TEXTURE_HEIGHT 128
 #define FRAME_WIDTH (TEXTURE_WIDTH / 3)
@@ -61,5 +62,7 @@ void updatePlayerCell(player_t *player);
 int collideWith(map_t map, player_t *player, int x, int y);
 int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map);
 int isPlayerOnOneCell(player_t *player);
+void setPlayerXYDir(player_t *player);
+int isPlayerDead(player_t players[MAX_PLAYER], int number);
 
 #endif //BOMBERMAN_PLAYER_H

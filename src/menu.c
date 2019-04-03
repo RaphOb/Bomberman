@@ -12,8 +12,6 @@
 
 int hover_on = 0;
 int hover_off = 1;
-int hover_on1 = 0;
-int hover_off1 = 1;
 
 /**
  * Function : Manage the events from the player in the first menu
@@ -23,30 +21,22 @@ int hover_off1 = 1;
  */
 int menuEvent(sdl_t *pSDL, son_t* son)
 {
-    int res = 0;
-
     SDL_Event event;
+    int res = 0;
     int mouse_x = 0;
     int mouse_y = 0;
     SDL_GetMouseState(&mouse_x, &mouse_y);
+    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
+
     pSDL->buttonPlay->hover = 0;
     pSDL->buttonQuit->hover = 0;
-    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
     if (SDL_HasIntersection(&mouse, &pSDL->buttonPlay->dstRect)) {
-        pSDL->buttonPlay->hover = 1;
-        hover_on = 1;
-        if (hover_on == 1 && hover_off == 1) {
-            hover_off = 0;
-            playSound(son);
-        }
+        makeSoundHover(pSDL->buttonPlay, son);
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
-        pSDL->buttonQuit->hover = 1;
-        hover_on = 1;
-        if (hover_on == 1 && hover_off== 1) {
-            hover_off = 0;
-            playSound(son);
-        }
-    } else { hover_off = 1;}
+        makeSoundHover(pSDL->buttonQuit, son);
+    } else
+        hover_off = 1;
+
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -86,22 +76,23 @@ int menuEvent(sdl_t *pSDL, son_t* son)
 
 int menuGameOverEvent(sdl_t *pSDL)
 {
+    SDL_Event event;
     int res = 0;
     int mouse_x = 0;
     int mouse_y = 0;
     SDL_GetMouseState(&mouse_x, &mouse_y);
-    pSDL->buttonQuit->hover = 0;
     const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
-    SDL_Event event;
     SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
 
-     if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
+    pSDL->buttonQuit->hover = 0;
+    if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
         pSDL->buttonQuit->hover = 1;
         hover_on = 1;
         if (hover_on == 1 && hover_off== 1) {
             hover_off = 0;
         }
-    } else { hover_off = 1;}
+    } else
+        hover_off = 1;
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -117,8 +108,8 @@ int menuGameOverEvent(sdl_t *pSDL)
                     break;
             }
         } else if (event.type == SDL_MOUSEBUTTONUP) {
-            if (event.button.x > 550  && event.button.x < (550 + IMG_MENU_W/3)
-                && event.button.y > 650 && event.button.y < 650 +(IMG_MENU_H/3)) {
+            if (event.button.x > 550 && event.button.x < 550 + (IMG_MENU_W / 3) &&
+                event.button.y > 650 && event.button.y < 650 + (IMG_MENU_H / 3)) {
                 res = -1;
             }
         }
@@ -135,38 +126,24 @@ int menuGameOverEvent(sdl_t *pSDL)
  */
 int menuNetworkEvent(sdl_t *pSDL, son_t* son)
 {
-    int res = 0;
     SDL_Event event;
-
+    int res = 0;
     int mouse_x = 0;
     int mouse_y = 0;
     SDL_GetMouseState(&mouse_x, &mouse_y);
+    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
+
     pSDL->buttonConnect->hover = 0;
     pSDL->buttonHost->hover = 0;
     pSDL->buttonQuit->hover = 0;
-    const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
     if (SDL_HasIntersection(&mouse, &pSDL->buttonConnect->dstRect)) {
-        pSDL->buttonConnect->hover = 1;
-        hover_on1 = 1;
-        if (hover_on1 == 1 && hover_off1 == 1) {
-            hover_off1 = 0;
-            playSound(son);
-        }
+        makeSoundHover(pSDL->buttonConnect, son);
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonQuit->dstRect)) {
-        pSDL->buttonQuit->hover = 1;
-        hover_on1 = 1;
-        if (hover_on1 == 1 && hover_off1 == 1) {
-            hover_off1 = 0;
-           playSound(son);
-        }
+        makeSoundHover(pSDL->buttonQuit, son);
     } else if (SDL_HasIntersection(&mouse, &pSDL->buttonHost->dstRect)) {
-        pSDL->buttonHost->hover = 1;
-        hover_on1 = 1;
-        if (hover_on1 == 1 && hover_off1 == 1) {
-            hover_off1 = 0;
-            playSound(son);
-        }
-    } else {hover_off1 = 1;}
+        makeSoundHover(pSDL->buttonHost, son);
+    } else
+        hover_off = 1;
 
     SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT)
@@ -183,17 +160,18 @@ int menuNetworkEvent(sdl_t *pSDL, son_t* son)
             case SDLK_ESCAPE:
                 res = -1;
                 break;
-            default:break;
+            default:
+                break;
         }
     } else if (event.type == SDL_MOUSEBUTTONUP) {
         const int size = (MAP_SIZE_W / 2) - (200 / 2);
-        if ( event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 300 &&  event.button.y < 300 + 150) {
+        if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 300 &&  event.button.y < 300 + 150) {
             res = 2;
         }
-        if ( event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 600 &&  event.button.y < 600 + 150) {
+        if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 600 &&  event.button.y < 600 + 150) {
             res = -1;
         }
-        if ( event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 450 &&  event.button.y < 450 + 150) {
+        if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 450 &&  event.button.y < 450 + 150) {
             res = 1;
         }
         if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350) {
@@ -219,20 +197,11 @@ int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
     const SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
 
     if (SDL_HasIntersection(&mouse, &pSDL->buttonLaunch->dstRect)) {
-        pSDL->buttonLaunch->hover = 1;
-        hover_on1 = 1;
-        if (hover_on1 == 1 && hover_off1 == 1) {
-            hover_off1 = 0;
-            playSound(son);
-        }
+        makeSoundHover(pSDL->buttonLaunch, son);
     } else if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
-        pSDL->buttonQuit->hover = 1;
-        hover_on1 = 1;
-        if (hover_on1 == 1 && hover_off1 == 1) {
-            hover_off1 = 0;
-            playSound(son);
-        }
-    } else {hover_off1 = 1;}
+        makeSoundHover(pSDL->buttonQuit, son);
+    } else
+        hover_off = 1;
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -260,4 +229,14 @@ int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
         }
     }
     return res;
+}
+
+void makeSoundHover(button_t *button, son_t *son)
+{
+    button->hover = 1;
+    hover_on = 1;
+    if (hover_on == 1 && hover_off == 1) {
+        hover_off = 0;
+        playSound(son);
+    }
 }

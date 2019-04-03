@@ -32,7 +32,7 @@ void drawGame(game_t *game) {
                     renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
                 }
             }
-            if (getMyPlayer(game)->alive == 'Y' && playerisDead(game, getMyPlayer(game)->number) > 0) {
+            if (getMyPlayer(game)->alive == 'Y' && isPlayerDead(game->players, getMyPlayer(game)->number) > 0) {
                renderWin(game->pSDL);
                 game->leave = menuGameOverEvent(game->pSDL);
                 if (game->leave == -1) {
@@ -50,34 +50,13 @@ void drawGame(game_t *game) {
                 renderPlayer(game->pSDL, &game->players[i]);
             } else if (game->players[i].alive == 'N') {
                 if (game->players[i].current_frame < 9) {
-                    renderblood(game->pSDL, &game->players[i]);
+                    renderBlood(game->pSDL, &game->players[i]);
                 }
                 game->players[i].current_frame++;
             }
         }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);
-}
-
-/**
- * function : return 1 if all player is dead exept MyPlayer
- * @param game
- * @param player
- * @return
- */
-int playerisDead(game_t *game, int player) {
-    int res = 0;
-    int nbkill = 0;
-    for(int i = 0; i < MAX_PLAYER; i++ ) {
-        if (game->players[i].alive == 'N' && game->players[i].number != player) {
-            nbkill++;
-        }
-    }
-    if (nbkill == getNbPlayer(game) - 1) {
-        res = 1;
-        return res;
-    }
-    return res;
 }
 
 /**
@@ -372,7 +351,7 @@ void renderPlayer(sdl_t *pSDL, player_t *player) {
  *
  * @param player
  */
-void renderblood(sdl_t *pSDL, player_t *player) {
+void renderBlood(sdl_t *pSDL, player_t *player) {
     //SDL_Log("current_frame: %d", player->current_frame);
     //SDL_Log("frame_time: %d", player->frame_time);
 

@@ -220,7 +220,6 @@ int isPlayerDead(player_t players[MAX_PLAYER], int number) {
     }
     if (nbkill == getNbPlayer(players) - 1) {
         res = 1;
-//        SDL_Log("dois passer ici si all mort sauf getMyplayer");
         return res;
     }
     return res;

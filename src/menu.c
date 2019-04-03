@@ -81,18 +81,18 @@ int menuGameOverEvent(sdl_t *pSDL)
     int mouse_x = 0;
     int mouse_y = 0;
     SDL_GetMouseState(&mouse_x, &mouse_y);
-    pSDL->buttonQuit->hover = 0;
     const SDL_Rect mouse = {mouse_x, mouse_y, 1, 1};
-    SDL_Event event;
     SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
 
-     if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
+    pSDL->buttonQuit->hover = 0;
+    if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
         pSDL->buttonQuit->hover = 1;
         hover_on = 1;
         if (hover_on == 1 && hover_off== 1) {
             hover_off = 0;
         }
-    } else { hover_off = 1;}
+    } else
+        hover_off = 1;
 
     if (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
@@ -108,8 +108,8 @@ int menuGameOverEvent(sdl_t *pSDL)
                     break;
             }
         } else if (event.type == SDL_MOUSEBUTTONUP) {
-            if (event.button.x > 550  && event.button.x < (550 + IMG_MENU_W/3)
-                && event.button.y > 650 && event.button.y < 650 +(IMG_MENU_H/3)) {
+            if (event.button.x > 550 && event.button.x < 550 + (IMG_MENU_W / 3) &&
+                event.button.y > 650 && event.button.y < 650 + (IMG_MENU_H / 3)) {
                 res = -1;
             }
         }

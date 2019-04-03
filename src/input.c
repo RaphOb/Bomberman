@@ -55,7 +55,7 @@ int loopInputConnect(game_t *game)
         } else if (quit == 1) {
             quit = manageInput(port, pSDL, 1);
         } else {
-            quit = manageInput(pseudo, pSDL, 1);
+            quit = manageInput(pseudo, pSDL, 2);
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }

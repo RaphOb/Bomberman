@@ -83,17 +83,15 @@ void getNbClientServer(game_t *g, player_t *p)
             myPlayer->co_is_ok = 1;
             myPlayer->number = g->nb_client_serv;
             myPlayer->checksum = p->checksum;
-            myPlayer->x_pos = p->x_pos;
-            myPlayer->y_pos = p->y_pos;
             myPlayer->speed = p->speed;
             myPlayer->bombPosed = p->bombPosed;
             myPlayer->nbBombe = p->nbBombe;
             myPlayer->frags = p->frags;
             myPlayer->current_frame = p->current_frame;
             myPlayer->frame_time = p->frame_time;
-            myPlayer->direction = p->direction;
             myPlayer->still = p->still;
             myPlayer->mutex_player = p->mutex_player;
+            setPlayerXYDir(myPlayer);
             strcpy(myPlayer->name, g->name);
             c_emission(myPlayer, 201);
         }

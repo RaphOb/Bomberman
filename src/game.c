@@ -24,7 +24,6 @@ game_t *initGame(sdl_t *pSDL)
     if (!game) {
         return (NULL);
     }
-    game->blood = 0;
     game->start = 0;
     if (extractArrayFromFile(game->map) == 0) {
         return (NULL);
@@ -43,12 +42,12 @@ player_t *getMyPlayer(game_t *g)
     return &g->players[g->nb_client_serv];
 }
 
-int getNbPlayer(game_t *g)
+int getNbPlayer(player_t players[MAX_PLAYER])
 {
     int nb = 0;
 
     for (int i = 0; i < MAX_PLAYER; i++) {
-        if (g->players[i].number != -1)
+        if (players[i].number != -1)
             nb++;
     }
     return nb;

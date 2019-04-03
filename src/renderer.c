@@ -8,6 +8,7 @@
 #include "../header/bonus.h"
 #include "../header/bomb.h"
 #include "../header/input.h"
+#include "../header/reseau.h"
 
 
 /**
@@ -31,45 +32,31 @@ void drawGame(game_t *game) {
                     renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
                 }
             }
-            if (getMyPlayer(game)->alive == 'Y' && playerisDead(game, getMyPlayer(game)->number) > 0) {
+            if (getMyPlayer(game)->alive == 'Y' && isPlayerDead(game->players, getMyPlayer(game)->number) > 0) {
                renderWin(game->pSDL);
+                game->leave = menuGameOverEvent(game->pSDL);
+                if (game->leave == -1) {
+                    c_emission(getMyPlayer(game), DISCONNECT_CODE);
+                }
             }
             if (getMyPlayer(game)->alive == 'N') {
                 renderGameOver(game->pSDL);
+                game->leave = menuGameOverEvent(game->pSDL);
+                if (game->leave == -1) {
+                    c_emission(getMyPlayer(game), DISCONNECT_CODE);
+                }
             }
             if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
                 renderPlayer(game->pSDL, &game->players[i]);
             } else if (game->players[i].alive == 'N') {
                 if (game->players[i].current_frame < 9) {
-                    renderblood(game->pSDL, &game->players[i]);
+                    renderBlood(game->pSDL, &game->players[i]);
                 }
                 game->players[i].current_frame++;
             }
         }
     }
     SDL_RenderPresent(game->pSDL->pRenderer);
-}
-
-/**
- * function : return 1 if all player is dead exept MyPlayer
- * @param game
- * @param player
- * @return
- */
-int playerisDead(game_t *game, int player) {
-    int res = 0;
-    int nbkill = 0;
-    for(int i = 0; i < MAX_PLAYER; i++ ) {
-        if (game->players[i].alive == 'N' && game->players[i].number != player) {
-            nbkill++;
-        }
-    }
-    if (nbkill == getNbPlayer(game) - 1) {
-        res = 1;
-        SDL_Log("dois passer ici si all mort sauf getMyplayer");
-        return res;
-    }
-    return res;
 }
 
 /**
@@ -169,12 +156,10 @@ void renderMenu(sdl_t *pSDL) {
  * @param pSDL
  */
 void renderGameOver(sdl_t *pSDL) {
-    SDL_Rect dst_menuQuitter = {700, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
+    SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
     SDL_Rect dst_menugameover = {50, 100, MAP_SIZE_W, MAP_SIZE_W / 2};
 
 
-    SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonTryagain->textureButton[pSDL->buttonTryagain->hover], NULL,
-                   &pSDL->buttonTryagain->dstRect);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->texturegameover, NULL, &dst_menugameover);
 }
@@ -366,7 +351,7 @@ void renderPlayer(sdl_t *pSDL, player_t *player) {
  *
  * @param player
  */
-void renderblood(sdl_t *pSDL, player_t *player) {
+void renderBlood(sdl_t *pSDL, player_t *player) {
     //SDL_Log("current_frame: %d", player->current_frame);
     //SDL_Log("frame_time: %d", player->frame_time);
 

@@ -18,7 +18,7 @@
 player_t initPlayer()
 {
     player_t p;
-    char str[20] = {'a'};
+    char str[20] = {'\0'};
     p.alive = 'Y';
     p.co_is_ok = 0;
     p.bombPosed = 0;
@@ -202,4 +202,25 @@ void setPlayerXYDir(player_t *p)
         default:
             break;
     }
+}
+
+/**
+* function : return 1 if all player is dead exept MyPlayer
+* @param game
+* @param number
+* @return
+*/
+int isPlayerDead(player_t players[MAX_PLAYER], int number) {
+    int res = 0;
+    int nbkill = 0;
+    for(int i = 0; i < MAX_PLAYER; i++ ) {
+        if (players[i].alive == 'N' && players[i].number != number) {
+            nbkill++;
+        }
+    }
+    if (nbkill == getNbPlayer(players) - 1) {
+        res = 1;
+        return res;
+    }
+    return res;
 }

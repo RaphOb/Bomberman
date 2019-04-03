@@ -51,11 +51,11 @@ int loopInputConnect(game_t *game)
         SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
 
         if (quit == 0) {
-            quit = manageInput(ip, pSDL);
+            quit = manageInput(ip, pSDL, 0);
         } else if (quit == 1) {
-            quit = manageInput(port, pSDL);
+            quit = manageInput(port, pSDL, 1);
         } else {
-            quit = manageInput(pseudo, pSDL);
+            quit = manageInput(pseudo, pSDL, 2);
         }
         SDL_RenderPresent(pSDL->pRenderer);
     }
@@ -104,17 +104,15 @@ int loopInputHost(game_t *game, char **p)
         renderInput(textRectPort, pSDL, port);
         renderInput(textRectPseudo, pSDL, pseudo);
 
-
         if (quit == 0) {
-            quit = manageInput(port, pSDL);
+            quit = manageInput(port, pSDL, 0);
         } else if (quit == 1) {
-            quit = manageInput(pseudo, pSDL);
+            quit = manageInput(pseudo, pSDL, 1);
         }
         SDL_Rect dst_menu_retour = {20, 550, 350, 350};
         SDL_RenderCopy(pSDL->pRenderer, pSDL->textureMenuRetour, NULL, &dst_menu_retour);
         SDL_RenderPresent(pSDL->pRenderer);
     }
-
     if (quit == 2) {
         *p = strdup(port->str);
         strcpy(game->name, pseudo->str);
@@ -132,10 +130,10 @@ int loopInputHost(game_t *game, char **p)
  * @param input
  * @return
  */
-int manageInput(input_t *input, sdl_t* pSDL)
+int manageInput(input_t *input, sdl_t* pSDL, int res)
 {
     SDL_Event event;
-    static int quit = 0;
+    int quit = res;
 
     SDL_WaitEvent(&event);
     if (event.type == SDL_QUIT)
@@ -156,10 +154,8 @@ int manageInput(input_t *input, sdl_t* pSDL)
         if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350) {
             pSDL->network = 0;
             quit = -1;
-            SDL_Log("Petit bug ici encore");
         }
     }
-
     return quit;
 }
 

@@ -491,6 +491,7 @@ int into_thread(void* fd_client)
                 run = s_reception(c, &c_request);
                 pthread_mutex_unlock(&clients->mutex_client);
             }
+
         }
         //SDL_Log("[Server] run = %d\n", run);
     }

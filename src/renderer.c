@@ -172,7 +172,7 @@ void renderGameOver(sdl_t *pSDL) {
  * @param pSDL
  */
 void renderWin(sdl_t *pSDL) {
-    SDL_Rect dst_youwin = {50, 100, MAP_SIZE_W, MAP_SIZE_W / 2};
+    SDL_Rect dst_youwin = {50, 100, MAP_SIZE_W - 100, MAP_SIZE_W / 2};
     SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
 
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureyouWin, NULL, &dst_youwin);

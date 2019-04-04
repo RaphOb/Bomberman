@@ -16,31 +16,30 @@
  * @param game
  */
 void drawGame(game_t *game) {
-    int i = 0;
     pthread_mutex_lock(&game->mutex_map);
     SDL_RenderClear(game->pSDL->pRenderer);
     renderBanner(game->pSDL, game->players, game);
-//    renderGameOver(game->pSDL);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    while (game->players[i].number >= 0) {
-        for (int j = 0; j < MAX_BOMBE; j++) {
-            if (game->players[i].bomb[j].isPosed) {
-                renderBomb(game->pSDL, &game->players[i].bomb[j]);
+    for (int i = 0; i < MAX_PLAYER; i++)  {
+        if (game->players[i].number != -1) {
+            for (int j = 0; j < MAX_BOMBE; j++) {
+                if (game->players[i].bomb[j].isPosed) {
+                    renderBomb(game->pSDL, &game->players[i].bomb[j]);
+                }
+                if (game->players[i].bomb[j].explosion == 1) {
+                    renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
+                }
             }
-            if (game->players[i].bomb[j].explosion == 1) {
-                renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
+            if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
+                renderPlayer(game->pSDL, &game->players[i]);
+            } else if (game->players[i].alive == 'N') {
+                if (game->players[i].current_frame < 9) {
+                    renderBlood(game->pSDL, &game->players[i]);
+                }
+                game->players[i].current_frame++;
             }
         }
-        if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
-            renderPlayer(game->pSDL, &game->players[i]);
-        } else if (game->players[i].alive == 'N') {
-            if (game->players[i].current_frame < 9) {
-                renderBlood(game->pSDL, &game->players[i]);
-            }
-            game->players[i].current_frame++;
-        }
-        i++;
     }
     if (getMyPlayer(game)->alive == 'Y' && isPlayerDead(game->players, getMyPlayer(game)->number) > 0) {
         renderWin(game->pSDL);
@@ -95,7 +94,7 @@ void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game) {
     SDL_Texture *text_bonus = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     sprintf(str, "%d", player->nbBombe);
     SDL_Texture *text_bonus2 = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
-    sprintf(str, "%d", player->speed);
+    sprintf(str, "%d", player->speed - 2);
     SDL_Texture *text_bonus3 = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     // Render rect
     SDL_SetRenderDrawColor(pSDL->pRenderer, 36, 182, 102, 255);
@@ -164,7 +163,6 @@ void renderGameOver(sdl_t *pSDL) {
     SDL_Rect dst_menuQuitter = {550, 650, IMG_MENU_W / 3, IMG_MENU_H / 3};
     SDL_Rect dst_menugameover = {50, 100, MAP_SIZE_W, MAP_SIZE_W / 2};
 
-
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->texturegameover, NULL, &dst_menugameover);
 }
@@ -217,7 +215,12 @@ void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
     SDL_RenderPresent(pSDL->pRenderer);
 }
 
-
+/**
+ * function : render menu  Lobby
+ * @param pSDL
+ * @param players
+ * @param host
+ */
 void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
     SDL_Rect dst_menuQuitter = {(MAP_SIZE_W / 2) - (IMG_MENU_W / 6) + 400, 600, IMG_MENU_W / 3, IMG_MENU_H / 3};
@@ -231,14 +234,19 @@ void renderMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
 
 }
 
+/**
+ * function : render player name on lobby
+ * @param pSDL
+ * @param players
+ */
 void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
     SDL_Rect dstStringBase = {400, 300, 0, 0};
     SDL_Texture *textureHost = createTextureText(pSDL->pRenderer, font, color, "Joueur(s) connecte(s): ");
     SDL_Rect base_dst = {500, 300, 0, 0};
+    renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
     for (int i = 0; i < MAX_PLAYER; i++) {
-        renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
         if (players[i].number != -1) {
             // Connected
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, players[i].name);
@@ -259,9 +267,10 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
  */
 void renderBomb(sdl_t *pSDL, bomb_t *bomb) {
     int currentTick = SDL_GetTicks();
+
     SDL_Rect dst_bomb = {bomb->pos_x, bomb->pos_y, bomb->width, bomb->height};
-//        SDL_Log("pos_x : %d, pos_y; %d, width: %d, height: %d", bomb->pos_x, bomb->pos_x, bomb->width, bomb->height);
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBomb, NULL, &dst_bomb);
+
     if (currentTick - bomb->tickBombDropped > 1980) {
         playSound(pSDL->son[1]);
     }
@@ -338,12 +347,10 @@ void renderPlayer(sdl_t *pSDL, player_t *player) {
     }
 
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, (FRAME_HEIGHT) * player->direction, FRAME_WIDTH, FRAME_HEIGHT};
-//    SDL_Log("player_x : %d, player_y : %d", player->cell_x, player->cell_y);
     SDL_Rect r = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
-//    SDL_Log("cell_x: %d, cell_y: %d", player->cell_x, player->cell_y);
-//    SDL_Log("player number: %d", player->number);
-//    SDL_Log("player texture: %d", pSDL->texturePlayers[player->number] != NULL);
+
     SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[player->number], &src, &r);
+
     if (player->still == 0) {
         player->frame_time++;
         if (FPS / player->frame_time == 4) {
@@ -354,27 +361,29 @@ void renderPlayer(sdl_t *pSDL, player_t *player) {
 }
 
 /**
- *
+ * function : render blood when player die
  * @param player
  */
 void renderBlood(sdl_t *pSDL, player_t *player) {
-    //SDL_Log("current_frame: %d", player->current_frame);
-    //SDL_Log("frame_time: %d", player->frame_time);
-
     SDL_Rect src = {FRAME_WIDTH * player->current_frame, 0, FRAME_WIDTH, FRAME_HEIGHT};
     SDL_Rect dst = {player->x_pos, player->y_pos, PLAYER_WIDTH, PLAYER_HEIGHT};
 
     SDL_RenderCopy(pSDL->pRenderer, pSDL->texturePlayers[4], &src, &dst);
-
 
     player->frame_time++;
     if (FPS / player->frame_time == 6) {
         player->current_frame++;
         player->frame_time = 0;
     }
-
 }
 
+/**
+ *
+ * @param pSDL
+ * @param type
+ * @param x
+ * @param y
+ */
 void renderBonus(sdl_t *pSDL, typeBonus_e type, int x, int y) {
     SDL_Rect src = {0, 0, 24, 24};
     SDL_Rect dst = {START_X_MAP + (x * REAL_BLOCK_SIZE),
@@ -413,14 +422,15 @@ void renderMap(map_t map, sdl_t *pSdl) {
             if (getBit(map[i], j, 4)) {
                 renderBonus(pSdl, getBonus(map, j, i), j, i);
             }
-//            if (getBit(map[i], j, 3)) {
-//                SDL_Log("aled");
-//                renderBomb(pSdl, getBomb(j, i, player));
-//            }
         }
     }
 }
 
+/**
+ *
+ * @param pSDL
+ * @param i
+ */
 void renderBackgroundMenu(sdl_t *pSDL, int i) {
     SDL_Rect dst = {0, 0, WINDOW_WIDTH, WINDOW_HEIGHT};
     SDL_RenderCopy(pSDL->pRenderer, pSDL->textureBackground[i], NULL, &dst);

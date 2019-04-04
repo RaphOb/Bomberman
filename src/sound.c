@@ -4,28 +4,34 @@
 
 #include "../header/sound.h"
 
-void closeAudio(son_t* son)
-{
+/**
+ *
+ * @param son
+ */
+void closeAudio(son_t *son) {
     SDL_CloseAudioDevice(son->deviceId);
 }
 
-son_t* initAudio(char* path)
-{
-    son_t* son = malloc(sizeof(son_t));
+/**
+ * function : initalize audio device
+ * @param path
+ * @return
+ */
+son_t *initAudio(char *path) {
+    son_t *son = malloc(sizeof(son_t));
     if (!son) {
-        return NULL ;
+        return NULL;
     }
     SDL_LoadWAV(path, &son->wavSpec, &son->wavBuffer, &son->wavLength);
     son->deviceId = SDL_OpenAudioDevice(NULL, 0, &son->wavSpec, NULL, 0);
     return son;
 }
+
 /**
  * functin :Play sound
  * @param path
  */
-void playSound(son_t* son)
-{
-
+void playSound(son_t *son) {
 
     SDL_QueueAudio(son->deviceId, son->wavBuffer, son->wavLength);
     SDL_PauseAudioDevice(son->deviceId, 0);
@@ -40,16 +46,12 @@ void playSound(son_t* son)
  * @param path
  * @return
  */
-int playMusic(char *path)
-{
+int playMusic(char *path) {
 
     static Uint32 wav_length = 0;
     static Uint8 *wav_buffer;
     static SDL_AudioSpec wav_spec;
 
-//    if (audio_len == 0) {
-//        return 1;
-//    }
     if (audio_len == 0) {
         SDL_CloseAudio();
 //        SDL_FreeWAV(wav_buffer);
@@ -81,8 +83,6 @@ int playMusic(char *path)
  */
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {
 
-//    if (audio_len ==0)
-//        return;
     if (audio_len != 0) {
         len = ((Uint32) len > audio_len ? audio_len : (Uint32) len);
         SDL_memcpy(stream, audio_pos, (Uint32) len);

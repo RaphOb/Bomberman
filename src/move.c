@@ -11,9 +11,9 @@
  * An array of the structure "move_t" containing a function pointer and the key corresponding
  */
 const move_t move[] = {
-        {moveUp, UP_CODE},
-        {moveDown, DOWN_CODE},
-        {moveLeft, LEFT_CODE},
+        {moveUp,    UP_CODE},
+        {moveDown,  DOWN_CODE},
+        {moveLeft,  LEFT_CODE},
         {moveRight, RIGHT_CODE},
         {NULL, 0}
 };
@@ -25,8 +25,7 @@ const move_t move[] = {
  * @param map
  * @return
  */
-int doMove(int code, player_t *player, map_t map, int request_x, int request_y)
-{
+int doMove(int code, player_t *player, map_t map, int request_x, int request_y) {
     int i = 0;
     player->still = 0;
 
@@ -44,26 +43,26 @@ int doMove(int code, player_t *player, map_t map, int request_x, int request_y)
         i++;
     }
 }
+
 /**
  * function : Move the player up
  * @param player
  * @param map
  */
-void moveUp(player_t *player, map_t map, int request_x, int request_y)
-{
+void moveUp(player_t *player, map_t map, int request_x, int request_y) {
     player->direction = 3;
     if (player->y_pos > START_Y_MAP && collideWith(map, player, request_x, request_y) == 0) {
         player->y_pos = request_y;
     }
 //    c_emission(player, UP_CODE);
 }
+
 /**
  * function : Move the player right
  * @param player
  * @param map
  */
-void moveRight(player_t *player, map_t map, int request_x, int request_y)
-{
+void moveRight(player_t *player, map_t map, int request_x, int request_y) {
     player->direction = 2;
     if (player->x_pos < ((START_X_BACKGROUND + MAP_SIZE_W) - (PLAYER_WIDTH + (REAL_BLOCK_SIZE)))
         && collideWith(map, player, request_x, request_y) == 0) {
@@ -77,8 +76,7 @@ void moveRight(player_t *player, map_t map, int request_x, int request_y)
  * @param player
  * @param map
  */
-void moveDown(player_t *player, map_t map, int request_x, int request_y)
-{
+void moveDown(player_t *player, map_t map, int request_x, int request_y) {
     player->direction = 0;
     if (player->y_pos < ((START_Y_BACKGROUND + MAP_SIZE_H) - (PLAYER_HEIGHT + (REAL_BLOCK_SIZE / 2)))
         && collideWith(map, player, request_x, request_y) == 0) {
@@ -92,8 +90,7 @@ void moveDown(player_t *player, map_t map, int request_x, int request_y)
  * @param player
  * @param map
  */
-void moveLeft(player_t *player, map_t map, int request_x, int request_y)
-{
+void moveLeft(player_t *player, map_t map, int request_x, int request_y) {
     player->direction = 1;
     if (player->x_pos > START_X_MAP && collideWith(map, player, request_x, request_y) == 0) {
         player->x_pos = request_x;

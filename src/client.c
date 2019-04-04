@@ -191,14 +191,22 @@ void listen_server(void* g_param)
                 run =  c_reception(DISCONNECT_CODE, serv.sock);
             } else {
                 // On s'assure que le joueur de ce client se trouve bien dans game.players[0]
+                game->checksum_map = 0;
+                for (int x = 0; x < 9; x++) {
+                    for (int y = 0; y < 13; y++) {
+                        game->checksum_map += g.map[x][y];
+                    }
+                }
                 for (int i = 0; i < MAX_PLAYER ; i++) {
                     if (g.players[i].number >= 0 && g.players[i].checksum == sizeof(g.players[i])) {
                         game->start = g.start;
                         maj_player(game, g.players[i].number, &g.players[i]);
                         pthread_mutex_lock(&game->mutex_map);
-                        for (int x = 0; x < 9; x++) {
-                            for (int y = 0; y < 13; y++) {
-                                game->map[x][y] = g.map[x][y];
+                        if (game->checksum_map == g.checksum_map) {
+                            for (int x = 0; x < 9; x++) {
+                                for (int y = 0; y < 13; y++) {
+                                    game->map[x][y] = g.map[x][y];
+                                }
                             }
                         }
                         pthread_mutex_unlock(&game->mutex_map);

@@ -308,9 +308,11 @@ game_t init_game_server_side(int code)
     g.nb_client_serv = 0;
     g.start = g_serv_info.start;
     // MAP
+    g.checksum_map = 0;
     for (int x = 0; x < 9; x++) {
         for (int y = 0; y < 13; y++) {
             g.map[x][y] = g_serv_info.map[x][y];
+            g.checksum_map += g_serv_info.map[x][y];
         }
     }
 

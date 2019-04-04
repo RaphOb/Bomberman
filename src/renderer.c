@@ -95,7 +95,7 @@ void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game) {
     SDL_Texture *text_bonus = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     sprintf(str, "%d", player->nbBombe);
     SDL_Texture *text_bonus2 = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
-    sprintf(str, "%d", player->speed);
+    sprintf(str, "%d", player->speed - 2);
     SDL_Texture *text_bonus3 = createTextureText(pSDL->pRenderer, pSDL->font, color, str);
     // Render rect
     SDL_SetRenderDrawColor(pSDL->pRenderer, 36, 182, 102, 255);

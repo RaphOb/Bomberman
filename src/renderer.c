@@ -16,31 +16,31 @@
  * @param game
  */
 void drawGame(game_t *game) {
-    int i = 0;
     pthread_mutex_lock(&game->mutex_map);
     SDL_RenderClear(game->pSDL->pRenderer);
     renderBanner(game->pSDL, game->players, game);
 //    renderGameOver(game->pSDL);
     renderBackground(game->pSDL);
     renderMap(game->map, game->pSDL);
-    while (game->players[i].number >= 0) {
-        for (int j = 0; j < MAX_BOMBE; j++) {
-            if (game->players[i].bomb[j].isPosed) {
-                renderBomb(game->pSDL, &game->players[i].bomb[j]);
+    for (int i = 0; i < MAX_PLAYER; i++)  {
+        if (game->players[i].number != -1) {
+            for (int j = 0; j < MAX_BOMBE; j++) {
+                if (game->players[i].bomb[j].isPosed) {
+                    renderBomb(game->pSDL, &game->players[i].bomb[j]);
+                }
+                if (game->players[i].bomb[j].explosion == 1) {
+                    renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
+                }
             }
-            if (game->players[i].bomb[j].explosion == 1) {
-                renderExplosion(game->pSDL, game->players[i].bomb[j].frame, game->map, game->players[i].bomb[j]);
+            if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
+                renderPlayer(game->pSDL, &game->players[i]);
+            } else if (game->players[i].alive == 'N') {
+                if (game->players[i].current_frame < 9) {
+                    renderBlood(game->pSDL, &game->players[i]);
+                }
+                game->players[i].current_frame++;
             }
         }
-        if (game->players[i].alive == 'Y' && game->players[i].co_is_ok != -1) {
-            renderPlayer(game->pSDL, &game->players[i]);
-        } else if (game->players[i].alive == 'N') {
-            if (game->players[i].current_frame < 9) {
-                renderBlood(game->pSDL, &game->players[i]);
-            }
-            game->players[i].current_frame++;
-        }
-        i++;
     }
     if (getMyPlayer(game)->alive == 'Y' && isPlayerDead(game->players, getMyPlayer(game)->number) > 0) {
         renderWin(game->pSDL);
@@ -237,8 +237,8 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
     SDL_Rect dstStringBase = {400, 300, 0, 0};
     SDL_Texture *textureHost = createTextureText(pSDL->pRenderer, font, color, "Joueur(s) connecte(s): ");
     SDL_Rect base_dst = {500, 300, 0, 0};
+    renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
     for (int i = 0; i < MAX_PLAYER; i++) {
-        renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
         if (players[i].number != -1) {
             // Connected
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, players[i].name);

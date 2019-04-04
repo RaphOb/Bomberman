@@ -516,7 +516,7 @@ int app_serv(void* serv_port)
 
     while (1) {
         SOCKADDR_IN csin = { 0 };
-        unsigned int sinsize = sizeof(csin);
+        int sinsize = sizeof(csin);
         SDL_Log("[Server] Attente d'un client...\n");
         SOCKET client = accept(sock, (struct sockaddr *)&csin, &sinsize);
         if (client == INVALID_SOCKET) {

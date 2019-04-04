@@ -9,6 +9,9 @@ static SOCKET sock;
 game_serv_side g_serv_info;
 
 // ----- INITIALISATION -----
+/**
+ * Portabilité W et Linux
+ */
 void init(void)
 {
 #ifdef WIN32
@@ -22,6 +25,9 @@ void init(void)
 #endif
 }
 
+/**
+ * Portabilité W et Linux
+ */
 void end(void)
 {
 #ifdef WIN32
@@ -29,6 +35,11 @@ void end(void)
 #endif
 }
 
+/**
+ * Initialisation de la socket serveur
+ * @param port
+ * @return
+ */
 int init_co(char *port)
 {
     SOCKADDR_IN sin = { 0 };
@@ -59,6 +70,9 @@ int init_co(char *port)
 }
 
 // ----- THREAD -----
+/**
+ * Fonction qui attend la fermeture des threads de tous les clients
+ */
 void wait_end_of_threads()
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -66,6 +80,10 @@ void wait_end_of_threads()
     }
 }
 
+/**
+ * Fermeture du thread d'un client donné
+ * @param c
+ */
 void delete_one_thread(Client *c)
 {
     if (c->num_client != -1) {
@@ -74,6 +92,9 @@ void delete_one_thread(Client *c)
     }
 }
 
+/**
+ * Fermeture de tous les threads clients
+ */
 void delete_all_threads()
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -82,6 +103,9 @@ void delete_all_threads()
 }
 
 // ----- SOCKET -----
+/**
+ * Fermeture de toutes les sockets clients
+ */
 void close_all_socket_clients()
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -92,6 +116,10 @@ void close_all_socket_clients()
     display_clients_co();
 }
 
+/**
+ * Fermeture d'une socket client
+ * @param c
+ */
 void close_socket_client(Client *c)
 {
     c->p.co_is_ok = 0;
@@ -103,18 +131,28 @@ void close_socket_client(Client *c)
     }
 }
 
+/**
+ * Fermeture du thread qui gère la partie côté serveur
+ */
 void close_game_thread()
 {
     pthread_cancel(g_serv_info.g_thread);
 }
 
 // ----- CLIENTS -----
-
+/**
+ * Permet de récupérer le player pour l'index d'un client donné
+ * @param i
+ * @return
+ */
 player_t *getPlayerForClient(int i)
 {
     return &g_serv_info.client[i]->p;
 }
 
+/**
+ * Permet de déconnecter tous les clients et de fermer la partie en cours
+ */
 void disconnect_all_clients()
 {
     close_game_thread();
@@ -132,6 +170,10 @@ void disconnect_all_clients()
     //delete_all_clients();
 }
 
+/**
+ * Gestion de la déconnexion pour un client donné
+ * @param c
+ */
 void disconnect_client(Client *c)
 {
     if (c->is_host == 1) {
@@ -143,6 +185,9 @@ void disconnect_client(Client *c)
     }
 }
 
+/**
+ * Suppression de tous les clients
+ */
 void delete_all_clients()
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -153,6 +198,10 @@ void delete_all_clients()
     display_clients_co();
 }
 
+/**
+ * Suppression d'un client dans le tableau de clients côté serveur
+ * @param c
+ */
 void delete_client(Client *c)
 {
     SDL_Log("[Server (%d)] Client supprime pour %d\n", c->num_client, c->num_client);
@@ -163,6 +212,9 @@ void delete_client(Client *c)
     pthread_mutex_unlock(&c->mutex_client);
 }
 
+/**
+ * Initialisation des clients. Cela perme d'avoir des données par défaut pour travailler avec.
+ */
 void init_all_clients()
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -172,6 +224,12 @@ void init_all_clients()
     }
 }
 
+/**
+ * Ajout d'un client au tableau des clients et initialise sa structure
+ * @param s
+ * @param csin
+ * @return
+ */
 int add_client(int s, SOCKADDR_IN csin)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -221,6 +279,11 @@ int add_client(int s, SOCKADDR_IN csin)
     return 0;
 }
 
+/**
+ * Permet de récupérer un client du tableau de clients avec le numéro de la socket
+ * @param c
+ * @return
+ */
 Client* get_client(int c)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -231,6 +294,9 @@ Client* get_client(int c)
     return NULL;
 }
 
+/**
+ * Affichage des clients connectés
+ */
 void display_clients_co()
 {
     for (int i = 0 ; i < 4 ; i++) {
@@ -245,6 +311,11 @@ void display_clients_co()
 // ----- DIVERS -----
 
 // ----- COMMUNICATION -----
+/**
+ * Permet d'envoyer une structure de la game à un client donné
+ * @param c
+ * @param code
+ */
 void write_to_client(Client *c, int code)
 {
     if (code == DISCONNECT_CODE) {
@@ -259,6 +330,10 @@ void write_to_client(Client *c, int code)
     }
 }
 
+/**
+ * Permet d'écrire à tous les clients (cf. write_to_client())
+ * @param code
+ */
 void write_to_all_clients(int code)
 {
     for (int i=0 ; i<MAX_CLIENT ; i++) {
@@ -268,6 +343,11 @@ void write_to_all_clients(int code)
     }
 }
 
+/**
+ * Cette fonction va effectuer des actions en fonction d'un code donné puis écrire aux clients
+ * @param c
+ * @param code
+ */
 void s_emission(Client *c, int code)
 {
     char *buffer;
@@ -302,6 +382,11 @@ void s_emission(Client *c, int code)
     }
 }
 
+/**
+ * Création et initialisation de l'état de la game qu'on enverra ensuite au client. Cela lui permettra d'être au courant de toutes les infos concernant la partie.
+ * @param code
+ * @return
+ */
 game_t init_game_server_side(int code)
 {
     game_t g;
@@ -358,6 +443,9 @@ game_t init_game_server_side(int code)
     return g;
 }
 
+/**
+ * A la réception d'un paquet client dans la strcture c_request, on analyse le code retourné par le client pour effectué les actions en fonction. On met à jour certaines données que nous transmet le client
+ */
 int s_reception(Client *c, t_client_request *c_request)
 {
     int index;
@@ -419,6 +507,10 @@ int s_reception(Client *c, t_client_request *c_request)
 }
 
 // ----- THREAD -----
+/**
+ * Cette fonction gère la partie côté serveur, c'est la boucle de jeu qui va faire les vérifications
+ * @return
+ */
 int game_thread()
 {
     SDL_Log("[Server] Lancement de game thread\n");
@@ -462,6 +554,9 @@ int game_thread()
     }
 }
 
+/**
+ * Lorsque le client rejoint le serveur il sera encapsulé dans un thread qui écoutera ce client
+ */
 int into_thread(void* fd_client)
 {
     fd_set readfs;
@@ -502,6 +597,11 @@ int into_thread(void* fd_client)
 }
 
 // ----- MAIN -----
+/**
+ * Fonction d'entrée du serveur. C'est elle qui va accepter les clients et les encapsuler dans la fonction into_thread. Elle est lancée dans un thread par l'hôte.
+ * @param serv_port
+ * @return
+ */
 int app_serv(void* serv_port)
 {
     init();

@@ -18,8 +18,7 @@
  * function : init game
  * @return
  */
-game_t *initGame(sdl_t *pSDL)
-{
+game_t *initGame(sdl_t *pSDL) {
     game_t *game = malloc(sizeof(game_t));
     if (!game) {
         return (NULL);
@@ -29,7 +28,7 @@ game_t *initGame(sdl_t *pSDL)
         return (NULL);
     }
     game->pSDL = pSDL;
-    for (int i = 0; i < MAX_PLAYER ; i++) {
+    for (int i = 0; i < MAX_PLAYER; i++) {
         game->players[i] = initPlayer();
         game->players[i].number = -1;
     }
@@ -38,13 +37,11 @@ game_t *initGame(sdl_t *pSDL)
 }
 
 
-player_t *getMyPlayer(game_t *g)
-{
+player_t *getMyPlayer(game_t *g) {
     return &g->players[g->nb_client_serv];
 }
 
-int getNbPlayer(player_t players[MAX_PLAYER])
-{
+int getNbPlayer(player_t players[MAX_PLAYER]) {
     int nb = 0;
 
     for (int i = 0; i < MAX_PLAYER; i++) {
@@ -59,8 +56,7 @@ int getNbPlayer(player_t players[MAX_PLAYER])
  * @param game
  * @return : int
  */
-int gameEvent(game_t *game)
-{
+int gameEvent(game_t *game) {
     int res = 0;
     const Uint8 *keystates = SDL_GetKeyboardState(NULL);
     SDL_Event event;
@@ -91,16 +87,13 @@ int gameEvent(game_t *game)
         if (keystates[SDL_SCANCODE_UP]) {
             p->y_pos -= p->speed;
             c_emission(p, UP_CODE);
-        }
-        else if (keystates[SDL_SCANCODE_DOWN]) {
+        } else if (keystates[SDL_SCANCODE_DOWN]) {
             p->y_pos += p->speed;
             c_emission(p, DOWN_CODE);
-        }
-        else if (keystates[SDL_SCANCODE_LEFT]) {
+        } else if (keystates[SDL_SCANCODE_LEFT]) {
             p->x_pos -= p->speed;
             c_emission(p, LEFT_CODE);
-        }
-        else if (keystates[SDL_SCANCODE_RIGHT]) {
+        } else if (keystates[SDL_SCANCODE_RIGHT]) {
             p->x_pos += p->speed;
             c_emission(p, RIGHT_CODE);
         } else {

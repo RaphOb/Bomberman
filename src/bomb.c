@@ -7,7 +7,10 @@
 #include "../header/bonus.h"
 #include "../header/reseau.h"
 
-
+/**
+ *
+ * @param bomb
+ */
 void updateBombForAnim(bomb_t *bomb)
 {
     const int size_m = 2;
@@ -35,6 +38,11 @@ void makeExplosion(bomb_t *bomb)
 
 }
 
+/**
+ * function : get index position bomb
+ * @param p
+ * @return
+ */
 int getIndexBomb(player_t *p)
 {
     for (int i = 0; i < p->nbBombe; i++) {
@@ -60,7 +68,6 @@ void placeBomb(player_t *player, bomb_t *bomb)
     bomb->pos_y = pos_y;
     bomb->width = BOMB_PNG_W;
     bomb->height = BOMB_PNG_H;
-////    SDL_Log("bombposed: %d, x: %d, y: %d", player->bombPosed, pSDL->dst_bomb[player->bombPosed].x, pSDL->dst_bomb[player->bombPosed].y);
     bomb->isPosed = 1;
     player->bombPosed++;
     bomb->tickBombDropped = SDL_GetTicks();
@@ -111,6 +118,11 @@ void checkBombPlayer(player_t *player, bomb_t b, map_t map) {
     }
 }
 
+/**
+ * function : check if Player is on explosion range
+ * @param map
+ * @param bomb
+ */
 void checkExplosion(map_t map, bomb_t bomb)
 {
     if (getBit(map[bomb.cell_y], bomb.cell_x, 3)) {
@@ -178,32 +190,15 @@ int destroyBlock(map_t map, int pos_x, int pos_y)
     return 0;
 }
 
-void chainExplosion(map_t map, int pos_x, int pos_y)
-{
-    // check if there is a bomb
-    if (getBit(map[pos_y], pos_x, 4)) {
-        //retrieve the bomb
-
-        // explode
-
-    }
-}
-
+/**
+ * function : check if bomb is on cell
+ * @param map
+ * @param x
+ * @param y
+ * @return
+ */
 int isBombOnCell(map_t map, int x, int y)
 {
     SDL_Log("x: %d, y: %d, res: %d", x, y, getBit(map[y], x, 3));
     return getBit(map[y], x, 3);
 }
-
-//
-//bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER])
-//{
-//    for (int i = 0; i < MAX_PLAYER; i++) {
-//        for (int j = 0; j < player[i].nbBombe; j++) {
-//            if (player[i].bomb[j].cell_x == x && player[i].bomb[j].cell_y == y) {
-//                SDL_Log("yes");
-//                return &player[i].bomb[j];
-//            }
-//        }
-//    }
-//}

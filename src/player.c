@@ -15,8 +15,7 @@
  * function : init the player
  * @return a player initialised with default variables
  */
-player_t initPlayer()
-{
+player_t initPlayer() {
     player_t p;
     char str[20] = {'\0'};
     p.alive = 'Y';
@@ -45,8 +44,7 @@ player_t initPlayer()
     return p;
 }
 
-bomb_t createBomb()
-{
+bomb_t createBomb() {
     bomb_t b;
 
     b.range = 1;
@@ -68,8 +66,7 @@ bomb_t createBomb()
  * function : Update the player's cells. A player can be on two different cells.
  * @param player
  */
-void updatePlayerCell(player_t *player)
-{
+void updatePlayerCell(player_t *player) {
     const int pos_x = player->x_pos - START_X_MAP;
     const int pos_y = player->y_pos - START_Y_MAP;
 
@@ -78,9 +75,6 @@ void updatePlayerCell(player_t *player)
 
     player->map_x[1] = (pos_x + PLAYER_WIDTH - 1) / REAL_BLOCK_SIZE;
     player->map_y[1] = (pos_y + PLAYER_HEIGHT - 1) / REAL_BLOCK_SIZE;
-
-//    SDL_Log("player_map_x[0] : %d, player_map_x[1] : %d, player_map_y[0] : %d, player_map_y[1] : %d", player->map_x[0], player->map_x[1], player->map_y[0], player->map_y[1]);
-
 
 }
 
@@ -92,8 +86,7 @@ void updatePlayerCell(player_t *player)
  * @param y
  * @return 1 if the player is colling with something, 0 if not
  */
-int collideWith(map_t map, player_t *player, int x, int y)
-{
+int collideWith(map_t map, player_t *player, int x, int y) {
     const int pos_x = x - START_X_MAP;
     const int pos_y = y - START_Y_MAP;
 
@@ -105,13 +98,13 @@ int collideWith(map_t map, player_t *player, int x, int y)
     // Down
     if (player->direction == 0) {
         cell_y = (pos_y + PLAYER_HEIGHT - 1) / REAL_BLOCK_SIZE;
-    // Right
+        // Right
     } else if (player->direction == 2) {
         cell_x = (pos_x + PLAYER_WIDTH - 1) / REAL_BLOCK_SIZE;
-    // Left
+        // Left
     } else if (player->direction == 1) {
         cell_x2 = (pos_x + 1) / REAL_BLOCK_SIZE;
-    // Up
+        // Up
     } else {
         cell_y2 = (pos_y + 1) / REAL_BLOCK_SIZE;
     }
@@ -130,8 +123,7 @@ int collideWith(map_t map, player_t *player, int x, int y)
  * @param player
  * @return 1 if the player can place a bomb, 0 if not
  */
-int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map)
-{
+int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map) {
     const float percentage = 0.6f;
     if (isPlayerOnOneCell(player)) {
         bomb->cell_x = player->map_x[0];
@@ -171,13 +163,11 @@ int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map)
  * @param player
  * @return 1 if he is in one cell, 0 if not
  */
-int isPlayerOnOneCell(player_t *player)
-{
+int isPlayerOnOneCell(player_t *player) {
     return (player->map_x[0] == player->map_x[1] && player->map_y[0] == player->map_y[1]);
 }
 
-void setPlayerXYDir(player_t *p)
-{
+void setPlayerXYDir(player_t *p) {
     switch (p->number) {
         case 0:
             p->x_pos = START_X_MAP;
@@ -213,7 +203,7 @@ void setPlayerXYDir(player_t *p)
 int isPlayerDead(player_t players[MAX_PLAYER], int number) {
     int res = 0;
     int nbkill = 0;
-    for(int i = 0; i < MAX_PLAYER; i++ ) {
+    for (int i = 0; i < MAX_PLAYER; i++) {
         if (players[i].alive == 'N' && players[i].number != number) {
             nbkill++;
         }

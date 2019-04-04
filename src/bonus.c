@@ -14,21 +14,32 @@
 const bonus_t bonus[] = {
         {applyBonusRangeBomb, bRangeBombe},
         {applyMalusRangeBomb, mRangeBombe},
-        {applyBonusNbBombe, bNbBombe},
-        {applyMalusNbBombe, mNbBombe},
-        {applyBonusSpeed, bVitesse},
-        {applyMalusSpeed, mVitesse},
-        {NULL, typeUnknown}
+        {applyBonusNbBombe,   bNbBombe},
+        {applyMalusNbBombe,   mNbBombe},
+        {applyBonusSpeed,     bVitesse},
+        {applyMalusSpeed,     mVitesse},
+        {NULL,                typeUnknown}
 };
 
-
-int isBonusOnCell(map_t map, int cell_x, int cell_y)
-{
+/**
+ * function : is Bonus on Cell?
+ * @param map
+ * @param cell_x
+ * @param cell_y
+ * @return
+ */
+int isBonusOnCell(map_t map, int cell_x, int cell_y) {
     return getBit(map[cell_y], cell_x, 4);
 }
 
-typeBonus_e getBonus(map_t map, int cell_x, int cell_y)
-{
+/**
+ * function
+ * @param map
+ * @param cell_x
+ * @param cell_y
+ * @return
+ */
+typeBonus_e getBonus(map_t map, int cell_x, int cell_y) {
     char type[3];
 
     for (int i = 5; i <= 7; i++) {
@@ -37,7 +48,6 @@ typeBonus_e getBonus(map_t map, int cell_x, int cell_y)
         strcat(type, tmp);
 //        free(tmp);
     }
-//    SDL_Log("type: %s", type);
     if (strcmp(type, "000") == 0) {
         return bRangeBombe;
     } else if (strcmp(type, "001") == 0) {
@@ -54,8 +64,13 @@ typeBonus_e getBonus(map_t map, int cell_x, int cell_y)
     return typeUnknown;
 }
 
-void spawnBonus(map_t map, int cell_x, int cell_y)
-{
+/**
+ *
+ * @param map
+ * @param cell_x
+ * @param cell_y
+ */
+void spawnBonus(map_t map, int cell_x, int cell_y) {
     SDL_Log("spanw");
     typeBonus_e type = rand() % 6;
     SDL_Log("cell_x : %d, cell_y: %d", cell_x, cell_y);
@@ -81,8 +96,12 @@ void spawnBonus(map_t map, int cell_x, int cell_y)
     }
 }
 
-void doBonus(typeBonus_e type, player_t *player)
-{
+/**
+ *
+ * @param type
+ * @param player
+ */
+void doBonus(typeBonus_e type, player_t *player) {
     int i = 0;
 
     while (bonus[i].type != typeUnknown) {
@@ -95,8 +114,11 @@ void doBonus(typeBonus_e type, player_t *player)
     }
 }
 
-void applyBonusRangeBomb(player_t *player)
-{
+/**
+ *
+ * @param player
+ */
+void applyBonusRangeBomb(player_t *player) {
     for (int i = 0; i < MAX_BOMBE; i++) {
         if (player->bomb[i].range <= 8) {
             player->bomb[i].range += 1;
@@ -104,8 +126,11 @@ void applyBonusRangeBomb(player_t *player)
     }
 }
 
-void applyMalusRangeBomb(player_t *player)
-{
+/**
+ *
+ * @param player
+ */
+void applyMalusRangeBomb(player_t *player) {
     for (int i = 0; i < MAX_BOMBE; i++) {
         if (player->bomb[i].range > 1) {
             player->bomb[i].range -= 1;
@@ -113,31 +138,29 @@ void applyMalusRangeBomb(player_t *player)
     }
 }
 
-void applyBonusNbBombe(player_t *player)
-{
+/**
+ *
+ * @param player
+ */
+void applyBonusNbBombe(player_t *player) {
     if (player->nbBombe <= MAX_BOMBE) {
         player->nbBombe += 1;
     }
 }
 
-void applyMalusNbBombe(player_t *player)
-{
+void applyMalusNbBombe(player_t *player) {
     if (player->nbBombe > 1) {
         player->nbBombe -= 1;
     }
 }
 
-void applyBonusSpeed(player_t *player)
-{
+void applyBonusSpeed(player_t *player) {
     if (player->speed <= 6) {
         player->speed += 1;
     }
 }
 
-void applyMalusSpeed(player_t *player)
-{
+void applyMalusSpeed(player_t *player) {
     if (player->speed > 3)
         player->speed -= 1;
 }
-
-

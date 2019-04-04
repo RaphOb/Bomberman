@@ -19,8 +19,7 @@ int hover_off = 1;
  * @param son
  * @return 1 if the player wants to play, 0 if he wants ot quit
  */
-int menuEvent(sdl_t *pSDL, son_t* son)
-{
+int menuEvent(sdl_t *pSDL, son_t *son) {
     SDL_Event event;
     int res = 0;
     int mouse_x = 0;
@@ -74,8 +73,12 @@ int menuEvent(sdl_t *pSDL, son_t* son)
     return res;
 }
 
-int menuGameOverEvent(sdl_t *pSDL)
-{
+/**
+ * function : event on game over
+ * @param pSDL
+ * @return
+ */
+int menuGameOverEvent(sdl_t *pSDL) {
     SDL_Event event;
     int res = 0;
     int mouse_x = 0;
@@ -88,7 +91,7 @@ int menuGameOverEvent(sdl_t *pSDL)
     if (SDL_HasIntersection(&mouse, &dst_menuQuitter)) {
         pSDL->buttonQuit->hover = 1;
         hover_on = 1;
-        if (hover_on == 1 && hover_off== 1) {
+        if (hover_on == 1 && hover_off == 1) {
             hover_off = 0;
         }
     } else
@@ -117,15 +120,13 @@ int menuGameOverEvent(sdl_t *pSDL)
     return res;
 }
 
-
 /**
  * Function : Manage the events from the player in the network menu
  * @param pSDL
  * @param son
  * @return 1 if the player wants to host the game, 2 if he wants to connect to an host and - 1 if he wants to quit
  */
-int menuNetworkEvent(sdl_t *pSDL, son_t* son)
-{
+int menuNetworkEvent(sdl_t *pSDL, son_t *son) {
     SDL_Event event;
     int res = 0;
     int mouse_x = 0;
@@ -165,26 +166,36 @@ int menuNetworkEvent(sdl_t *pSDL, son_t* son)
         }
     } else if (event.type == SDL_MOUSEBUTTONUP) {
         const int size = (MAP_SIZE_W / 2) - (200 / 2);
-        if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 300 &&  event.button.y < 300 + 150) {
+        if (event.button.x > size && event.button.x < size + 200 && event.button.y > 300 &&
+            event.button.y < 300 + 150) {
             res = 2;
         }
-        if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 600 &&  event.button.y < 600 + 150) {
+        if (event.button.x > size && event.button.x < size + 200 && event.button.y > 600 &&
+            event.button.y < 600 + 150) {
             res = -1;
         }
-        if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 450 &&  event.button.y < 450 + 150) {
+        if (event.button.x > size && event.button.x < size + 200 && event.button.y > 450 &&
+            event.button.y < 450 + 150) {
             res = 1;
         }
-        if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350) {
+        if (event.button.x > 20 && event.button.x < 20 + 250 && event.button.y > 650 && event.button.y < 550 + 350) {
             SDL_Log("retour menu");
             pSDL->menu = 0;
             res = 3;
         }
-        //Todo :retour menu à faire
     }
     return res;
 }
 
-int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
+/**
+ *
+ * @param pSDL
+ * @param son
+ * @param host
+ * @param nbClient
+ * @return
+ */
+int menuLobbyEvent(sdl_t *pSDL, son_t *son, int host, int nbClient) {
     int res = 0;
     SDL_Event event;
 
@@ -216,8 +227,9 @@ int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
                     break;
             }
         } else if (event.type == SDL_MOUSEBUTTONUP) {
-            const int size = (MAP_SIZE_W / 2) + 300 ;
-            if (event.button.x > size &&  event.button.x < size + 200 &&  event.button.y > 600 &&  event.button.y < 600 + 150) {
+            const int size = (MAP_SIZE_W / 2) + 300;
+            if (event.button.x > size && event.button.x < size + 200 && event.button.y > 600 &&
+                event.button.y < 600 + 150) {
                 res = -1;
             }
             if (host == 1 && nbClient >= 2) {
@@ -231,8 +243,7 @@ int menuLobbyEvent(sdl_t *pSDL, son_t* son, int host, int nbClient) {
     return res;
 }
 
-void makeSoundHover(button_t *button, son_t *son)
-{
+void makeSoundHover(button_t *button, son_t *son) {
     button->hover = 1;
     hover_on = 1;
     if (hover_on == 1 && hover_off == 1) {

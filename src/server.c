@@ -95,6 +95,7 @@ void close_all_socket_clients()
 void close_socket_client(Client *c)
 {
     c->p.co_is_ok = 0;
+    SDL_Delay(100);
     if (closesocket((SOCKET)c->num_client) != 0) {
         SDL_Log("[Server (%d)] closesocket()", c->num_client);
     } else {

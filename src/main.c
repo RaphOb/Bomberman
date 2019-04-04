@@ -108,6 +108,9 @@ int main(int argc, char *argv[]) {
         if (lobby == 1) {
             c_emission(getMyPlayer(game), START_GAME);
             //Envoyer aux autres joueurs que la partie commence
+        } else if (lobby == -1) {
+            c_emission(getMyPlayer(game), DISCONNECT_CODE);
+            break;
         }
     }
 

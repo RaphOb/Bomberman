@@ -26,6 +26,5 @@ typedef char map_t[MAP_X][MAP_Y];
 int extractArrayFromFile(map_t map);
 void insertLineIntoArray(map_t map, int index, char *line);
 void fillArray(map_t);
-void displayArray(map_t map);
 
 #endif //BOMBERMAN_MAP_H

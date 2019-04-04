@@ -16,7 +16,5 @@ int destroyBlock(map_t map, int pos_x, int pos_y);
 void checkBombPlayer(player_t *player, bomb_t b, map_t map);
 void checkExplosion(map_t map, bomb_t b);
 int isBombOnCell(map_t map, int x, int y);
-bomb_t *getBomb(int x, int y, player_t player[MAX_PLAYER]);
-
 
 #endif //BOMBERMAN_BOMB_H

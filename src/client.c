@@ -77,23 +77,26 @@ void getNbClientServer(game_t *g, player_t *p)
     } else {
         if (buffer != NULL) {
             g->nb_client_serv = atoi(buffer);
-            player_t *myPlayer = getMyPlayer(g);
-            myPlayer->alive = p->alive;
-            myPlayer->code_reseau = p->code_reseau;
-            myPlayer->co_is_ok = 1;
-            myPlayer->number = g->nb_client_serv;
-            myPlayer->checksum = p->checksum;
-            myPlayer->speed = p->speed;
-            myPlayer->bombPosed = p->bombPosed;
-            myPlayer->nbBombe = p->nbBombe;
-            myPlayer->frags = p->frags;
-            myPlayer->current_frame = p->current_frame;
-            myPlayer->frame_time = p->frame_time;
-            myPlayer->still = p->still;
-            myPlayer->mutex_player = p->mutex_player;
-            setPlayerXYDir(myPlayer);
-            strcpy(myPlayer->name, g->name);
-            c_emission(myPlayer, 201);
+            // Si c'est -1 c'est que c'est full on fait rien et on va deco le joueur
+            if (g->nb_client_serv != 9) {
+                player_t *myPlayer = getMyPlayer(g);
+                myPlayer->alive = p->alive;
+                myPlayer->code_reseau = p->code_reseau;
+                myPlayer->co_is_ok = 1;
+                myPlayer->number = g->nb_client_serv;
+                myPlayer->checksum = p->checksum;
+                myPlayer->speed = p->speed;
+                myPlayer->bombPosed = p->bombPosed;
+                myPlayer->nbBombe = p->nbBombe;
+                myPlayer->frags = p->frags;
+                myPlayer->current_frame = p->current_frame;
+                myPlayer->frame_time = p->frame_time;
+                myPlayer->still = p->still;
+                myPlayer->mutex_player = p->mutex_player;
+                setPlayerXYDir(myPlayer);
+                strcpy(myPlayer->name, g->name);
+                c_emission(myPlayer, 201);
+            }
         }
     }
 }

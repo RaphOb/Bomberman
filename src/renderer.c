@@ -119,10 +119,10 @@ void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game) {
  * @param players
  */
 void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
-    SDL_Color color = {45, 94, 205, 255};
     SDL_Rect dst = {0, 0, 0, 0};
     SDL_Texture *textureTextPlayer;
     for (int i = 0; i < MAX_PLAYER; i++) {
+        SDL_Color color = {45, 94, 205, 255};
         if (players[i].number != -1) {
             if (players[i].alive == 'N') {
                 color.r = 205;

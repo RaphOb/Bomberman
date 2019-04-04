@@ -22,22 +22,22 @@ const bonus_t bonus[] = {
 };
 
 /**
- * function : is Bonus on Cell?
+ * function : Check if a bonus is on the cell from the parameter
  * @param map
  * @param cell_x
  * @param cell_y
- * @return
+ * @return 1 if true 0 if not
  */
 int isBonusOnCell(map_t map, int cell_x, int cell_y) {
     return getBit(map[cell_y], cell_x, 4);
 }
 
 /**
- * function
+ * function : Get the type bonus in the cell from the parameter
  * @param map
  * @param cell_x
  * @param cell_y
- * @return
+ * @return the enum type of bonus
  */
 typeBonus_e getBonus(map_t map, int cell_x, int cell_y) {
     char type[3];
@@ -46,7 +46,6 @@ typeBonus_e getBonus(map_t map, int cell_x, int cell_y) {
         char *tmp = malloc(sizeof(char) * 1);
         sprintf(tmp, "%d", getBit(map[cell_y], cell_x, i));
         strcat(type, tmp);
-//        free(tmp);
     }
     if (strcmp(type, "000") == 0) {
         return bRangeBombe;
@@ -65,39 +64,31 @@ typeBonus_e getBonus(map_t map, int cell_x, int cell_y) {
 }
 
 /**
- *
+ * Function : Spawn a random bonus on the cell from the parameter
  * @param map
  * @param cell_x
  * @param cell_y
  */
 void spawnBonus(map_t map, int cell_x, int cell_y) {
-    SDL_Log("spanw");
     typeBonus_e type = rand() % 6;
-    SDL_Log("cell_x : %d, cell_y: %d", cell_x, cell_y);
     toggleBit(map[cell_y], cell_x, 4);
-    SDL_Log("type: %d, mRangeBOmbe: %d", type, mRangeBombe);
     if (type == mRangeBombe) {
-        SDL_Log("malus range bombe");
         toggleBit(map[cell_y], cell_x, 7);
     } else if (type == bNbBombe) {
-        SDL_Log("bonus nb bombe");
         toggleBit(map[cell_y], cell_x, 6);
     } else if (type == mNbBombe) {
-        SDL_Log("malus nb bombe");
         toggleBit(map[cell_y], cell_x, 6);
         toggleBit(map[cell_y], cell_x, 7);
     } else if (type == bVitesse) {
-        SDL_Log("bonus vitesse");
         toggleBit(map[cell_y], cell_x, 5);
     } else if (type == mVitesse) {
-        SDL_Log("malus vitesse");
         toggleBit(map[cell_y], cell_x, 5);
         toggleBit(map[cell_y], cell_x, 7);
     }
 }
 
 /**
- *
+ * Function : Go through the array of structure "bonus" to call a function depending on the parameter "type"
  * @param type
  * @param player
  */
@@ -114,7 +105,7 @@ void doBonus(typeBonus_e type, player_t *player) {
 }
 
 /**
- *
+ * Function : Speak itself
  * @param player
  */
 void applyBonusRangeBomb(player_t *player) {
@@ -126,7 +117,7 @@ void applyBonusRangeBomb(player_t *player) {
 }
 
 /**
- *
+ * Function : Speak itself
  * @param player
  */
 void applyMalusRangeBomb(player_t *player) {
@@ -138,7 +129,7 @@ void applyMalusRangeBomb(player_t *player) {
 }
 
 /**
- *
+ * Function : Speak itself
  * @param player
  */
 void applyBonusNbBombe(player_t *player) {
@@ -147,18 +138,30 @@ void applyBonusNbBombe(player_t *player) {
     }
 }
 
+/**
+ * Function : Speak itself
+ * @param player
+ */
 void applyMalusNbBombe(player_t *player) {
     if (player->nbBombe > 1) {
         player->nbBombe -= 1;
     }
 }
 
+/**
+ * Function : Speak itself
+ * @param player
+ */
 void applyBonusSpeed(player_t *player) {
     if (player->speed <= 6) {
         player->speed += 1;
     }
 }
 
+/**
+ * Function : Speak itself
+ * @param player
+ */
 void applyMalusSpeed(player_t *player) {
     if (player->speed > 3)
         player->speed -= 1;

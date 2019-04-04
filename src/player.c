@@ -44,6 +44,10 @@ player_t initPlayer() {
     return p;
 }
 
+/**
+ * Function : Initialise a bomb
+ * @return a bomb initialised with default variables
+ */
 bomb_t createBomb() {
     bomb_t b;
 
@@ -109,12 +113,7 @@ int collideWith(map_t map, player_t *player, int x, int y) {
         cell_y2 = (pos_y + 1) / REAL_BLOCK_SIZE;
     }
 
-
-//    SDL_Log("y: %d, x: %d , bit : %d", cell_x, cell_y, getBit(map[cell_y], cell_x, 1));
-//    SDL_Log("y2: %d, x2: %d , bit : %d", cell_x2, cell_y2, getBit(map[cell_y2], cell_x2, 1));
-
     return (getBit(map[cell_y], cell_x, 1) || getBit(map[cell_y2], cell_x2, 1));
-//            || getBit(map[cell_y], cell_x, 3) || getBit(map[cell_y2], cell_x2, 3));
 }
 
 /**
@@ -195,7 +194,7 @@ void setPlayerXYDir(player_t *p) {
 }
 
 /**
-* function : return 1 if all player is dead exept MyPlayer
+* function : return 1 if all player is dead except MyPlayer
 * @param game
 * @param number
 * @return

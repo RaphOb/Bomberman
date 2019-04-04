@@ -8,7 +8,7 @@
 #include "../header/reseau.h"
 
 /**
- *
+ * Function : Update some variables to grow the appearance of the bomb
  * @param bomb
  */
 void updateBombForAnim(bomb_t *bomb)
@@ -194,6 +194,5 @@ int destroyBlock(map_t map, int pos_x, int pos_y)
  */
 int isBombOnCell(map_t map, int x, int y)
 {
-    SDL_Log("x: %d, y: %d, res: %d", x, y, getBit(map[y], x, 3));
     return getBit(map[y], x, 3);
 }

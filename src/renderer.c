@@ -427,7 +427,7 @@ void renderMap(map_t map, sdl_t *pSdl) {
 }
 
 /**
- *
+ * Function : Render the image in background in the menu
  * @param pSDL
  * @param i
  */

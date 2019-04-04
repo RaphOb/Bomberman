@@ -15,10 +15,6 @@
 #define TROPSTYLE3_SOUND    "../resources/sound/M.O.O.N.-_Hydrogen_-_Hotline-Miami-Soundtrack_.wav"
 #define POURLESRELOUXAUXGOUTSDEME_SOUND    "../resources/sound/Waterflame - Glorious morning.wav"
 
-// variable declarations
-static Uint8 *audio_pos; // global pointer to the audio buffer to be played
-static Uint32 audio_len; // remaining length of the music we have to play
-
 typedef struct son_s {
     SDL_AudioSpec wavSpec;
     Uint32 wavLength;

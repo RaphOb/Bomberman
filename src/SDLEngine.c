@@ -176,7 +176,6 @@ void destroySDL(sdl_t *pSDL)
     }
 
     TTF_Quit();
-//    TTF_CloseFont(pSDL->font);
     closeAudio(pSDL->son[0]);
     closeAudio(pSDL->son[1]);
     SDL_Quit();
@@ -254,6 +253,8 @@ void initMenu(sdl_t *pSDL)
         pSDL->buttonHost = initButton(dst_menuHeberger, textureHeberger, textureHebergerOn);
         pSDL->buttonConnect = initButton(dst_menuSeconnecter, textureSeconnecter, textureSeconnecterOn);
         pSDL->buttonLaunch = initButton(dst_menuLaunch, textureLaunch, textureLaunchOn);
+
+        SDL_Log("Menu initialised");
     }
     SDL_FreeSurface(menuSelectionJouerOff);
     SDL_FreeSurface(menuSelectionJouerOn);
@@ -277,8 +278,7 @@ void initMenu(sdl_t *pSDL)
  * @param pSDL
  * @param game
  */
-void initPlayerSDL(sdl_t *pSDL)
-{
+void initPlayerSDL(sdl_t *pSDL) {
     SDL_Surface *surfacePlayer = IMG_Load("../resources/sprite/perso1.png");
     SDL_Surface *surfacePlayer2 = IMG_Load("../resources/sprite/perso2.png");
     SDL_Surface *surfacePlayer3 = IMG_Load("../resources/sprite/perso3.png");
@@ -295,17 +295,15 @@ void initPlayerSDL(sdl_t *pSDL)
         pSDL->texturePlayers[3] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfacePlayer4);
         pSDL->texturePlayers[4] = SDL_CreateTextureFromSurface(pSDL->pRenderer, surfaceblood);
         if (!pSDL->texturePlayers[0] || !pSDL->texturePlayers[1] || !pSDL->texturePlayers[2] || !pSDL->texturePlayers[3]
-        || !pSDL->texturePlayers[4]) {
+            || !pSDL->texturePlayers[4]) {
             fprintf(stderr, "impossible d'intialiser la texture : %s", IMG_GetError());
             destroySDL(pSDL);
             return;
         }
-
+        SDL_Log("Player initialised");
     }
     SDL_FreeSurface(surfacePlayer);
     SDL_FreeSurface(surfacePlayer2);
-    surfacePlayer = NULL;
-    surfacePlayer2 = NULL;
 }
 
 /**
@@ -330,7 +328,6 @@ void initBomb(sdl_t *pSDL)
         SDL_Log("Bomb initialised");
     }
     SDL_FreeSurface(surfaceBomb);
-    surfaceBomb = NULL;
 }
 
 void initExplosion(sdl_t *pSDL)
@@ -385,9 +382,9 @@ void initBlock(sdl_t *pSDL)
             destroySDL(pSDL);
             return;
         }
+        SDL_Log("Blocks initialised");
     }
     SDL_FreeSurface(block);
-    block = NULL;
 }
 
 void initMap(sdl_t *pSDL)
@@ -404,6 +401,7 @@ void initMap(sdl_t *pSDL)
             destroySDL(pSDL);
             return;
         }
+        SDL_Log("Map initialised");
     }
     SDL_FreeSurface(map);
 //    map = NULL;
@@ -434,6 +432,7 @@ void initBonus(sdl_t *pSDL)
             destroySDL(pSDL);
             return ;
         }
+        SDL_Log("Bonuses initialised");
     }
     SDL_FreeSurface(bRangeBomb);
     SDL_FreeSurface(mRangeBomb);
@@ -460,6 +459,7 @@ void initBackground(sdl_t *pSDL)
             destroySDL(pSDL);
             return ;
         }
+        SDL_Log("Background initialised");
     }
     SDL_FreeSurface(surfaceBackground);
     SDL_FreeSurface(surfaceBackground2);

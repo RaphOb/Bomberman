@@ -4,6 +4,10 @@
 
 #include "../header/sound.h"
 
+// variable declarations
+static Uint8 *audio_pos; // global pointer to the audio buffer to be played
+static Uint32 audio_len; // remaining length of the music we have to play
+
 /**
  *
  * @param son
@@ -83,6 +87,9 @@ int playMusic(char *path) {
  */
 void my_audio_callback(void *userdata, Uint8 *stream, int len) {
 
+    if (0) {
+        SDL_Log("userdate: %d", (int) (uintptr_t) userdata);
+    }
     if (audio_len != 0) {
         len = ((Uint32) len > audio_len ? audio_len : (Uint32) len);
         SDL_memcpy(stream, audio_pos, (Uint32) len);

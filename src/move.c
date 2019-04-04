@@ -42,6 +42,7 @@ int doMove(int code, player_t *player, map_t map, int request_x, int request_y) 
         }
         i++;
     }
+    return (0);
 }
 
 /**

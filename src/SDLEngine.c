@@ -81,7 +81,6 @@ void destroySDL(sdl_t *pSDL)
             pSDL->textureBonus[i] = NULL;
         }
     }
-
     if (pSDL->buttonConnect->textureButton[1]) {
         SDL_DestroyTexture(pSDL->buttonConnect->textureButton[1]);
         pSDL->buttonConnect->textureButton[1] = NULL;
@@ -330,6 +329,10 @@ void initBomb(sdl_t *pSDL)
     SDL_FreeSurface(surfaceBomb);
 }
 
+/**
+ * Function : Init explosion
+ * @param pSDL
+ */
 void initExplosion(sdl_t *pSDL)
 {
     SDL_Surface *center = IMG_Load("../resources/sprite/flamecenter.png");
@@ -368,6 +371,10 @@ void initExplosion(sdl_t *pSDL)
     SDL_FreeSurface(vertical);
 }
 
+/**
+ * Function : Init block
+ * @param pSDL
+ */
 void initBlock(sdl_t *pSDL)
 {
     SDL_Surface *block = IMG_Load("../resources/img/block_map1.png");
@@ -387,6 +394,10 @@ void initBlock(sdl_t *pSDL)
     SDL_FreeSurface(block);
 }
 
+/**
+ * Function : Init map
+ * @param pSDL
+ */
 void initMap(sdl_t *pSDL)
 {
     SDL_Surface *map = IMG_Load("../resources/sprite/maps.png"); // 722 * 482 ; Taille d'une map: 240 * 160
@@ -404,9 +415,12 @@ void initMap(sdl_t *pSDL)
         SDL_Log("Map initialised");
     }
     SDL_FreeSurface(map);
-//    map = NULL;
 }
 
+/**
+ * Function : Init bonus
+ * @param pSDL
+ */
 void initBonus(sdl_t *pSDL)
 {
     SDL_Surface *bRangeBomb = IMG_Load("../resources/img/bRangeBombe.png");
@@ -442,6 +456,10 @@ void initBonus(sdl_t *pSDL)
     SDL_FreeSurface(mSpeed);
 }
 
+/**
+ * Function : Init backgground
+ * @param pSDL
+ */
 void initBackground(sdl_t *pSDL)
 {
     SDL_Surface *surfaceBackground = IMG_Load("../resources/img/background1.jpg");

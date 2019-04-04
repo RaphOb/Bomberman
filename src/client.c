@@ -31,7 +31,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
     SOCKET sock;
     sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == INVALID_SOCKET) {
-//        SDL_Log("socket()");
+        SDL_Log("socket()");
         exit(errno);
     }
 
@@ -48,7 +48,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
         pseudo = strdup("Host");
     }
 
-//    SDL_Log("[Client] Connexion sur le port : %s\n", port);
+    SDL_Log("[Client] Connexion sur le port : %s\n", port);
 
     to.sin_addr.s_addr = inet_addr(ip);
     to.sin_port = htons((u_short) atoi(port)); /* on utilise htons pour le port */
@@ -56,7 +56,7 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 
     if(connect(sock,(SOCKADDR *) &to, sizeof(to)) <0)
     {
-//        SDL_Log("connect()");
+        SDL_Log("connect(): %s", strerror(errno));
         exit(errno);
     } else {
         serv.sock = sock;

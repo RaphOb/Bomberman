@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL_log.h>
+#include <SDL2/SDL_log.h>
 #include "../header/bonus.h"
 #include "../header/bit.h"
 #include "../header/player.h"

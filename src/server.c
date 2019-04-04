@@ -1,5 +1,5 @@
 #include <SDL2/SDL_log.h>
-#include <SDL_timer.h>
+#include <SDL2/SDL_timer.h>
 #include "../header/reseau.h"
 #include "../header/game.h"
 #include "../header/move.h"
@@ -516,11 +516,11 @@ int app_serv(void* serv_port)
 
     while (1) {
         SOCKADDR_IN csin = { 0 };
-        int sinsize = sizeof(csin);
-//        SDL_Log("[Server] Attente d'un client...\n");
+        unsigned int sinsize = sizeof(csin);
+        SDL_Log("[Server] Attente d'un client...\n");
         SOCKET client = accept(sock, (struct sockaddr *)&csin, &sinsize);
         if (client == INVALID_SOCKET) {
-//            SDL_Log("[Server] accept()");
+            SDL_Log("[Server] accept()");
             return -1;
         }
 

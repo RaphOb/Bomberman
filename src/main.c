@@ -69,6 +69,9 @@ int main(int argc, char *argv[]) {
             if (pSDL->network == 1) {
                 play = loopInputConnect(game);
                 getNbClientServer(game, &player);
+                if (game->nb_client_serv == 9) {
+                    play = 0;
+                }
             } else if (pSDL->network == 2) {
                 host = 1;
                 char *port = malloc(sizeof(char) * 10);

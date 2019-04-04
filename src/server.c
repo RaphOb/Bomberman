@@ -527,6 +527,14 @@ int app_serv(void* serv_port)
 
         if (add_client((int)client, csin) == 0) {
             SDL_Log("[Server] Server is full.\n");
+            char *buffer = malloc(sizeof(char) * 2);
+            sprintf(buffer, "%d", 9);
+            buffer[1]= '\0';
+            //SDL_Log("c->num_client = %d\n", c->num_client);
+            if(sendto((SOCKET)client, buffer, sizeof(buffer), 0, (SOCKADDR *) &csin, sizeof(csin)) < 0)
+            {
+                SDL_Log("[Server] Server is full : sendto()");
+            }
             closesocket(client);
         } else {
             SDL_Log("[Server (%d)] Creation du thread client.\n", (int)client);

@@ -61,6 +61,7 @@ int main(int argc, char *argv[]) {
         SDL_StartTextInput();
 
         while (pSDL->menu != -1 && pSDL->network == 0) {
+            host = 0;
             playMusic(TROPSTYLE3_SOUND);
             drawMenuNetwork(game->pSDL);
             pSDL->network = menuNetworkEvent(game->pSDL, pSDL->son[0]);

@@ -55,7 +55,6 @@ void moveUp(player_t *player, map_t map, int request_x, int request_y) {
     if (player->y_pos > START_Y_MAP && collideWith(map, player, request_x, request_y) == 0) {
         player->y_pos = request_y;
     }
-//    c_emission(player, UP_CODE);
 }
 
 /**
@@ -69,7 +68,6 @@ void moveRight(player_t *player, map_t map, int request_x, int request_y) {
         && collideWith(map, player, request_x, request_y) == 0) {
         player->x_pos = request_x;
     }
-//    c_emission(player, RIGHT_CODE);
 }
 
 /**
@@ -83,7 +81,6 @@ void moveDown(player_t *player, map_t map, int request_x, int request_y) {
         && collideWith(map, player, request_x, request_y) == 0) {
         player->y_pos = request_y;
     }
-//    c_emission(player, DOWN_CODE);
 }
 
 /**
@@ -96,5 +93,4 @@ void moveLeft(player_t *player, map_t map, int request_x, int request_y) {
     if (player->x_pos > START_X_MAP && collideWith(map, player, request_x, request_y) == 0) {
         player->x_pos = request_x;
     }
-//    c_emission(player, LEFT_CODE);
 }

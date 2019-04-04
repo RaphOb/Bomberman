@@ -24,18 +24,14 @@ void updateBombForAnim(bomb_t *bomb)
 /**
  * function : When a bomb explode, this function is called and it updates some variables to trigger the animation
  * and play the sound.
- * @param player
- * @param son
+ * @param bomb
  */
 void makeExplosion(bomb_t *bomb)
 {
-//    SDL_Log("x: %d, y: %d", pSDL->dst_bomb.x, pSDL->dst_bomb.y);
     bomb->tickBombDropped = 0;
     bomb->isPosed = 0;
     bomb->explosion = 1;
     bomb->tickExplosion = SDL_GetTicks();
-//    playSound(son);
-
 }
 
 /**
@@ -55,9 +51,8 @@ int getIndexBomb(player_t *p)
 
 /**
  * function : Update the position of the bomb to place it in the middle of the cell where the player is and update some variables to trigger the animation
- * @param pSDL
  * @param player
- * @param map
+ * @param bomb
  */
 void placeBomb(player_t *player, bomb_t *bomb)
 {
@@ -77,6 +72,7 @@ void placeBomb(player_t *player, bomb_t *bomb)
  * function : check if player is within a bomb's range
  * @param player
  * @param b
+ * @param map
  */
 void checkBombPlayer(player_t *player, bomb_t b, map_t map) {
     const int bpos_x = b.cell_x;

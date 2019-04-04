@@ -33,7 +33,7 @@ son_t *initAudio(char *path) {
 
 /**
  * functin :Play sound
- * @param path
+ * @param son
  */
 void playSound(son_t *son) {
 

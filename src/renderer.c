@@ -208,6 +208,12 @@ void renderMenuNetwork(sdl_t *pSDL) {
     SDL_RenderCopy(pSDL->pRenderer, pSDL->buttonQuit->textureButton[pSDL->buttonQuit->hover], NULL, &dst_menuQuitter);
 }
 
+/**
+ * Function: Draw the lobby menu
+ * @param pSDL
+ * @param players
+ * @param host
+ */
 void drawMenuLobby(sdl_t *pSDL, player_t players[MAX_PLAYER], int host) {
     SDL_RenderClear(pSDL->pRenderer);
     renderBackgroundMenu(pSDL, 1);
@@ -263,7 +269,7 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
 /**
  * function : render de la bomb/ avec effet d'agrandissement/ timing de la bomb
  * @param pSDL
- * @param player
+ * @param bomb
  */
 void renderBomb(sdl_t *pSDL, bomb_t *bomb) {
     int currentTick = SDL_GetTicks();
@@ -362,6 +368,7 @@ void renderPlayer(sdl_t *pSDL, player_t *player) {
 
 /**
  * function : render blood when player die
+ * @param pSDL
  * @param player
  */
 void renderBlood(sdl_t *pSDL, player_t *player) {

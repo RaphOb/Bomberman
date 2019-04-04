@@ -71,7 +71,6 @@ sdl_t *initSDL()
 /**
  * function: destroy SDL
  * @param pSDL
- * @param game
  */
 void destroySDL(sdl_t *pSDL)
 {
@@ -275,7 +274,6 @@ void initMenu(sdl_t *pSDL)
 /**
  * function : init texture Perso
  * @param pSDL
- * @param game
  */
 void initPlayerSDL(sdl_t *pSDL) {
     SDL_Surface *surfacePlayer = IMG_Load("../resources/sprite/perso1.png");
@@ -308,7 +306,6 @@ void initPlayerSDL(sdl_t *pSDL) {
 /**
  * function : init texture bomb
  * @param pSDL
- * @param game
  */
 void initBomb(sdl_t *pSDL)
 {
@@ -506,4 +503,3 @@ button_t *initButton(SDL_Rect rect, SDL_Texture *textureOn, SDL_Texture *texture
     b->dstRect = rect;
     return b;
 }
-

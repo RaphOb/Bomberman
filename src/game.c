@@ -16,7 +16,8 @@
 
 /**
  * function : init game
- * @return
+ * @param pSDL
+ * @return a structure game with a map and player initialised
  */
 game_t *initGame(sdl_t *pSDL) {
     game_t *game = malloc(sizeof(game_t));

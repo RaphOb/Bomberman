@@ -12,11 +12,9 @@
 #include "../header/reseau.h"
 #include "../header/menu.h"
 
-#define LEN_MAX 80
-
 /**
  *
- * @param pSDL
+ * @param game
  * @return
  */
 int loopInputConnect(game_t *game) {
@@ -127,6 +125,8 @@ int loopInputHost(game_t *game, char **p) {
 /**
  * function : Manage the events from the player on an input.
  * @param input
+ * @param pSDL
+ * @param res
  * @return
  */
 int manageInput(input_t *input, sdl_t *pSDL, int res) {

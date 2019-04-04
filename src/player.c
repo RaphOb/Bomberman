@@ -120,6 +120,8 @@ int collideWith(map_t map, player_t *player, int x, int y) {
  * function : Check if the player can placed a bomb at his current position.
  * If he is more than 60% inside a cell then he can place the bomb.
  * @param player
+ * @param bomb
+ * @param map
  * @return 1 if the player can place a bomb, 0 if not
  */
 int canPlayerPlaceBomb(player_t *player, bomb_t *bomb, map_t map) {
@@ -166,6 +168,10 @@ int isPlayerOnOneCell(player_t *player) {
     return (player->map_x[0] == player->map_x[1] && player->map_y[0] == player->map_y[1]);
 }
 
+/**
+ * Function : Set the player position at the beginning
+ * @param p
+ */
 void setPlayerXYDir(player_t *p) {
     switch (p->number) {
         case 0:

@@ -27,7 +27,7 @@ unsigned long WELLRNG512(void)
     return state[index];
 }*/
 
-static Server serv = { 0 };
+static Server serv = {0};
 
 int main(int argc, char *argv[]) {
     // Initialisation du jeu
@@ -40,7 +40,6 @@ int main(int argc, char *argv[]) {
     if (!pSDL /*|| !player */|| !game) {
         return (-1);
     }
-    //game->players[0] = player;
 
     int quit = 0;
     int leave = 0;
@@ -59,7 +58,6 @@ int main(int argc, char *argv[]) {
             drawMenu(game->pSDL);
             pSDL->menu = menuEvent(game->pSDL, pSDL->son[0]);
         }
-        // SDL_CloseAudio();
 //     Menu Network
         SDL_StartTextInput();
 
@@ -103,7 +101,8 @@ int main(int argc, char *argv[]) {
         c_emission(getMyPlayer(game), 200);
     }
     if (play == 1) {
-        int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server, (void *) (uintptr_t) game);
+        int ret_thread = pthread_create(&game->listen_serv_thread, NULL, (void *) listen_server,
+                                        (void *) (uintptr_t) game);
     }
     while (pSDL->menu != -1 && pSDL->network != -1 && play == 1 && game->start == 0) {
         drawMenuLobby(game->pSDL, game->players, getMyPlayer(game)->host);
@@ -114,12 +113,13 @@ int main(int argc, char *argv[]) {
         }
     }
 
-    while (pSDL->menu != -1 && quit != -1 && play == 1 && pSDL->network != -1 && game->start == 1 && game->leave != -1) {
+    while (pSDL->menu != -1 && quit != -1 && play == 1 && pSDL->network != -1 && game->start == 1 &&
+           game->leave != -1) {
         playMusic(POURLESRELOUXAUXGOUTSDEME_SOUND);
         drawGame(game);
         start = SDL_GetTicks();
         quit = gameEvent(game);
-        
+
         if (1000 / FPS > SDL_GetTicks() - start) {
             SDL_Delay(1000 / FPS - (SDL_GetTicks() - start));
         }

@@ -11,6 +11,7 @@
 #include "../header/input.h"
 #include "../header/reseau.h"
 #include "../header/menu.h"
+
 #define LEN_MAX 80
 
 /**
@@ -18,8 +19,7 @@
  * @param pSDL
  * @return
  */
-int loopInputConnect(game_t *game)
-{
+int loopInputConnect(game_t *game) {
     sdl_t *pSDL = game->pSDL;
     SDL_Rect textRectPseudo = {440, 500, 0, 0};
     SDL_Rect textRectIp = {510, 400, 0, 0};
@@ -78,8 +78,7 @@ int loopInputConnect(game_t *game)
  * @param p
  * @return
  */
-int loopInputHost(game_t *game, char **p)
-{
+int loopInputHost(game_t *game, char **p) {
     sdl_t *pSDL = game->pSDL;
     TTF_Font *font = TTF_OpenFont("../resources/font/Pixeled.ttf", 20);
     SDL_Color color = {255, 255, 255, 255};
@@ -130,8 +129,7 @@ int loopInputHost(game_t *game, char **p)
  * @param input
  * @return
  */
-int manageInput(input_t *input, sdl_t* pSDL, int res)
-{
+int manageInput(input_t *input, sdl_t *pSDL, int res) {
     SDL_Event event;
     int quit = res;
 
@@ -151,7 +149,7 @@ int manageInput(input_t *input, sdl_t* pSDL, int res)
         input->len += strlen(event.text.text);
         strcat(input->str, event.text.text);
     } else if (event.type == SDL_MOUSEBUTTONUP) {
-        if (event.button.x > 20 &&  event.button.x < 20 + 250 &&  event.button.y > 650 &&  event.button.y < 550 + 350) {
+        if (event.button.x > 20 && event.button.x < 20 + 250 && event.button.y > 650 && event.button.y < 550 + 350) {
             pSDL->network = 0;
             quit = -1;
         }
@@ -165,8 +163,7 @@ int manageInput(input_t *input, sdl_t* pSDL, int res)
  * @param textureText
  * @param dst
  */
-void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rect dst)
-{
+void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rect dst) {
     SDL_QueryTexture(textureText, NULL, NULL, &dst.w, &dst.h);
     SDL_RenderCopy(pRenderer, textureText, NULL, &dst);
 }
@@ -177,8 +174,7 @@ void renderStringText(SDL_Renderer *pRenderer, SDL_Texture *textureText, SDL_Rec
  * @param pSDL
  * @param input
  */
-void renderInput(SDL_Rect textRect, sdl_t *pSDL, input_t *input)
-{
+void renderInput(SDL_Rect textRect, sdl_t *pSDL, input_t *input) {
     SDL_Rect dst_menuLogo = {(MAP_SIZE_W / 2) - (IMG_LOGO_W / 2), 20, IMG_LOGO_W, IMG_LOGO_H};
 
     input->inputSurface = TTF_RenderText_Solid(input->font, input->str, input->color);
@@ -196,8 +192,7 @@ void renderInput(SDL_Rect textRect, sdl_t *pSDL, input_t *input)
  * @param str
  * @return
  */
-SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color, char *str)
-{
+SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Color color, char *str) {
     SDL_Surface *surfaceText = TTF_RenderText_Solid(font, str, color);
     SDL_Texture *textureText = SDL_CreateTextureFromSurface(pRenderer, surfaceText);
     SDL_FreeSurface(surfaceText);
@@ -211,8 +206,7 @@ SDL_Texture *createTextureText(SDL_Renderer *pRenderer, TTF_Font *font, SDL_Colo
  * @param msgDisplayed
  * @return
  */
-input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed)
-{
+input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed) {
     input_t *input = malloc(sizeof(input_t));
     if (!input)
         return NULL;
@@ -231,8 +225,7 @@ input_t *initInput(TTF_Font *font, SDL_Color color, SDL_Texture *msgDisplayed)
  * function : Free all the resources used for the input
  * @param input
  */
-void destroyInput(input_t *input)
-{
+void destroyInput(input_t *input) {
     SDL_FreeSurface(input->inputSurface);
     SDL_DestroyTexture(input->textureMsgDisplayed);
     SDL_DestroyTexture(input->inputTexture);

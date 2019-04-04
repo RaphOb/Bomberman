@@ -6,7 +6,7 @@
 ##
 
 CC = 		gcc
-CFLAGS =	-Wextra -Wall -std=gnu99
+CFLAGS =	-Wextra -Wall -Werror -std=gnu99
 LIB = 		-lSDL2-2.0 -lSDL2_image-2.0 -lSDL2_ttf -lm -lpthread
 NAME =		exec/bomberman
 RM =		rm -f
@@ -25,6 +25,7 @@ SRC = 		\
 		src/server.c \
 		src/bomb.c \
 		src/bonus.c \
+		src/sound.c \
 		src/main.c \
 
 OBJ = 		$(SRC:.c=.o)

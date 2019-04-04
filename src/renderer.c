@@ -119,10 +119,10 @@ void renderBanner(sdl_t *pSDL, player_t players[MAX_PLAYER], game_t *game) {
  * @param players
  */
 void renderTextPlayer(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
-    SDL_Color color = {45, 94, 205, 255};
     SDL_Rect dst = {0, 0, 0, 0};
     SDL_Texture *textureTextPlayer;
     for (int i = 0; i < MAX_PLAYER; i++) {
+        SDL_Color color = {45, 94, 205, 255};
         if (players[i].number != -1) {
             if (players[i].alive == 'N') {
                 color.r = 205;
@@ -247,7 +247,7 @@ void renderPlayerConnected(sdl_t *pSDL, player_t players[MAX_PLAYER]) {
     SDL_Rect base_dst = {500, 300, 0, 0};
     renderStringText(pSDL->pRenderer, textureHost, dstStringBase);
     for (int i = 0; i < MAX_PLAYER; i++) {
-        if (players[i].number != -1) {
+        if (players[i].number != -1 && players[i].co_is_ok == 1) {
             // Connected
             SDL_Texture *textureTextPlayer = createTextureText(pSDL->pRenderer, font, color, players[i].name);
             base_dst.y += 50;

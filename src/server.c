@@ -359,7 +359,6 @@ game_t init_game_server_side(int code)
 
 int s_reception(Client *c, t_client_request *c_request)
 {
-    int ret_thread;
     int index;
     player_t *p = &c->p;
     // Le code permet d'interpreter les donnees de la structure de façons différentes et d'en faire ce qu'on veut
@@ -409,7 +408,7 @@ int s_reception(Client *c, t_client_request *c_request)
             break;
         case 200:
             c->is_host = 1;
-            ret_thread = pthread_create(&g_serv_info.g_thread, NULL, (void *) game_thread, NULL);
+            pthread_create(&g_serv_info.g_thread, NULL, (void *) game_thread, NULL);
             break;
         default:
             //SDL_Log("[Server (%d)] Reception : Case doesnt exist for this code, aborted. Client num : %d\tCode : %d\n", c->num_client, c->num_client, c_request->code_reseau);
@@ -498,6 +497,7 @@ int into_thread(void* fd_client)
         //SDL_Log("[Server] run = %d\n", run);
     }
     delete_one_thread(c);
+    return 1;
 }
 
 // ----- MAIN -----

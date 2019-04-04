@@ -50,7 +50,7 @@ int getIndexBomb(player_t *p)
             return i;
         }
     }
-
+    return 0;
 }
 
 /**

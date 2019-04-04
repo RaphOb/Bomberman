@@ -254,6 +254,9 @@ void listen_server(void* g_param)
 
 /**
  * Gestion de la mise à jour d'un joueur côté client avec les informations reçus du serveur
+ * @param g
+ * @param indice
+ * @param p
  */
 void maj_player(game_t *g, int indice, player_t *p)
 {

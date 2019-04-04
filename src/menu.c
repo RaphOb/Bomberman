@@ -188,12 +188,12 @@ int menuNetworkEvent(sdl_t *pSDL, son_t *son) {
 }
 
 /**
- *
+ * Function : Manage the events from the player in the lobby menu
  * @param pSDL
  * @param son
  * @param host
  * @param nbClient
- * @return
+ * @return 1 if the player is the host and he clicks on the "go" button or -1 if the player wants to quit
  */
 int menuLobbyEvent(sdl_t *pSDL, son_t *son, int host, int nbClient) {
     int res = 0;
@@ -243,6 +243,11 @@ int menuLobbyEvent(sdl_t *pSDL, son_t *son, int host, int nbClient) {
     return res;
 }
 
+/**
+ * Function : Update some variables to play sound
+ * @param button
+ * @param son
+ */
 void makeSoundHover(button_t *button, son_t *son) {
     button->hover = 1;
     hover_on = 1;

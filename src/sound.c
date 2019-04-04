@@ -58,7 +58,6 @@ int playMusic(char *path) {
 
     if (audio_len == 0) {
         SDL_CloseAudio();
-//        SDL_FreeWAV(wav_buffer);
         if (SDL_LoadWAV(path, &wav_spec, &wav_buffer, &wav_length) == NULL) {
             return 1;
         }

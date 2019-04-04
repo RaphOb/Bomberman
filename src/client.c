@@ -26,6 +26,12 @@
 
 static Server serv = { 0 };
 
+/**
+ * Initialisation de la socket pour se connecter au serveur
+ * @param ip
+ * @param port
+ * @param pseudo
+ */
 void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 {
     SOCKET sock;
@@ -66,6 +72,11 @@ void init_co_from_cli_to_serv(char *ip, char *port, char *pseudo)
 }
 
 // ----- DIVERS -----
+/**
+ * Récupération de l'index du tableau clients côté serveur. Cet index permet au client de savoir qui il est quand il recevra la structure game de la part du serveur. C'est donc un numero unique
+ * @param g
+ * @param p
+ */
 void getNbClientServer(game_t *g, player_t *p)
 {
     char *buffer;
@@ -102,6 +113,12 @@ void getNbClientServer(game_t *g, player_t *p)
 }
 
 // ----- COMMUNICATION -----
+/**
+ * Gestion de la reception du code que le serveur envoi avec sa structure game. Cela permet d'executer des taches en fonction du code
+ * @param code
+ * @param serv_sock
+ * @return
+ */
 int c_reception(int code, SOCKET serv_sock)
 {
     switch (code) {
@@ -114,6 +131,10 @@ int c_reception(int code, SOCKET serv_sock)
     }
 }
 
+/**
+ * Envoi de la structure c_request au serveur avec les instructions que le client souhaite faire passer
+ * @param c_request
+ */
 void write_to_serv(t_client_request c_request)
 {
     if(send(serv.sock, (char*)&c_request, sizeof(c_request), 0) < 0)
@@ -122,6 +143,11 @@ void write_to_serv(t_client_request c_request)
     }
 }
 
+/**
+ * Initialisation de la structure c_request avant envoi au serveur
+ * @param player
+ * @param code
+ */
 void c_emission(player_t *player, int code)
 {
     t_client_request c_request;
@@ -171,6 +197,10 @@ void c_emission(player_t *player, int code)
     write_to_serv(c_request);
 }
 
+/**
+ * Fonction servant dans un thread et permettant d'écouter le serveur une fois la connexion correctement établie
+ * @param g_param
+ */
 void listen_server(void* g_param)
 {
     SDL_Log("[Client] Listen server is ON");
@@ -222,6 +252,12 @@ void listen_server(void* g_param)
     pthread_cancel(game->listen_serv_thread);
 }
 
+/**
+ * Gestion de la mise à jour d'un joueur côté client avec les informations reçus du serveur
+ * @param g
+ * @param indice
+ * @param p
+ */
 void maj_player(game_t *g, int indice, player_t *p)
 {
     pthread_mutex_lock(&g->players[indice].mutex_player);

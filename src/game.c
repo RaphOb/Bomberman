@@ -41,6 +41,11 @@ player_t *getMyPlayer(game_t *g) {
     return &g->players[g->nb_client_serv];
 }
 
+/**
+ * Function : Get the number of players connected
+ * @param players
+ * @return
+ */
 int getNbPlayer(player_t players[MAX_PLAYER]) {
     int nb = 0;
 
@@ -77,12 +82,10 @@ int gameEvent(game_t *game) {
                     }
                     break;
                 default :
-//                    SDL_Log("touche inconnue %d\n", event.key.keysym.sym);
                     break;
             }
         }
     }
-//    SDL_Log("bombposed: %d", p->bombPosed);
     if (p->alive == 'Y') {
         if (keystates[SDL_SCANCODE_UP]) {
             p->y_pos -= p->speed;
@@ -99,7 +102,6 @@ int gameEvent(game_t *game) {
         } else {
             c_emission(p, 0);
         }
-//        doMove(keystates, p, game->map);
     }
     return res;
 }
